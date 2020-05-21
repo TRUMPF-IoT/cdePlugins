@@ -1,0 +1,122 @@
+{
+  "Name": "VThing Sender Stress",
+  "Steps":
+  [
+    {
+      "FriendlyName": "Create Mesh Sender",
+      "Message":
+      {
+        "MessageName": "MsgCreateThingRequestV1",
+        "Target":
+        {
+          "EngineName": "CDMyMeshSender.MeshSenderService"
+        },
+        "Parameters":
+        {
+          "CreateIfNotExist": true,
+          "DoNotModifyIfExists": "true",
+          "OwnerAddress":
+          {
+            "ThingMID": "6388313C-00B3-4738-B0EC-32FDE4870C60" // Stress test id
+          },
+          "Hidden": false,
+          "ReadOnly": false,
+          "EngineName": "CDMyMeshSender.MeshSenderService",
+          "DeviceType": "Mesh Sender",
+          "InstanceId": "21F33320-E4DA-44E8-B0CD-9A044D0B9C65",
+          "FriendlyName": "Stress Mesh Sender",
+          "Properties":
+          {
+            "AutoConnect": true
+          }
+        },
+        "outputs":
+        {
+          "ThingAddress": "StressMeshSender"
+        }
+      }
+    },
+    {
+      "FriendlyName": "Add template for all thing instances of plug-in CDMyPlugin.Plugin to be sent",
+      "RetryCount": -1,
+      "Message":
+      {
+        "MessageName": "MsgAddThingsToPublish",
+        "Target":
+        {
+          "EngineName": "%StressMeshSender%"
+        },
+        "Parameters":
+        {
+          "Things":
+          [
+            {
+              "cdeMID": "D2E5BC40-9AC1-44A1-8FF5-91F529989CF5",
+              "EngineName": "CDMyPlugin.Plugin",
+              "DeviceType": "My Device Type",
+              "ContinueMatching": true,
+              "PropertiesIncluded": null,
+              "SamplingWindow": 0,
+              "EventFormat": "JSON Things",
+              "AddThingIdentity": true,
+              //"StaticProperties" :  "Some custom tag",
+              "KeepDurableHistory": true,
+              "MaxHistoryCount": 500
+            }
+          ]
+        },
+        "outputs":
+        {
+          "*": "AddMeshSenderThingsResponse",
+          "Error": "AddMeshSenderThingsError"
+        }
+      }
+    },
+    {
+      "FriendlyName": "Create Data Player",
+      "Message":
+      {
+        "MessageName": "MsgCreateThingRequestV1",
+        "Target":
+        {
+          "EngineName": "CDMyVThings.TheVThings"
+        },
+        "Parameters":
+        {
+          "CreateIfNotExist": true,
+          "DoNotModifyIfExists": false,
+          "OwnerAddress":
+          {
+            "ThingMID": "6388313C-00B3-4738-B0EC-32FDE4870C60" // Stress test id
+          },
+          "Hidden": false,
+          "ReadOnly": false,
+          "EngineName": "CDMyVThings.TheVThings",
+          "DeviceType": "Data Playback",
+          //"Address": "",
+          "InstanceId": "12130FB6-4F0E-4C17-B451-5EBC79B8BAA0",
+          "FriendlyName": "DataPlayer%NODENAME%",
+          "Properties":
+          {
+            "AutoStart": true,
+            "PlaybackEngineName": "CDMyPlugin.Plugin",
+            "PlaybackDeviceType": "My Device Type",
+            "PlaybackSpeedFactor": 1,
+            "MaxItemDelay": 2000,
+            "AdjustTimestamps": false,
+            "ParallelPlaybackCount": 10,
+            "RestartPlayback": true,
+            "PlaybackItemDelay": 0,
+            "PreserveOrder": true
+          }
+        },
+        "outputs":
+        {
+          "ThingAddress": "MyDataGenerator"
+        }
+      }
+    }
+
+  ]
+}
+

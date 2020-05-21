@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en-US" target-language="de" original="C-DMYVTHINGS/STRINGS.RESX" tool-id="MultilingualAppToolkit" product-name="n/a" product-version="n/a" build-num="n/a">
+    <header>
+      <tool tool-id="MultilingualAppToolkit" tool-name="Multilingual App Toolkit" tool-version="4.0.1795.0" tool-company="Microsoft" />
+    </header>
+    <body>
+      <group id="C-DMYVTHINGS/STRINGS.RESX" datatype="resx">
+        <trans-unit id="VirtualThings974671" translate="yes" xml:space="preserve">
+          <source>Virtual Things</source>
+          <target state="final" state-qualifier="mt-suggestion">Virtuelle Dinge</target>
+        </trans-unit>
+        <trans-unit id="Thispluginhostsmanydifferentfunctionsandothervirtualdevices333476" translate="yes" xml:space="preserve">
+          <source>This plug-in hosts many different functions and other virtual devices</source>
+          <target state="final" state-qualifier="mt-suggestion">Dieses Plug-in bietet viele verschiedene Funktionen und andere virtuelle Geräte</target>
+        </trans-unit>
+        <trans-unit id="CLabs333476" translate="yes" xml:space="preserve">
+          <source>C-Labs</source>
+          <target state="final" state-qualifier="mt-suggestion">C-Labs</target>
+        </trans-unit>
+        <trans-unit id="httpwwwclabscom333476" translate="yes" xml:space="preserve">
+          <source>http://www.c-labs.com</source>
+          <target state="final" state-qualifier="mt-suggestion">http://www.c-Labs.com</target>
+        </trans-unit>
+        <trans-unit id="VirtualThings692281" translate="yes" xml:space="preserve">
+          <source>Virtual Things</source>
+          <target state="final" state-qualifier="mt-suggestion">Virtuelle Dinge</target>
+        </trans-unit>
+        <trans-unit id="AddnewVThing528661" translate="yes" xml:space="preserve">
+          <source>Add new V-Thing</source>
+          <target state="final" state-qualifier="mt-suggestion">Fügen Sie neue V-Sache</target>
+        </trans-unit>
+        <trans-unit id="VThingsList887466" translate="yes" xml:space="preserve">
+          <source>V-Things List</source>
+          <target state="final" state-qualifier="mt-suggestion">V-Dinge-Liste</target>
+        </trans-unit>
+        <trans-unit id="Disable723846" translate="yes" xml:space="preserve">
+          <source>Disable</source>
+          <target state="final" state-qualifier="tm-suggestion">Deaktivieren</target>
+        </trans-unit>
+        <trans-unit id="IsActive82651" translate="yes" xml:space="preserve">
+          <source>Is Active</source>
+          <target state="final" state-qualifier="tm-suggestion">Ist aktiv</target>
+        </trans-unit>
+        <trans-unit id="Name82651" translate="yes" xml:space="preserve">
+          <source>Name</source>
+          <target state="final" state-qualifier="mt-suggestion">Name</target>
+        </trans-unit>
+        <trans-unit id="CurrentValue636641" translate="yes" xml:space="preserve">
+          <source>Current Value</source>
+          <target state="final" state-qualifier="tm-suggestion">Aktueller Wert</target>
+        </trans-unit>
+        <trans-unit id="VThingType995446" translate="yes" xml:space="preserve">
+          <source>V-Thing Type</source>
+          <target state="final" state-qualifier="mt-suggestion">Typ V-Ding</target>
+        </trans-unit>
+        <trans-unit id="SettheVThingTypeofthistag995446" translate="yes" xml:space="preserve">
+          <source>Set the VThing-Type of this tag</source>
+          <target state="final" state-qualifier="mt-suggestion">Legen Sie den VThing-Typ dieses Tags</target>
+        </trans-unit>
+        <trans-unit id="NMIControlType831825" translate="yes" xml:space="preserve">
+          <source>NMI Control Type</source>
+          <target state="final" state-qualifier="mt-suggestion">NMI Steuerelementtyp</target>
+        </trans-unit>
+        <trans-unit id="Flags190631" translate="yes" xml:space="preserve">
+          <source>Flags</source>
+          <target state="final" state-qualifier="tm-suggestion">Flags</target>
+        </trans-unit>
+        <trans-unit id="NewPropertyName27010" translate="yes" xml:space="preserve">
+          <source>New Property Name</source>
+          <target state="final" state-qualifier="mt-suggestion">Neuer Name der Eigenschaft</target>
+        </trans-unit>
+        <trans-unit id="AllProperties27010" translate="yes" xml:space="preserve">
+          <source>All Properties...</source>
+          <target state="final" state-qualifier="mt-suggestion">Alle Unterkünfte...</target>
+        </trans-unit>
+        <trans-unit id="BaseSettings385815" translate="yes" xml:space="preserve">
+          <source>Base Settings...</source>
+          <target state="final" state-qualifier="mt-suggestion">Basis-Einstellungen...</target>
+        </trans-unit>
+        <trans-unit id="NMIScreen744620" translate="yes" xml:space="preserve">
+          <source>NMI Screen</source>
+          <target state="final" state-qualifier="mt-suggestion">NMI-Bildschirm</target>
+        </trans-unit>
+        <trans-unit id="NMISettings581000" translate="yes" xml:space="preserve">
+          <source>NMI Settings...</source>
+          <target state="final" state-qualifier="mt-suggestion">NMI-Einstellungen...</target>
+        </trans-unit>
+        <trans-unit id="AddProperty939805" translate="yes" xml:space="preserve">
+          <source>Add Property</source>
+          <target state="final" state-qualifier="tm-suggestion">Hinzufügen</target>
+        </trans-unit>
+        <trans-unit id="Loading601774" translate="yes" xml:space="preserve">
+          <source>Loading...</source>
+          <target state="final" state-qualifier="tm-suggestion">Wird geladen...</target>
+        </trans-unit>
+        <trans-unit id="Countdown601774" translate="yes" xml:space="preserve">
+          <source>Countdown</source>
+          <target state="final" state-qualifier="tm-suggestion">Countdown</target>
+        </trans-unit>
+        <trans-unit id="Countdown438154" translate="yes" xml:space="preserve">
+          <source>Countdown</source>
+          <target state="final" state-qualifier="tm-suggestion">Countdown</target>
+        </trans-unit>
+        <trans-unit id="Settings796959" translate="yes" xml:space="preserve">
+          <source>Settings...</source>
+          <target state="final" state-qualifier="mt-suggestion">Einstellungen...</target>
+        </trans-unit>
+        <trans-unit id="Trigger796959" translate="yes" xml:space="preserve">
+          <source>Trigger</source>
+          <target state="final" state-qualifier="tm-suggestion">Auslöser</target>
+        </trans-unit>
+        <trans-unit id="StartValue633339" translate="yes" xml:space="preserve">
+          <source>Start Value</source>
+          <target state="final" state-qualifier="mt-suggestion">Startwert</target>
+        </trans-unit>
+        <trans-unit id="Ticktimeinms633339" translate="yes" xml:space="preserve">
+          <source>Tick time in ms</source>
+          <target state="final" state-qualifier="mt-suggestion">Tick Zeit in ms</target>
+        </trans-unit>
+        <trans-unit id="ContinueonRestart992144" translate="yes" xml:space="preserve">
+          <source>Continue on Restart</source>
+          <target state="final" state-qualifier="mt-suggestion">Fahren Sie weiter auf Neustart</target>
+        </trans-unit>
+        <trans-unit id="StartOverwhenzero992144" translate="yes" xml:space="preserve">
+          <source>Start Over when zero</source>
+          <target state="final" state-qualifier="mt-suggestion">Start Over bei Null</target>
+        </trans-unit>
+        <trans-unit id="DataGenerator350949" translate="yes" xml:space="preserve">
+          <source>Data-Generator</source>
+          <target state="final" state-qualifier="mt-suggestion">Daten-Generator</target>
+        </trans-unit>
+        <trans-unit id="Properties187329" translate="yes" xml:space="preserve">
+          <source>Properties</source>
+          <target state="final" state-qualifier="tm-suggestion">Eigenschaften</target>
+        </trans-unit>
+        <trans-unit id="NumberProperties187329" translate="yes" xml:space="preserve">
+          <source>Number Properties</source>
+          <target state="final" state-qualifier="mt-suggestion">Anzahl Unterkünfte</target>
+        </trans-unit>
+        <trans-unit id="PropertiesperSecond546134" translate="yes" xml:space="preserve">
+          <source>Properties per Second</source>
+          <target state="final" state-qualifier="mt-suggestion">Objekte pro Sekunde</target>
+        </trans-unit>
+        <trans-unit id="Propertycount904939" translate="yes" xml:space="preserve">
+          <source>Property count</source>
+          <target state="final" state-qualifier="mt-suggestion">Eigenschaft count</target>
+        </trans-unit>
+        <trans-unit id="Frequencyms741318" translate="yes" xml:space="preserve">
+          <source>Frequency (ms)</source>
+          <target state="final" state-qualifier="tm-suggestion">Frequenz (ms)</target>
+        </trans-unit>
+        <trans-unit id="ResetCounter741318" translate="yes" xml:space="preserve">
+          <source>Reset Counter</source>
+          <target state="final" state-qualifier="mt-suggestion">Zähler zurücksetzen</target>
+        </trans-unit>
+        <trans-unit id="AllProperties100123" translate="yes" xml:space="preserve">
+          <source>All Properties</source>
+          <target state="final" state-qualifier="tm-suggestion">Alle Eigenschaften</target>
+        </trans-unit>
+        <trans-unit id="DataVerifier936503" translate="yes" xml:space="preserve">
+          <source>Data-Verifier</source>
+          <target state="final" state-qualifier="mt-suggestion">Daten-Verifier</target>
+        </trans-unit>
+        <trans-unit id="Properties295308" translate="yes" xml:space="preserve">
+          <source>Properties</source>
+          <target state="final" state-qualifier="tm-suggestion">Eigenschaften</target>
+        </trans-unit>
+        <trans-unit id="NumberProperties295308" translate="yes" xml:space="preserve">
+          <source>Number Properties</source>
+          <target state="final" state-qualifier="mt-suggestion">Anzahl Unterkünfte</target>
+        </trans-unit>
+        <trans-unit id="ThingforPropertySubs849298" translate="yes" xml:space="preserve">
+          <source>Thing for Property Subs</source>
+          <target state="final" state-qualifier="mt-suggestion">Sache für Eigenschaft Subs</target>
+        </trans-unit>
+        <trans-unit id="PropertiesperSecond849298" translate="yes" xml:space="preserve">
+          <source>Properties per Second</source>
+          <target state="final" state-qualifier="mt-suggestion">Objekte pro Sekunde</target>
+        </trans-unit>
+        <trans-unit id="Propertycounter208103" translate="yes" xml:space="preserve">
+          <source>Property counter</source>
+          <target state="final" state-qualifier="mt-suggestion">Eigentum-Zähler</target>
+        </trans-unit>
+        <trans-unit id="MinimumLatencyms44483" translate="yes" xml:space="preserve">
+          <source>Minimum Latency (ms)</source>
+          <target state="final" state-qualifier="mt-suggestion">Minimale Latenz (ms)</target>
+        </trans-unit>
+        <trans-unit id="MaximLatencyms44483" translate="yes" xml:space="preserve">
+          <source>Maxim Latency (ms)</source>
+          <target state="final" state-qualifier="mt-suggestion">Maxim Latenz (ms)</target>
+        </trans-unit>
+        <trans-unit id="Reload403288" translate="yes" xml:space="preserve">
+          <source>Reload</source>
+          <target state="final" state-qualifier="tm-suggestion">Erneut laden</target>
+        </trans-unit>
+        <trans-unit id="MemoryTags239667" translate="yes" xml:space="preserve">
+          <source>Memory-Tags</source>
+          <target state="final" state-qualifier="mt-suggestion">Speicher-Tags</target>
+        </trans-unit>
+        <trans-unit id="Properties239667" translate="yes" xml:space="preserve">
+          <source>Properties</source>
+          <target state="final" state-qualifier="tm-suggestion">Eigenschaften</target>
+        </trans-unit>
+        <trans-unit id="AmountProperties598472" translate="yes" xml:space="preserve">
+          <source>Amount Properties</source>
+          <target state="final" state-qualifier="mt-suggestion">Menge Eigenschaften</target>
+        </trans-unit>
+        <trans-unit id="Reload598472" translate="yes" xml:space="preserve">
+          <source>Reload</source>
+          <target state="final" state-qualifier="tm-suggestion">Erneut laden</target>
+        </trans-unit>
+        <trans-unit id="AllProperties957277" translate="yes" xml:space="preserve">
+          <source>All Properties</source>
+          <target state="final" state-qualifier="tm-suggestion">Alle Eigenschaften</target>
+        </trans-unit>
+        <trans-unit id="NMIElements957277" translate="yes" xml:space="preserve">
+          <source>NMI Elements</source>
+          <target state="final" state-qualifier="mt-suggestion">NMI-Elemente</target>
+        </trans-unit>
+        <trans-unit id="Settings793657" translate="yes" xml:space="preserve">
+          <source>Settings...</source>
+          <target state="final" state-qualifier="mt-suggestion">Einstellungen...</target>
+        </trans-unit>
+        <trans-unit id="AllProperties152462" translate="yes" xml:space="preserve">
+          <source>All Properties</source>
+          <target state="final" state-qualifier="tm-suggestion">Alle Eigenschaften</target>
+        </trans-unit>
+        <trans-unit id="Source152462" translate="yes" xml:space="preserve">
+          <source>Source...</source>
+          <target state="final" state-qualifier="mt-suggestion">Quelle...</target>
+        </trans-unit>
+        <trans-unit id="SourceThing511267" translate="yes" xml:space="preserve">
+          <source>Source Thing</source>
+          <target state="final" state-qualifier="mt-suggestion">Quelle-Sache</target>
+        </trans-unit>
+        <trans-unit id="SourceProperty511267" translate="yes" xml:space="preserve">
+          <source>Source Property</source>
+          <target state="final" state-qualifier="mt-suggestion">Source-Eigenschaft</target>
+        </trans-unit>
+        <trans-unit id="ControlType347647" translate="yes" xml:space="preserve">
+          <source>Control Type</source>
+          <target state="final" state-qualifier="tm-suggestion">Steuerungstyp</target>
+        </trans-unit>
+        <trans-unit id="NMIScreen347647" translate="yes" xml:space="preserve">
+          <source>NMI Screen</source>
+          <target state="final" state-qualifier="mt-suggestion">NMI-Bildschirm</target>
+        </trans-unit>
+        <trans-unit id="Flags706452" translate="yes" xml:space="preserve">
+          <source>Flags</source>
+          <target state="final" state-qualifier="tm-suggestion">Flags</target>
+        </trans-unit>
+        <trans-unit id="Reload542832" translate="yes" xml:space="preserve">
+          <source>Reload</source>
+          <target state="final" state-qualifier="tm-suggestion">Erneut laden</target>
+        </trans-unit>
+        <trans-unit id="Timer542832" translate="yes" xml:space="preserve">
+          <source>Timer</source>
+          <target state="final" state-qualifier="tm-suggestion">Zeitgeber</target>
+        </trans-unit>
+        <trans-unit id="TriggerCnt901637" translate="yes" xml:space="preserve">
+          <source>Trigger Cnt</source>
+          <target state="final" state-qualifier="mt-suggestion">Trigger-Cnt</target>
+        </trans-unit>
+        <trans-unit id="Settings901637" translate="yes" xml:space="preserve">
+          <source>Settings...</source>
+          <target state="final" state-qualifier="mt-suggestion">Einstellungen...</target>
+        </trans-unit>
+        <trans-unit id="MstoTrigger260442" translate="yes" xml:space="preserve">
+          <source>Ms to Trigger</source>
+          <target state="final" state-qualifier="mt-suggestion">MS auslösen</target>
+        </trans-unit>
+        <trans-unit id="LoopTime96821" translate="yes" xml:space="preserve">
+          <source>Loop Time</source>
+          <target state="final" state-qualifier="mt-suggestion">Loop-Zeit</target>
+        </trans-unit>
+        <trans-unit id="AutoStart96821" translate="yes" xml:space="preserve">
+          <source>Auto Start</source>
+          <target state="final" state-qualifier="tm-suggestion">Automatisch starten</target>
+        </trans-unit>
+        <trans-unit id="TriggerNow455626" translate="yes" xml:space="preserve">
+          <source>Trigger Now</source>
+          <target state="final" state-qualifier="mt-suggestion">Jetzt auslösen</target>
+        </trans-unit>
+        <trans-unit id="StopTimer814431" translate="yes" xml:space="preserve">
+          <source>Stop Timer</source>
+          <target state="final" state-qualifier="mt-suggestion">Timer zu stoppen</target>
+        </trans-unit>
+        <trans-unit id="VStateSensor650811" translate="yes" xml:space="preserve">
+          <source>V-State Sensor</source>
+          <target state="final" state-qualifier="mt-suggestion">V-State Sensor</target>
+        </trans-unit>
+        <trans-unit id="VSensorSettings650811" translate="yes" xml:space="preserve">
+          <source>V-Sensor Settings...</source>
+          <target state="final" state-qualifier="mt-suggestion">V-Sensor-Einstellungen...</target>
+        </trans-unit>
+        <trans-unit id="SensorName9616" translate="yes" xml:space="preserve">
+          <source>Sensor Name</source>
+          <target state="final" state-qualifier="mt-suggestion">Sensorname</target>
+        </trans-unit>
+        <trans-unit id="SensorType9616" translate="yes" xml:space="preserve">
+          <source>Sensor Type</source>
+          <target state="final" state-qualifier="tm-suggestion">Sensortyp</target>
+        </trans-unit>
+        <trans-unit id="SensorUnits845996" translate="yes" xml:space="preserve">
+          <source>Sensor Units</source>
+          <target state="final" state-qualifier="mt-suggestion">Sensoreinheiten</target>
+        </trans-unit>
+        <trans-unit id="SensorValueName204801" translate="yes" xml:space="preserve">
+          <source>Sensor Value Name</source>
+          <target state="final" state-qualifier="mt-suggestion">Sensor Wertname</target>
+        </trans-unit>
+        <trans-unit id="MinValue204801" translate="yes" xml:space="preserve">
+          <source>Min Value</source>
+          <target state="final" state-qualifier="tm-suggestion">Minimalwert</target>
+        </trans-unit>
+        <trans-unit id="MaxValue563606" translate="yes" xml:space="preserve">
+          <source>Max Value</source>
+          <target state="final" state-qualifier="tm-suggestion">Maximalwert</target>
+        </trans-unit>
+        <trans-unit id="ThingPicker399986" translate="yes" xml:space="preserve">
+          <source>Thing Picker</source>
+          <target state="final" state-qualifier="mt-suggestion">Sache-Picker</target>
+        </trans-unit>
+        <trans-unit id="PropertyPicker758791" translate="yes" xml:space="preserve">
+          <source>Property Picker</source>
+          <target state="final" state-qualifier="tm-suggestion">Eigenschaftenauswahl</target>
+        </trans-unit>
+        <trans-unit id="MakeGlobal758791" translate="yes" xml:space="preserve">
+          <source>Make Global</source>
+          <target state="final" state-qualifier="mt-suggestion">Globale</target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

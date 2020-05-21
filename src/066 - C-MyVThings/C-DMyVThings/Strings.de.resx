@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="VirtualThings974671" xml:space="preserve">
+    <value>Virtuelle Dinge</value>
+  </data>
+  <data name="Thispluginhostsmanydifferentfunctionsandothervirtualdevices333476" xml:space="preserve">
+    <value>Dieses Plug-in bietet viele verschiedene Funktionen und andere virtuelle Geräte</value>
+  </data>
+  <data name="CLabs333476" xml:space="preserve">
+    <value>C-Labs</value>
+  </data>
+  <data name="httpwwwclabscom333476" xml:space="preserve">
+    <value>http://www.c-Labs.com</value>
+  </data>
+  <data name="VirtualThings692281" xml:space="preserve">
+    <value>Virtuelle Dinge</value>
+  </data>
+  <data name="AddnewVThing528661" xml:space="preserve">
+    <value>Fügen Sie neue V-Sache</value>
+  </data>
+  <data name="VThingsList887466" xml:space="preserve">
+    <value>V-Dinge-Liste</value>
+  </data>
+  <data name="Disable723846" xml:space="preserve">
+    <value>Deaktivieren</value>
+  </data>
+  <data name="IsActive82651" xml:space="preserve">
+    <value>Ist aktiv</value>
+  </data>
+  <data name="Name82651" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="CurrentValue636641" xml:space="preserve">
+    <value>Aktueller Wert</value>
+  </data>
+  <data name="VThingType995446" xml:space="preserve">
+    <value>Typ V-Ding</value>
+  </data>
+  <data name="SettheVThingTypeofthistag995446" xml:space="preserve">
+    <value>Legen Sie den VThing-Typ dieses Tags</value>
+  </data>
+  <data name="NMIControlType831825" xml:space="preserve">
+    <value>NMI Steuerelementtyp</value>
+  </data>
+  <data name="Flags190631" xml:space="preserve">
+    <value>Flags</value>
+  </data>
+  <data name="NewPropertyName27010" xml:space="preserve">
+    <value>Neuer Name der Eigenschaft</value>
+  </data>
+  <data name="AllProperties27010" xml:space="preserve">
+    <value>Alle Unterkünfte...</value>
+  </data>
+  <data name="BaseSettings385815" xml:space="preserve">
+    <value>Basis-Einstellungen...</value>
+  </data>
+  <data name="NMIScreen744620" xml:space="preserve">
+    <value>NMI-Bildschirm</value>
+  </data>
+  <data name="NMISettings581000" xml:space="preserve">
+    <value>NMI-Einstellungen...</value>
+  </data>
+  <data name="AddProperty939805" xml:space="preserve">
+    <value>Hinzufügen</value>
+  </data>
+  <data name="Loading601774" xml:space="preserve">
+    <value>Wird geladen...</value>
+  </data>
+  <data name="Countdown601774" xml:space="preserve">
+    <value>Countdown</value>
+  </data>
+  <data name="Countdown438154" xml:space="preserve">
+    <value>Countdown</value>
+  </data>
+  <data name="Settings796959" xml:space="preserve">
+    <value>Einstellungen...</value>
+  </data>
+  <data name="Trigger796959" xml:space="preserve">
+    <value>Auslöser</value>
+  </data>
+  <data name="StartValue633339" xml:space="preserve">
+    <value>Startwert</value>
+  </data>
+  <data name="Ticktimeinms633339" xml:space="preserve">
+    <value>Tick Zeit in ms</value>
+  </data>
+  <data name="ContinueonRestart992144" xml:space="preserve">
+    <value>Fahren Sie weiter auf Neustart</value>
+  </data>
+  <data name="StartOverwhenzero992144" xml:space="preserve">
+    <value>Start Over bei Null</value>
+  </data>
+  <data name="DataGenerator350949" xml:space="preserve">
+    <value>Daten-Generator</value>
+  </data>
+  <data name="Properties187329" xml:space="preserve">
+    <value>Eigenschaften</value>
+  </data>
+  <data name="NumberProperties187329" xml:space="preserve">
+    <value>Anzahl Unterkünfte</value>
+  </data>
+  <data name="PropertiesperSecond546134" xml:space="preserve">
+    <value>Objekte pro Sekunde</value>
+  </data>
+  <data name="Propertycount904939" xml:space="preserve">
+    <value>Eigenschaft count</value>
+  </data>
+  <data name="Frequencyms741318" xml:space="preserve">
+    <value>Frequenz (ms)</value>
+  </data>
+  <data name="ResetCounter741318" xml:space="preserve">
+    <value>Zähler zurücksetzen</value>
+  </data>
+  <data name="AllProperties100123" xml:space="preserve">
+    <value>Alle Eigenschaften</value>
+  </data>
+  <data name="DataVerifier936503" xml:space="preserve">
+    <value>Daten-Verifier</value>
+  </data>
+  <data name="Properties295308" xml:space="preserve">
+    <value>Eigenschaften</value>
+  </data>
+  <data name="NumberProperties295308" xml:space="preserve">
+    <value>Anzahl Unterkünfte</value>
+  </data>
+  <data name="ThingforPropertySubs849298" xml:space="preserve">
+    <value>Sache für Eigenschaft Subs</value>
+  </data>
+  <data name="PropertiesperSecond849298" xml:space="preserve">
+    <value>Objekte pro Sekunde</value>
+  </data>
+  <data name="Propertycounter208103" xml:space="preserve">
+    <value>Eigentum-Zähler</value>
+  </data>
+  <data name="MinimumLatencyms44483" xml:space="preserve">
+    <value>Minimale Latenz (ms)</value>
+  </data>
+  <data name="MaximLatencyms44483" xml:space="preserve">
+    <value>Maxim Latenz (ms)</value>
+  </data>
+  <data name="Reload403288" xml:space="preserve">
+    <value>Erneut laden</value>
+  </data>
+  <data name="MemoryTags239667" xml:space="preserve">
+    <value>Speicher-Tags</value>
+  </data>
+  <data name="Properties239667" xml:space="preserve">
+    <value>Eigenschaften</value>
+  </data>
+  <data name="AmountProperties598472" xml:space="preserve">
+    <value>Menge Eigenschaften</value>
+  </data>
+  <data name="Reload598472" xml:space="preserve">
+    <value>Erneut laden</value>
+  </data>
+  <data name="AllProperties957277" xml:space="preserve">
+    <value>Alle Eigenschaften</value>
+  </data>
+  <data name="NMIElements957277" xml:space="preserve">
+    <value>NMI-Elemente</value>
+  </data>
+  <data name="Settings793657" xml:space="preserve">
+    <value>Einstellungen...</value>
+  </data>
+  <data name="AllProperties152462" xml:space="preserve">
+    <value>Alle Eigenschaften</value>
+  </data>
+  <data name="Source152462" xml:space="preserve">
+    <value>Quelle...</value>
+  </data>
+  <data name="SourceThing511267" xml:space="preserve">
+    <value>Quelle-Sache</value>
+  </data>
+  <data name="SourceProperty511267" xml:space="preserve">
+    <value>Source-Eigenschaft</value>
+  </data>
+  <data name="ControlType347647" xml:space="preserve">
+    <value>Steuerungstyp</value>
+  </data>
+  <data name="NMIScreen347647" xml:space="preserve">
+    <value>NMI-Bildschirm</value>
+  </data>
+  <data name="Flags706452" xml:space="preserve">
+    <value>Flags</value>
+  </data>
+  <data name="Reload542832" xml:space="preserve">
+    <value>Erneut laden</value>
+  </data>
+  <data name="Timer542832" xml:space="preserve">
+    <value>Zeitgeber</value>
+  </data>
+  <data name="TriggerCnt901637" xml:space="preserve">
+    <value>Trigger-Cnt</value>
+  </data>
+  <data name="Settings901637" xml:space="preserve">
+    <value>Einstellungen...</value>
+  </data>
+  <data name="MstoTrigger260442" xml:space="preserve">
+    <value>MS auslösen</value>
+  </data>
+  <data name="LoopTime96821" xml:space="preserve">
+    <value>Loop-Zeit</value>
+  </data>
+  <data name="AutoStart96821" xml:space="preserve">
+    <value>Automatisch starten</value>
+  </data>
+  <data name="TriggerNow455626" xml:space="preserve">
+    <value>Jetzt auslösen</value>
+  </data>
+  <data name="StopTimer814431" xml:space="preserve">
+    <value>Timer zu stoppen</value>
+  </data>
+  <data name="VStateSensor650811" xml:space="preserve">
+    <value>V-State Sensor</value>
+  </data>
+  <data name="VSensorSettings650811" xml:space="preserve">
+    <value>V-Sensor-Einstellungen...</value>
+  </data>
+  <data name="SensorName9616" xml:space="preserve">
+    <value>Sensorname</value>
+  </data>
+  <data name="SensorType9616" xml:space="preserve">
+    <value>Sensortyp</value>
+  </data>
+  <data name="SensorUnits845996" xml:space="preserve">
+    <value>Sensoreinheiten</value>
+  </data>
+  <data name="SensorValueName204801" xml:space="preserve">
+    <value>Sensor Wertname</value>
+  </data>
+  <data name="MinValue204801" xml:space="preserve">
+    <value>Minimalwert</value>
+  </data>
+  <data name="MaxValue563606" xml:space="preserve">
+    <value>Maximalwert</value>
+  </data>
+  <data name="ThingPicker399986" xml:space="preserve">
+    <value>Sache-Picker</value>
+  </data>
+  <data name="PropertyPicker758791" xml:space="preserve">
+    <value>Eigenschaftenauswahl</value>
+  </data>
+  <data name="MakeGlobal758791" xml:space="preserve">
+    <value>Globale</value>
+  </data>
+</root>

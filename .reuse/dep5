@@ -1,0 +1,72 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: CDEPlugins
+Upstream-Contact:  <>
+Source: https://github.com/TRUMPF-IoT/CDEPlugins
+
+Files:  src/066 - C-MyVThings/C-DMyVThings/bundleconfig.json
+Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+License: MPL-2.0
+
+Files:  src/066 - C-MyVThings/C-DMyVThings/*.resx
+Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+License: MPL-2.0
+
+Files:  src/066 - C-MyVThings/C-DMyVThings/MultilingualResources/*
+Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+License: MPL-2.0
+
+Files:  src/066 - C-MyVThings/C-DMyVThings/ClientBin/P066/images/*.png
+Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+License: MPL-2.0
+
+Files:  BuildTools/*
+Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+License: MPL-2.0
+
+Files:  BuildTools/cdePackager/*
+Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+License: MPL-2.0
+
+Files:  README.md
+Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+License: MPL-2.0
+
+Files:  src/readme.md
+Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+License: MPL-2.0
+
+#Files:  src/040 - C-MyComputer/readme.md
+#Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+#License: MPL-2.0
+
+Files:  src/103 - CMyVisitorLog/readme.md
+Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+License: MPL-2.0
+
+Files:  src/178 - External Logger/readme.md
+Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+License: MPL-2.0
+
+Files:  src/179 - Mesh Sender/readme.md
+Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+License: MPL-2.0
+
+Files:  src/180 - Mesh Receiver/readme.md
+Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+License: MPL-2.0
+
+Files:  src/CDEPlugins.sln
+Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+License: MPL-2.0
+
+Files:  src/040 - C-MyComputer/C-DMyComputer (PC)/ClientBin/images/*.png
+Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+License: MPL-2.0
+
+Files:  src/188 - PrometheusExporter/CDMyPrometheusExporter/clientbin/images/prometheus_logo_grey.png
+Copyright: Copyright 2013 The Prometheus Authors
+License: Apache-2.0
+
+Files: src/HTML5/cdeTS/cde/cdeWorker.js
+Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+License: MPL-2.0

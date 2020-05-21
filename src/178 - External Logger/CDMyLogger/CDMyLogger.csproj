@@ -1,0 +1,33 @@
+<!--
+ SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+ SPDX-License-Identifier: MPL-2.0
+ -->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net45;net40;net35</TargetFrameworks>
+    <AssemblyName>CDMyLogger</AssemblyName>
+    <RootNamespace>CDMyLogger</RootNamespace>
+    <PackageId>CDMyLogger</PackageId>
+    <Version>4.302.0</Version>
+    <Authors>Chris Muench</Authors>
+    <Company>C-Labs</Company>
+    <Product>CDMyLogger</Product>
+    <Copyright>Copyright © 2015-2020 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="C-DEngine" Version="5.*" />
+    <PackageReference Include="jnm2.ReferenceAssemblies.net35" Version="1.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <!--<ProjectReference Include="..\..\025 - C-DEngine\C-DEngine\C-DEngine.csproj" />-->
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="&quot;$(ProjectDir)..\..\..\BuildTools\signmeSha.bat&quot; &quot;$(TargetDir)$(TargetFileName)&quot; &quot;$(ProjectDir)..\..\..\BuildTools&quot;" />
+  </Target>
+
+</Project>

@@ -1,0 +1,24 @@
+{
+  // SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+  // SPDX-License-Identifier: MPL-2.0
+  "Steps": [
+    {
+      "Message": {
+        "MessageName": "ADD_FOOTPRINT",
+        "Target": {
+          "EngineName": "CDMyVisitorLog.TheVisitorService"
+        },
+        "Parameters": {
+          "NodeTypes": [
+            {
+              "NodeType": "SomeNodeType",
+              "Footprint": "CDMyMeshSender.MeshSenderService",
+              "ExactCount": 8,
+              "cdeMID": "{5DC308C5-FB28-425A-81E0-B4568782392A}"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

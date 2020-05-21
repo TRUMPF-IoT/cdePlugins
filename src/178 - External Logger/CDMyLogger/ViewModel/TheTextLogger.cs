@@ -1,0 +1,336 @@
+// SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+//
+// SPDX-License-Identifier: MPL-2.0
+
+﻿using nsCDEngine.BaseClasses;
+using nsCDEngine.Communication;
+using nsCDEngine.Engines;
+using nsCDEngine.Engines.NMIService;
+using nsCDEngine.Engines.StorageService;
+using nsCDEngine.Engines.ThingService;
+using nsCDEngine.ISM;
+using nsCDEngine.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.IO;
+
+namespace CDMyLogger.ViewModel
+{
+    [DeviceType(
+    DeviceType = eTheLoggerServiceTypes.TextLogger,
+    Capabilities = new eThingCaps[] { eThingCaps.ConfigManagement },
+    Description = "Text Event Logger")]
+    class TheTextLogger : TheLoggerBase
+    {
+        public TheTextLogger(TheThing tBaseThing, ICDEPlugin pPluginBase) : base(tBaseThing, pPluginBase)
+        {
+            MyBaseThing.DeviceType = eTheLoggerServiceTypes.TextLogger;
+        }
+
+        protected override void DoCreateUX(TheFormInfo pForm)
+        {
+            base.DoCreateUX(pForm);
+            pForm.PropertyBag = new nmiCtrlFormView { MaxTileWidth = 12 };
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleCheck, 140, 2, 0x80, "Write to Console", "WriteToConsole", new nmiCtrlSingleCheck { ParentFld = 120, TileWidth = 3 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleCheck, 141, 2, 0x80, "Each Category in separate file", "EachCategoryInOwnFile", new nmiCtrlSingleCheck { ParentFld = 120, TileWidth = 3 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleCheck, 142, 2, 0x80, "Each day in a separate file", "EachDayInOwnFile", new nmiCtrlSingleCheck { ParentFld = 120, TileWidth = 3 });
+            //TODO: add log Details (LogFileLocation, MaxLength, MaxFiles, EachCategoryInOwnFile)
+
+            CreateLogTable(1000, 1);
+        }
+
+        public override bool LogEvent(TheEventLogData pItem)
+        {
+            if (!IsConnected)
+                return false;
+            return WriteLogToFile(pItem, true);
+        }
+
+        protected override void DoInit()
+        {
+            base.DoInit();
+            if (string.IsNullOrEmpty(Address))
+                Address = "EventLog";
+            MyLogFilesTableName = $"NodeBackups{TheThing.GetSafeThingGuid(MyBaseThing, "NODELOGS")}";
+            TheBaseEngine.WaitForStorageReadiness(OnStorageReady, true);
+        }
+
+        public override void Connect(TheProcessMessage pMsg)
+        {
+            if (IsConnected)
+                return;
+            IsConnected = true;
+            MyBaseThing.StatusLevel = 1;
+            MyBaseThing.LastMessage = $"Connected to Logger at {DateTimeOffset.Now}";
+
+            mLogFilePath = Address;
+            mMaxLogFileSize = (int)TheThing.GetSafePropertyNumber(MyBaseThing, "MaxLogFileSize");
+            mWriteToConsole = TheThing.GetSafePropertyBool(MyBaseThing, "WriteToConsole");
+            MyCurLog = TheThing.GetSafePropertyString(MyBaseThing, "LogFilePath");
+            mLogFileDate = TheThing.GetSafePropertyDate(MyBaseThing, "LogFileDate");
+            if (string.IsNullOrEmpty(MyCurLog) || (mLogFileDate!=DateTimeOffset.MinValue && mLogFileDate.Day!=DateTimeOffset.Now.Day))
+            {
+                LogFilePath = MyCurLog = TheCommonUtils.cdeFixupFileName(mLogFilePath + string.Format("\\LOG_{0:yyyMMdd_HHmmss}.txt", DateTime.Now));
+                LogFileDate = mLogFileDate = DateTimeOffset.Now;
+            }
+            TheCommonUtils.CreateDirectories(MyCurLog);
+            TheCDEngines.MyContentEngine.RegisterEvent(eEngineEvents.NewEventLogEntry, sinkNewEvent);
+
+#if !CDE_NET4 && !CDE_NET35
+            if (TheBaseAssets.MyCmdArgs?.ContainsKey("CreateEventLog") != true)
+            {
+                // CODE REVIEW: What is the purpose of this export?
+                var pipelineConfig = MyBaseThing.GetThingPipelineConfigurationAsync(false).Result;
+                if (pipelineConfig != null)
+                {
+                    var tWrite = TheCommonUtils.SerializeObjectToJSONString(pipelineConfig);
+                    TheCommonUtils.CreateDirectories(TheCommonUtils.cdeFixupFileName($"\\ConfigTemplates\\{MyBaseThing.FriendlyName}.cdeConfig"));
+                    using (System.IO.StreamWriter fs = new System.IO.StreamWriter(TheCommonUtils.cdeFixupFileName($"\\ConfigTemplates\\{MyBaseThing.FriendlyName}.cdeConfig"), false))
+                    {
+                        fs.Write(tWrite);
+                    }
+                }
+            }
+#endif
+        }
+
+        void sinkNewEvent(ICDEThing sender, object pLogEntry)
+        {
+            TheEventLogData pData = pLogEntry as TheEventLogData;
+            WriteLogToFile(pData, true);
+        }
+
+        private readonly object writeLock = new object();
+        private string mLogFilePath;
+        private DateTimeOffset mLogFileDate;
+        private int mMaxLogFileSize = 0;
+        private bool mWriteToConsole = false;
+        public string MyCurLog;
+
+        private bool WriteLogToFile(TheEventLogData pLogItem, bool WaitForLock)
+        {
+            if (pLogItem == null || string.IsNullOrEmpty(pLogItem.EventCategory))
+                return false;
+            if (mWriteToConsole)
+                Console.WriteLine($"{pLogItem.EventCategory} : {TheCommonUtils.GetDateTimeString(pLogItem.EventTime, -1)} : {pLogItem.EventName} : {pLogItem.EventString}");
+            if (string.IsNullOrEmpty(mLogFilePath) && string.IsNullOrEmpty(TheThing.GetSafePropertyString(MyBaseThing, "LogFilePath")))
+                return false;
+
+            if (EachCategoryInOwnFile)
+            {
+                //TODO: Tune with array of EventCategory Log file names
+                //MyCurLog = mLogFilePath + string.Format("\\{1}_{0:yyyMMdd_HHmmss}.txt", DateTime.Now,pLogItem.EventCategory);
+                //MyCurLog = TheCommonUtils.cdeFixupFileName(MyCurLog);
+                //TheCommonUtils.CreateDirectories(MyCurLog);
+            }
+            if (EachDayInOwnFile && mLogFileDate.Day != DateTimeOffset.Now.Day)
+            {
+                LogFilePath = MyCurLog = TheCommonUtils.cdeFixupFileName(mLogFilePath + string.Format("\\LOG_{0:yyyMMdd_HHmmss}.txt", DateTime.Now));
+                LogFileDate = mLogFileDate = DateTimeOffset.Now;
+            }
+            // ReSharper disable once EmptyEmbeddedStatement
+            if (WaitForLock) while (TheCommonUtils.cdeIsLocked(writeLock)) { TheCommonUtils.SleepOneEye(50, 50); }
+            if (!TheCommonUtils.cdeIsLocked(writeLock))
+            {
+                lock (writeLock)
+                {
+                    var bLogFileExists = System.IO.File.Exists(MyCurLog);
+                    if (mMaxLogFileSize > 0 && bLogFileExists)
+                    {
+                        try
+                        {
+                            System.IO.FileInfo f2 = new System.IO.FileInfo(MyCurLog);
+                            if (f2.Length > mMaxLogFileSize * (1024 * 1024))
+                            {
+                                MyCurLog = LogFilePath = TheCommonUtils.cdeFixupFileName(mLogFilePath + string.Format("\\LOG_{0:yyyMMdd_HHmmss}.txt", DateTime.Now));
+                                LogFileDate = mLogFileDate = DateTimeOffset.Now;
+                            }
+                        }
+                        catch
+                        {
+                            //ignored
+                        }
+                        bLogFileExists = System.IO.File.Exists(MyCurLog);
+                    }
+                    try
+                    {
+                        using (System.IO.StreamWriter fs = new System.IO.StreamWriter(MyCurLog, bLogFileExists))
+                        {
+                            if (EachCategoryInOwnFile)
+                                fs.WriteLine($"{pLogItem.EventTime} : {TheCommonUtils.GetDateTimeString(pLogItem.EventTime, -1)} : {pLogItem.EventString}");
+                            else
+                                fs.WriteLine($"{pLogItem.EventCategory} : {TheCommonUtils.GetDateTimeString(pLogItem.EventTime,-1)} : {pLogItem.EventName} : {pLogItem.EventString}");
+                        }
+                    }
+                    catch
+                    {
+                        //ignored
+                    }
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Path to the Log File
+        /// </summary>
+        [ConfigProperty(Generalize = false)]
+        public int MaxLogFileSize
+        {
+            get { return (int)TheThing.GetSafePropertyNumber(MyBaseThing, "MaxLogFileSize"); }
+            set
+            {
+                TheThing.SetSafePropertyNumber(MyBaseThing, "MaxLogFileSize", value);
+            }
+        }
+
+        [ConfigProperty(Generalize = false)]
+        public int MaxLogFiles
+        {
+            get { return (int)TheThing.GetSafePropertyNumber(MyBaseThing, "MaxLogFiles"); }
+            set
+            {
+                TheThing.SetSafePropertyNumber(MyBaseThing, "MaxLogFiles", value);
+            }
+        }
+
+
+        public string LogFilePath
+        {
+            get { return TheThing.GetSafePropertyString(MyBaseThing, "LogFilePath"); }
+            set
+            {
+                TheThing.SetSafePropertyString(MyBaseThing, "LogFilePath", value);
+                mLogFilePath = value;
+            }
+        }
+
+        /// <summary>
+        /// Path to the Log File
+        /// </summary>
+        public DateTimeOffset LogFileDate
+        {
+            get { return TheThing.GetSafePropertyDate(MyBaseThing, "LogFileDate"); }
+            set
+            {
+                TheThing.SetSafePropertyDate(MyBaseThing, "LogFileDate", value);
+                mLogFileDate = value;
+            }
+        }
+
+        [ConfigProperty(Generalize = false)]
+        public bool WriteToConsole
+        {
+            get { return TheThing.GetSafePropertyBool(MyBaseThing, "WriteToConsole"); }
+            set { TheThing.SetSafePropertyBool(MyBaseThing, "WriteToConsole", value); }
+        }
+
+        [ConfigProperty(Generalize = false)]
+        public bool EachCategoryInOwnFile
+        {
+            get { return TheThing.GetSafePropertyBool(MyBaseThing, "EachCategoryInOwnFile"); }
+            set { TheThing.SetSafePropertyBool(MyBaseThing, "EachCategoryInOwnFile", value); }
+        }
+
+        [ConfigProperty(Generalize = false)]
+        public bool EachDayInOwnFile
+        {
+            get { return TheThing.GetSafePropertyBool(MyBaseThing, "EachDayInOwnFile"); }
+            set { TheThing.SetSafePropertyBool(MyBaseThing, "EachDayInOwnFile", value); }
+        }
+
+        #region LogFile Viewer
+
+        private string MyLogFilesTableName = null;
+        private TheStorageMirror<TheBackupDefinition> MyLogFiles = null;
+
+        private void OnStorageReady(ICDEThing pThing, object para)
+        {
+            MyLogFiles = new TheStorageMirror<TheBackupDefinition>(TheCDEngines.MyIStorageService)
+            {
+                CacheTableName = MyLogFilesTableName,
+                IsRAMStore = true,
+                IsCachePersistent = false,
+                CacheStoreInterval = 0
+            };
+            MyLogFiles.RegisterEvent(eStoreEvents.StoreReady, sinkStorageReady);
+            MyLogFiles.RegisterEvent(eStoreEvents.DeleteRequested, sinkDeleteLog);
+            MyLogFiles.RegisterEvent(eStoreEvents.ReloadRequested, sinkStorageReady);
+            MyLogFiles.InitializeStore(false, false);
+        }
+
+        void sinkDeleteLog(StoreEventArgs pArgs)
+        {
+            Guid tPluginG = TheCommonUtils.CGuid(pArgs.Para);
+            if (tPluginG == Guid.Empty)
+                return;
+            var tPlugin = MyLogFiles.GetEntryByID(tPluginG);
+            if (tPlugin != null && File.Exists(tPlugin.FileName))
+                File.Delete(tPlugin.FileName);
+        }
+
+        void sinkStorageReady(StoreEventArgs pArgs)
+        {
+            string FileToReturn1 = TheCommonUtils.cdeFixupFileName(Address);
+            DirectoryInfo di = new DirectoryInfo(FileToReturn1);
+            List<TheFileInfo> tList = new List<TheFileInfo>();
+            TheISMManager.ProcessDirectory(di, ref tList, "", ".TXT", false, true);
+            MyLogFiles.MyMirrorCache.Clear(false);
+            foreach (TheFileInfo t in tList)
+                MyLogFiles.AddAnItem(new TheBackupDefinition() { FileName = t.FileName, Title = t.Name, BackupSize = t.FileSize, BackupTime = t.CreateTime });
+        }
+
+        private void CreateLogTable(int StartFld, int pParentFld)
+        {
+            TheFormInfo tBackup = TheNMIEngine.AddForm(new TheFormInfo(TheThing.GetSafeThingGuid(MyBaseThing, "BKUPFORM"), eEngineName.NMIService, "Log Files", MyLogFilesTableName) { GetFromServiceOnly = true, TileWidth = -1, OrderBy = "BackupTime desc", TileHeight = 4 });
+            TheNMIEngine.AddFields(tBackup, new List<TheFieldInfo>
+                {
+                {  new TheFieldInfo() { FldOrder=11,DataItem="BackupTime",Flags=0,Type=eFieldType.DateTime,Header="Log Create Date", FldWidth=2 }},
+                {  new TheFieldInfo() { FldOrder=12,DataItem="Title",Flags=0,Type=eFieldType.SingleEnded,Header="Log Name", FldWidth=7 }},
+                {  new TheFieldInfo() { FldOrder=13,DataItem="BackupSize",Flags=0,Type=eFieldType.SingleEnded,Header="Log Size",FldWidth=2 }},
+                {  new TheFieldInfo() { FldOrder=100,DataItem="CDE_DELETE",Flags=2,cdeA=0x80, Type=eFieldType.TileButton, TileWidth=1, TileHeight=1 }},
+                });
+            TheFieldInfo btnDownload = TheNMIEngine.AddSmartControl(MyBaseThing, tBackup, eFieldType.TileButton, 1, 2, 0x0, "<i class='fa fa-3x'>&#xf019;</i>", "", new nmiCtrlTileButton() { ClassName = "cdeTableButton", TileHeight = 1, TileWidth = 1 });
+            btnDownload.RegisterUXEvent(MyBaseThing, eUXEvents.OnClick, "DOWNLOAD", (pThing, pObj) =>
+            {
+                TheProcessMessage pMsg = pObj as TheProcessMessage;
+                if (pMsg?.Message == null) return;
+
+                string[] pCmds = pMsg.Message.PLS.Split(':');
+                if (pCmds.Length > 2)
+                {
+                    TheBackupDefinition tFile = MyLogFiles.GetEntryByID(TheCommonUtils.CGuid(pCmds[2]));
+                    if (tFile != null)
+                    {
+                        TSM tFilePush = new TSM(eEngineName.ContentService, string.Format("CDE_FILE:{0}.txt:text/text", tFile.Title));
+                        try
+                        {
+                            using (FileStream fr = new FileStream(tFile.FileName, FileMode.Open))
+                            {
+                                using (BinaryReader br = new BinaryReader(fr))
+                                {
+                                    tFilePush.PLB = br.ReadBytes((int)fr.Length);
+                                }
+                            }
+                        }
+                        catch (Exception)
+                        { }
+                        if (tFilePush.PLB == null)
+                            TheCommCore.PublishToOriginator(pMsg.Message, new TSM(eEngineName.NMIService, "NMI_TOAST", "Log cannot be downloaded..."));
+                        else
+                        {
+                            TheCommCore.PublishToOriginator(pMsg.Message, new TSM(eEngineName.NMIService, "NMI_TOAST", "Log is downloading. Please wait"));
+                            tFilePush.SID = pMsg.Message.SID;
+                            tFilePush.PLS = "bin";
+                            TheCommCore.PublishToOriginator(pMsg.Message, tFilePush);
+                        }
+                    }
+                }
+            });
+
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.CollapsibleGroup, StartFld, 2, 0x0, "Logs on Node...", null, new nmiCtrlCollapsibleGroup { TileWidth = 12, IsSmall = true, DoClose = true, ParentFld = pParentFld, AllowHorizontalExpand = true, MaxTileWidth = 12 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Table, StartFld + 1, 0, 0, null, tBackup.cdeMID.ToString(), new nmiCtrlTableView { TileWidth = -1, IsDivOnly = true, ParentFld = StartFld, NoTE = true, TileHeight = -1, MID = TheThing.GetSafeThingGuid(MyBaseThing, "LOGMID"), MainClassName = "cdeInFormTable" });
+        }
+        #endregion
+    }
+}

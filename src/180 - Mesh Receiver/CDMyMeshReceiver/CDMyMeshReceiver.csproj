@@ -1,0 +1,69 @@
+<!--
+ SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+ SPDX-License-Identifier: MPL-2.0
+ -->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
+    <AssemblyName>CDMyMeshReceiver</AssemblyName>
+    <RootNamespace>CDMyMeshReceiver</RootNamespace>
+    <PackageId>CDMyMeshSender</PackageId>
+    <Version>4.212.0</Version>
+    <Authors>Markus Horstmann</Authors>
+    <Company>C-Labs</Company>
+    <Product>CDMyMeshReceiver for $(TargetFramework)$(cdeDebugProductSuffix)</Product>
+    <Copyright>Copyright © 2015-2020 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
+  </PropertyGroup>
+
+  <Choose>
+    <When Condition="'$(TargetFramework)'=='netstandard2.0'">
+      <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <DefineConstants>TRACE;DEBUG;NETSTANDARD2_0;CDE_STANDARD;CDE_SYSLOG</DefineConstants>
+      </PropertyGroup>
+
+      <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <DefineConstants>TRACE;RELEASE;NETSTANDARD2_0;CDE_STANDARD;CDE_SYSLOG</DefineConstants>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(TargetFramework)'=='net45'">
+      <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <DefineConstants>TRACE;DEBUG;CDE_NET45;CDE_SYSLOG</DefineConstants>
+      </PropertyGroup>
+
+      <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <DefineConstants>TRACE;RELEASE;CDE_NET45;CDE_SYSLOG</DefineConstants>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+      </PropertyGroup>
+    </When>
+  </Choose>
+
+  <ItemGroup>
+    <PackageReference Include="C-DEngine" Version="5.*" />
+    <PackageReference Include="cdeSenderBaseShared" Version="5.*" Label="Shared" />
+  </ItemGroup>
+
+<!--
+  <Import Project="..\..\..\sdk\144 - TheCommonMessageContracts\TheCommonMessageContracts\TheCommonMessageContracts.projitems" Label="Shared" />
+
+  <Import Project="..\..\..\sdk\078 - CDMyOPCUAClient\APIs\MyOPCUAClientContracts\MyOPCUAClientContracts.projitems" Label="Shared" />
+
+  <Import Project="..\....\sdk\\095 - CDMyCloudServices\MyCloudServicesAPI\MyCloudServicesAPI\MyCloudServicesAPI.projitems" Label="Shared" />
+
+  <Import Project="..\..\..\sdk\185 - SenderAndReceiverBase\TheSenderBase\TheSenderBase.projitems" Label="Shared" />
+
+  <Import Project="..\..\..\sdk\185 - SenderAndReceiverBase\TheReceiverBase\TheReceiverBase.projitems" Label="Shared" />
+
+  <Import Project="..\..\..\sdk\185 - SenderAndReceiverBase\TheConnectionBase\TheConnectionBase.projitems" Label="Shared" />
+
+  <Import Project="..\..\..\sdk\185 - SenderAndReceiverBase\TheEventConverters\TheEventConverters.projitems" Label="Shared" />
+
+  <Import Project="..\..\..\sdk\185 - SenderAndReceiverBase\TheThingMatcher\TheThingMatcher.projitems" Label="Shared" />
+-->
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="call &quot;$(ProjectDir)..\..\..\BuildTools\signandpackage.cmd&quot; &quot;$(ProjectDir)&quot; &quot;$(TargetDir)&quot; &quot;$(TargetFileName)&quot;" />
+  </Target>
+
+</Project>

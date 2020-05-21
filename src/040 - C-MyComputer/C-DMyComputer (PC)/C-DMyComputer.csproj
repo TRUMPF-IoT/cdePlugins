@@ -1,0 +1,45 @@
+<!--
+ SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+ SPDX-License-Identifier: MPL-2.0
+ -->
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net45</TargetFrameworks>
+    <Version>4.302.0</Version>
+    <Authors>Chris Muench</Authors>
+    <Company>C-Labs</Company>
+    <Product>C-DMyComputer</Product>
+    <Description>Computer Vitals for the C-DEngine</Description>
+    <Copyright>Copyright © 2017-2020 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <ProjectName>$(Product).$(TargetFramework)</ProjectName>
+    <DefineConstants>TRACE;CDE_SYSLOG;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="ClientBin\images\iconComputerGlow.png" />
+    <EmbeddedResource Include="ClientBin\images\iconComputerRest.png" />
+    
+    <!-- dotnet nuget doesn't properly apply embedded resources from referenced packages: add them explicitly -->
+    <EmbeddedResource Include="$(PkgCDESensorTemplateShared)\contentFiles\any\$(TargetFramework)\ClientBin\SENSORS\CSS\SensorsDark.min.css" Link="ClientBin\SENSORS\CSS\SensorsDark.min.css" />
+    <EmbeddedResource Include="$(PkgCDESensorTemplateShared)\contentFiles\any\$(TargetFramework)\ClientBin\SENSORS\CSS\SensorsLite.min.css" Link="ClientBin\SENSORS\CSS\SensorsLite.min.css" />
+    <EmbeddedResource Include="$(PkgCDESensorTemplateShared)\contentFiles\any\$(TargetFramework)\ClientBin\SENSORS\CSS\SensorStyles.min.css" Link="ClientBin\SENSORS\CSS\SensorStyles.min.css" />
+    <EmbeddedResource Include="$(PkgCDESensorTemplateShared)\contentFiles\any\$(TargetFramework)\ClientBin\SENSORS\Images\SensorLogo_156x78.png" Link="ClientBin\Images\SensorLogo_156x78.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="C-DEngine" Version="5.*" />
+    <PackageReference Include="cdeSensorTemplateShared" Version="5.*" GeneratePathProperty="true">
+      <!--<ExcludeAssets>contentFiles</ExcludeAssets>--> <!-- Uncomment to use the DLL instead of source code-->
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
+    <PackageReference Include="System.Management">
+      <Version>4.7.0</Version>
+    </PackageReference>
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="call &quot;$(ProjectDir)..\..\..\BuildTools\signandpackage.cmd&quot; &quot;$(ProjectDir)&quot; &quot;$(TargetDir)&quot; &quot;$(TargetFileName)&quot;" />
+  </Target>
+</Project>

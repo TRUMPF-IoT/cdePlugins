@@ -1,0 +1,59 @@
+<!--
+ SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+ SPDX-License-Identifier: MPL-2.0
+ -->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net45;net40</TargetFrameworks>
+      <!-- Does NOT work on net4 due to missing Sync Lib -->
+    <Authors>Chris Muench</Authors>
+    <Company>C-Labs</Company>
+    <Description>Visitor Log for ($(TargetFramework))</Description>
+    <Copyright>Copyright © 2017-2020 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <Version>4.302.1</Version>
+    <AssemblyName>C-DMyVisitorLog</AssemblyName>
+    <!-- Workaround for placing each DLL into a separate directory when using msbuild's GenerateProjectSpecificOutputFolder -->
+    <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;NETSTANDARD2_0;CDE_SYSLOG</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;RELEASE;NETSTANDARD2_0;CDE_SYSLOG</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="obj\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <None Remove="obj\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ClientBin\Scripts\CreateFootprints.cdescript" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="ClientBin\Scripts\CreateFootprints.cdescript" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="C-DEngine" Version="5.*" />
+    <!--<ProjectReference Include="..\..\025 - C-DEngine\C-DEngine\C-DEngine.csproj" />-->
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="call &quot;$(ProjectDir)..\..\..\BuildTools\signandpackage.cmd&quot; &quot;$(ProjectDir)&quot; &quot;$(TargetDir)&quot; &quot;$(TargetFileName)&quot;" />
+  </Target>
+
+</Project>

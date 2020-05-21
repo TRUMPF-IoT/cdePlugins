@@ -1,0 +1,93 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29905.134
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDMyMeshSender", "179 - Mesh Sender\CDMyMeshSender\CDMyMeshSender.csproj", "{38CC1070-FD41-40B0-99A0-27BC7C1929B7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDMyMeshReceiver", "180 - Mesh Receiver\CDMyMeshReceiver\CDMyMeshReceiver.csproj", "{58B19F93-07C5-42BD-A6E1-88B896F743CD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDMyThingProvisioning", "175 - ThingProvisioning\CDMyThingProvisioning\CDMyThingProvisioning.csproj", "{E182D68F-D6A5-4BFA-A537-1954E9E7DBD2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDMyPrometheusExporter", "188 - PrometheusExporter\CDMyPrometheusExporter\CDMyPrometheusExporter.csproj", "{AE2B88F8-0B5E-470D-802B-8D6770C4B60C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "C-DMyComputer", "040 - C-MyComputer\C-DMyComputer (PC)\C-DMyComputer.csproj", "{AE86FB00-191C-40A5-929D-3E0F62B62D1D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "C-DMyVThings", "066 - C-MyVThings\C-DMyVThings\C-DMyVThings.csproj", "{11BFE5F8-3102-4868-8393-8D9C2BCF9369}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "C-DMyVisitorLog", "103 - CMyVisitorLog\C-DMyVisitorLog\C-DMyVisitorLog.csproj", "{DD82C159-3F12-46BD-A16D-15D0B9BE64A2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDMyLogger", "178 - External Logger\CDMyLogger\CDMyLogger.csproj", "{D8D5EC07-21AE-44D2-90E9-5C692A3ADAF8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Licenses", "_Licenses", "{F35DC658-36F9-4B60-9631-92F6C807FE85}"
+	ProjectSection(SolutionItems) = preProject
+		..\.reuse\dep5 = ..\.reuse\dep5
+		..\LICENSE = ..\LICENSE
+		..\LICENSES\MPL-2.0.txt = ..\LICENSES\MPL-2.0.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Build", "_Build", "{D8C22184-8D50-440E-AFA0-2090A6A6AC98}"
+	ProjectSection(SolutionItems) = preProject
+		..\.gitignore = ..\.gitignore
+		..\Directory.Build.props = ..\Directory.Build.props
+		..\Directory.Build.targets = ..\Directory.Build.targets
+		..\.github\workflows\dotnetcore.yml = ..\.github\workflows\dotnetcore.yml
+		..\GitVersion.yml = ..\GitVersion.yml
+		..\NuGet.config = ..\NuGet.config
+		..\BuildTools\README.md = ..\BuildTools\README.md
+		..\BuildTools\SignAndPackage.cmd = ..\BuildTools\SignAndPackage.cmd
+		..\BuildTools\SignAndPackageS.cmd = ..\BuildTools\SignAndPackageS.cmd
+		..\BuildTools\signMeSha.bat = ..\BuildTools\signMeSha.bat
+		..\BuildTools\signtool.exe = ..\BuildTools\signtool.exe
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Readme", "_Readme", "{1637ECB6-2E63-46DA-97EF-E4C0718305E7}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{38CC1070-FD41-40B0-99A0-27BC7C1929B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38CC1070-FD41-40B0-99A0-27BC7C1929B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38CC1070-FD41-40B0-99A0-27BC7C1929B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38CC1070-FD41-40B0-99A0-27BC7C1929B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58B19F93-07C5-42BD-A6E1-88B896F743CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58B19F93-07C5-42BD-A6E1-88B896F743CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58B19F93-07C5-42BD-A6E1-88B896F743CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58B19F93-07C5-42BD-A6E1-88B896F743CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E182D68F-D6A5-4BFA-A537-1954E9E7DBD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E182D68F-D6A5-4BFA-A537-1954E9E7DBD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E182D68F-D6A5-4BFA-A537-1954E9E7DBD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E182D68F-D6A5-4BFA-A537-1954E9E7DBD2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE2B88F8-0B5E-470D-802B-8D6770C4B60C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE2B88F8-0B5E-470D-802B-8D6770C4B60C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE2B88F8-0B5E-470D-802B-8D6770C4B60C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE2B88F8-0B5E-470D-802B-8D6770C4B60C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE86FB00-191C-40A5-929D-3E0F62B62D1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE86FB00-191C-40A5-929D-3E0F62B62D1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE86FB00-191C-40A5-929D-3E0F62B62D1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE86FB00-191C-40A5-929D-3E0F62B62D1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11BFE5F8-3102-4868-8393-8D9C2BCF9369}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11BFE5F8-3102-4868-8393-8D9C2BCF9369}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11BFE5F8-3102-4868-8393-8D9C2BCF9369}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11BFE5F8-3102-4868-8393-8D9C2BCF9369}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD82C159-3F12-46BD-A16D-15D0B9BE64A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD82C159-3F12-46BD-A16D-15D0B9BE64A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD82C159-3F12-46BD-A16D-15D0B9BE64A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD82C159-3F12-46BD-A16D-15D0B9BE64A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8D5EC07-21AE-44D2-90E9-5C692A3ADAF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8D5EC07-21AE-44D2-90E9-5C692A3ADAF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8D5EC07-21AE-44D2-90E9-5C692A3ADAF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8D5EC07-21AE-44D2-90E9-5C692A3ADAF8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {65B36CB7-1C08-480C-96F5-F480F39A709F}
+	EndGlobalSection
+EndGlobal

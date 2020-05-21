@@ -1,0 +1,58 @@
+<!--
+ SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+ SPDX-License-Identifier: MPL-2.0
+ -->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net45;net35</TargetFrameworks>
+    <AssemblyName>CDMyMeshSender</AssemblyName>
+    <RootNamespace>CDMyMeshSender</RootNamespace>
+    <PackageId>CDMyMeshSender</PackageId>
+    <Version>4.212.0</Version>
+    <Authors>Markus Horstmann</Authors>
+    <Company>C-Labs</Company>
+    <Product>CDMyMeshSender .Net Standard 2.0</Product>
+    <Copyright>Copyright © 2015-2020 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;NETSTANDARD2_0;CDE_STANDARD;CDE_SYSLOG</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;RELEASE;NETSTANDARD2_0;CDE_STANDARD;CDE_SYSLOG</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="C-DEngine" Version="5.*" />
+    <PackageReference Include="cdeSenderBaseShared" Version="5.*" Label="Shared" PrivateAssets="all" />
+    <PackageReference Include="jnm2.ReferenceAssemblies.net35" Version="1.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <!--<Import Project="..\..\144 - TheCommonMessageContracts\TheCommonMessageContracts\TheCommonMessageContracts.projitems" Label="Shared" />
+
+  <Import Project="..\..\078 - CDMyOPCUAClient\APIs\MyOPCUAClientContracts\MyOPCUAClientContracts.projitems" Label="Shared" />
+
+  <Import Project="..\..\095 - CDMyCloudServices\MyCloudServicesAPI\MyCloudServicesAPI\MyCloudServicesAPI.projitems" Label="Shared" />-->
+
+  <!-- <Import Project="..\..\185 - SenderAndReceiverBase\TheSenderBase\TheSenderBase.projitems" Label="Shared" /> -->
+
+  <!--<Import Project="..\..\185 - SenderAndReceiverBase\TheReceiverBase\TheReceiverBase.projitems" Label="Shared" />
+
+  <Import Project="..\..\185 - SenderAndReceiverBase\TheConnectionBase\TheConnectionBase.projitems" Label="Shared" />
+
+  <Import Project="..\..\185 - SenderAndReceiverBase\TheEventConverters\TheEventConverters.projitems" Label="Shared" />
+
+  <Import Project="..\..\185 - SenderAndReceiverBase\TheThingMatcher\TheThingMatcher.projitems" Label="Shared" />-->
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="call &quot;$(ProjectDir)..\..\..\BuildTools\signandpackage.cmd&quot; &quot;$(ProjectDir)&quot; &quot;$(TargetDir)&quot; &quot;$(TargetFileName)&quot;" />
+  </Target>
+
+</Project>

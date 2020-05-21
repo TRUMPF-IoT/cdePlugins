@@ -1,0 +1,45 @@
+{
+  // SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+  // SPDX-License-Identifier: MPL-2.0
+  "Name": "Create Mesh Receiver",
+  "Steps":
+  [
+    {
+      "FriendlyName": "Create Mesh Receiver",
+      "Condition": "!%APP:DoNotCreateMeshReceiver%",
+      "Message":
+      {
+        "MessageName": "MsgCreateThingRequestV1", //"nsCDEngine.Engines.ThingService.TheThingRegistry+MsgCreateThingRequestV1, C-DEngine, Version=4.0.6488.22999, Culture=neutral, PublicKeyToken=null",
+        "Target":
+        {
+          "EngineName": "CDMyMeshReceiver.MeshReceiverService"
+        },
+        "Parameters":
+        {
+          "CreateIfNotExist": true,
+          "DoNotModifyIfExists": true,
+          "OwnerAddress":
+          {
+            "ThingMID": "65E781FD-126C-4FA2-B8F4-1E68D4804957"
+          },
+          "Hidden": false,
+          "ReadOnly": false,
+          "EngineName": "CDMyMeshReceiver.MeshReceiverService",
+          "DeviceType": "Mesh Receiver",
+          "Address": "",
+          "InstanceId": "5CEE3595-BA09-48F8-865C-B0F5FB0ED478",
+          "FriendlyName": "Mesh Receiver",
+          "Properties":
+          {
+            "AutoConnect": true
+          }
+        },
+        "outputs":
+        {
+          "ThingAddress": "MeshReceiverAddress"
+        }
+      }
+    }
+  ]
+}
+

@@ -1,0 +1,156 @@
+{
+  // SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+  // SPDX-License-Identifier: MPL-2.0
+  "Steps": [
+    {
+      "Condition": "%APP:CreatePrometheusExporter%",
+      "Message": {
+        "MessageName": "MsgCreateThingRequestV1",
+        "Target": {
+          "EngineName": "CDMyPrometheusExporter.PrometheusExporterService"
+        },
+        "Parameters": {
+          "CreateIfNotExist": true,
+          "DoNotModifyIfExists": false,
+          "OwnerAddress": {
+            "ThingMID": "FD49400C-9BBB-45F1-95E6-E9A6C89B6ABE"
+          },
+          "Hidden": false,
+          "ReadOnly": false,
+          "EngineName": "CDMyPrometheusExporter.PrometheusExporterService",
+          "DeviceType": "Prometheus Exporter",
+          "Address": "%APP:PrometheusUrl%",
+          "InstanceId": "180FFB32-F8DD-4DC0-B0CF-1668C847EF7A",
+          "FriendlyName": "Default Prometheus Exporter",
+          "Properties": {
+            "AutoConnect": true
+          }
+        },
+        "outputs": {
+          "ThingAddress": "DefaultPrometheusExporter"
+        }
+      }
+    },
+    {
+      "Condition": "%APP:CreatePrometheusExporter%",
+      "RetryCount": -1,
+      "Message": {
+        "MessageName": "MsgAddThingsToPublish",
+        "Target": {
+          "EngineName": "%DefaultPrometheusExporter%"
+        },
+        "Parameters": {
+          "Things": [
+            {
+              "cdeMID": "53801662-6DAB-4D3A-9C53-4357413F81EF",
+              "EngineName": "",
+              "DeviceType": "ApplicationHost",
+              "PropertiesIncluded": [
+                "QSenders;cde_qs_count",
+                "QSenderInRegistry;cde_qs_inregistry",
+                "QSReceivedTSM;cde_qs_tsm_received",
+                "QSSendErrors;cde_qs_tsm_send_errors",
+                "QSInserted;cde_qs_tsm_inserted",
+                "QSQueued;cde_qs_tsm_queued",
+                "QSConnects;cde_qs_connects",
+                "QSDisconnects;cde_qs_disconnects",
+                "QSRejected;cde_qs_tsm_rejected",
+                "QSNotRelayed;cde_qs_notrelayed",
+                "QSSent;cde_qs_tsm_sent",
+                "QKBReceived;cde_qs_kb_received",
+                "QSSETPRejected;cde_qs_tsm_setp_rejected",
+                "QSCompressedPLS;cde_qs_tsm_compressed",
+                "EngineErrors;cde_engine_errors",
+                "EventTimeouts;cde_event_timeouts",
+                "CCTSMsRelayed;cde_connects_relayed",
+                "CCTSMsReceived;cde_connects_received",
+                "CCTSMsEvaluated;cde_connects_evaluated",
+                "SeenBeforeCount;cde_tsm_seen_before",
+                "KPI1;cde_kpi01",
+                "KPI2;cde_kpi02",
+                "KPI3;cde_kpi03",
+                "KPI4;cde_kpi04",
+                "KPI5;cde_kpi05",
+                "KPI6;cde_kpi06",
+                "KPI7;cde_kpi07",
+                "KPI8;cde_kpi08",
+                "KPI9;cde_kpi09",
+                "KPI10;cde_kpi10",
+                "UniqueMeshes;cde_uniquemeshes",
+                "TSMbyENG-ContentService;cde_tsmeng_contentservice",
+                "TSMbyENG-NMIService;cde_tsmeng_NMIService",
+                "TSMbyENG-CDEPUBSUB;cde_tsmeng_CDEPUBSUB"
+                //"!TSMbyENG-.*(?<!Total)$"
+              ],
+              "TargetType": "gauge",
+              "PartitionKey": "NodeId,FriendlyName"
+            },
+            {
+              "cdeMID": "0961DDA9-5DED-4369-BF80-1265CAEBE8FE",
+              "EngineName": "",
+              "DeviceType": "ApplicationHost",
+              "PropertiesIncluded": [
+                "QSReceivedTSMTotal;cde_qs_tsm_received_total",
+                "QSSendErrorsTotal;cde_qs_tsm_send_errors_total",
+                "QSInsertedTotal;cde_qs_tsm_inserted_total",
+                "QSQueuedTotal;cde_qs_tsm_queued_total",
+                "QSConnectsTotal;cde_qs_connects_total",
+                "QSDisconnectsTotal;cde_qs_disconnects_total",
+                "QSRejectedTotal;cde_qs_tsm_rejected_total",
+                "QSSentTotal;cde_qs_tsm_sent_total",
+                "QKBReceivedTotal;cde_qs_kb_received_total",
+                "QSCompressedPLSTotal;cde_qs_tsm_compressed_total",
+                "TotalEngineErrors;cde_engine_errors_total",
+                "TotalEventTimeouts;cde_event_timeouts_total",
+                "CCTSMsRelayedTotal;cde_connects_relayed_total",
+                "CCTSMsReceivedTotal;cde_connects_received_total",
+                "CCTSMsEvaluatedTotal;cde_connects_evaluated_total",
+                "SeenBeforeCountTotal;cde_tsm_seen_before_total",
+                "KPI1Total;cde_kpi01_total",
+                "KPI2Total;cde_kpi02_total",
+                "KPI3Total;cde_kpi03_total",
+                "KPI4Total;cde_kpi04_total",
+                "KPI5Total;cde_kpi05_total",
+                "KPI6Total;cde_kpi06_total",
+                "KPI7Total;cde_kpi07_total",
+                "KPI8Total;cde_kpi08_total",
+                "KPI9Total;cde_kpi09_total",
+                "KPI10Total;cde_kpi10_total",
+                "TSMbyENG-ContentServiceTotal;cde_tsmeng_contentservice_total",
+                "TSMbyENG-NMIServiceTotal;cde_tsmeng_NMIService_total",
+                "TSMbyENG-CDEPUBSUBTotal;cde_tsmeng_CDEPUBSUB_total"
+                //"!TSMbyENG-.*Total"
+              ],
+              "TargetType": "counter",
+              "PartitionKey": "NodeId,FriendlyName"
+            },
+            {
+              "cdeMID": "B63A4816-3A03-4470-948D-DA1B2B103A12",
+              "EngineName": "CDMyComputer.TheCDMyComputerEngine",
+              "DeviceType": "PC-Health",
+              "PropertiesIncluded": [
+                "RAMAvailable;cde_cmc_ramavailable",
+                "PCUptime;cde_cmc_pcuptime",
+                "CPULoad;cde_cmc_cpuload",
+                "CPUTemp;cde_cmc_cputemp",
+                "CPUSpeed;cde_cmc_cpuspeed",
+                "cdeLoad;cde_cmc_cdeload",
+                "cdeHandles;cde_cmc_cdehandles",
+                "cdeWorkingSetSize;cde_cmc_cdeworkingsetsize",
+                "cdeThreadCount;cde_cmc_cdethreadcount",
+                "StationWatts;cde_cmc_stationwatts",
+                "NetRead;cde_cmc_netread",
+                "NetWrite;cde_cmc_netwrite"
+              ],
+              "TargetType": "gauge",
+              "PartitionKey": "NodeId,FriendlyName"
+            }
+          ]
+        },
+        "outputs": {
+          "*": "AddPrometheusResponse"
+        }
+      }
+    }
+  ]
+}

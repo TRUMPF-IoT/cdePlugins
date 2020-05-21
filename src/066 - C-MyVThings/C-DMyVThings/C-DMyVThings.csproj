@@ -1,0 +1,50 @@
+<!--
+ SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+ SPDX-License-Identifier: MPL-2.0
+ -->
+<Project Sdk="Microsoft.NET.Sdk"> 
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net45;net40</TargetFrameworks>
+      <Version>4.302.1</Version>
+      <Authors>Chris Muench</Authors>
+      <Company>C-Labs</Company>
+      <Product>C-DMyVThings</Product>
+      <Description>Virtual Things for the C-DEngine</Description>
+      <Copyright>Copyright © 2017-2020 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+      <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
+      <DefineConstants>CDE_SYSLOG;TRACE;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="ViewModel\mssOptionUAServer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ClientBin\P066\pages\MMVSFaceA.html" />
+    <None Remove="ClientBin\P066\pages\VSFaceA.html" />
+    <None Remove="ClientBin\P066\pages\VSFaceB.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="ClientBin\P066\css\SensorTileStyle.min.css" />
+    <EmbeddedResource Include="ClientBin\P066\images\iconVThingsGlow.png" />
+    <EmbeddedResource Include="ClientBin\P066\images\iconVThingsRest.png" />
+    <EmbeddedResource Include="ClientBin\P066\pages\VSFaceA.html" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net40'">
+    <PackageReference Include="AsyncBridge" Version="0.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="C-DEngine" Version="5.*" />
+    <PackageReference Include="cdeCSVFileParserShared" Version="5.*" />
+    <PackageReference Include="cdeMeshManagerContractsShared" Version="5.*" />
+    <PackageReference Include="cdeSenderBaseShared" Version="5.*" />
+    <PackageReference Include="cdeSensorTemplateShared" Version="5.*" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="call &quot;$(ProjectDir)..\..\..\BuildTools\signandpackage.cmd&quot; &quot;$(ProjectDir)&quot; &quot;$(TargetDir)&quot; &quot;$(TargetFileName)&quot;&#xD;&#xA;" />
+  </Target>
+</Project>

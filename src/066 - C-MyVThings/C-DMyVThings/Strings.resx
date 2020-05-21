@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="VirtualThings974671" xml:space="preserve">
+    <value>Virtual Things</value>
+  </data>
+  <data name="Thispluginhostsmanydifferentfunctionsandothervirtualdevices333476" xml:space="preserve">
+    <value>This plug-in hosts many different functions and other virtual devices</value>
+  </data>
+  <data name="CLabs333476" xml:space="preserve">
+    <value>C-Labs</value>
+  </data>
+  <data name="httpwwwclabscom333476" xml:space="preserve">
+    <value>http://www.c-labs.com</value>
+  </data>
+  <data name="VirtualThings692281" xml:space="preserve">
+    <value>Virtual Things</value>
+  </data>
+  <data name="AddnewVThing528661" xml:space="preserve">
+    <value>Add new V-Thing</value>
+  </data>
+  <data name="VThingsList887466" xml:space="preserve">
+    <value>V-Things List</value>
+  </data>
+  <data name="Disable723846" xml:space="preserve">
+    <value>Disable</value>
+  </data>
+  <data name="IsActive82651" xml:space="preserve">
+    <value>Is Active</value>
+  </data>
+  <data name="Name82651" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="CurrentValue636641" xml:space="preserve">
+    <value>Current Value</value>
+  </data>
+  <data name="VThingType995446" xml:space="preserve">
+    <value>V-Thing Type</value>
+  </data>
+  <data name="SettheVThingTypeofthistag995446" xml:space="preserve">
+    <value>Set the VThing-Type of this tag</value>
+  </data>
+  <data name="NMIControlType831825" xml:space="preserve">
+    <value>NMI Control Type</value>
+  </data>
+  <data name="Flags190631" xml:space="preserve">
+    <value>Flags</value>
+  </data>
+  <data name="NewPropertyName27010" xml:space="preserve">
+    <value>New Property Name</value>
+  </data>
+  <data name="AllProperties27010" xml:space="preserve">
+    <value>All Properties...</value>
+  </data>
+  <data name="BaseSettings385815" xml:space="preserve">
+    <value>Base Settings...</value>
+  </data>
+  <data name="NMIScreen744620" xml:space="preserve">
+    <value>NMI Screen</value>
+  </data>
+  <data name="NMISettings581000" xml:space="preserve">
+    <value>NMI Settings...</value>
+  </data>
+  <data name="AddProperty939805" xml:space="preserve">
+    <value>Add Property</value>
+  </data>
+  <data name="Loading601774" xml:space="preserve">
+    <value>Loading...</value>
+  </data>
+  <data name="Countdown601774" xml:space="preserve">
+    <value>Countdown</value>
+  </data>
+  <data name="Countdown438154" xml:space="preserve">
+    <value>Countdown</value>
+  </data>
+  <data name="Settings796959" xml:space="preserve">
+    <value>Settings...</value>
+  </data>
+  <data name="Trigger796959" xml:space="preserve">
+    <value>Trigger</value>
+  </data>
+  <data name="StartValue633339" xml:space="preserve">
+    <value>Start Value</value>
+  </data>
+  <data name="Ticktimeinms633339" xml:space="preserve">
+    <value>Tick time in ms</value>
+  </data>
+  <data name="ContinueonRestart992144" xml:space="preserve">
+    <value>Continue on Restart</value>
+  </data>
+  <data name="StartOverwhenzero992144" xml:space="preserve">
+    <value>Start Over when zero</value>
+  </data>
+  <data name="DataGenerator350949" xml:space="preserve">
+    <value>Data-Generator</value>
+  </data>
+  <data name="Properties187329" xml:space="preserve">
+    <value>Properties</value>
+  </data>
+  <data name="NumberProperties187329" xml:space="preserve">
+    <value>Number Properties</value>
+  </data>
+  <data name="PropertiesperSecond546134" xml:space="preserve">
+    <value>Properties per Second</value>
+  </data>
+  <data name="Propertycount904939" xml:space="preserve">
+    <value>Property count</value>
+  </data>
+  <data name="Frequencyms741318" xml:space="preserve">
+    <value>Frequency (ms)</value>
+  </data>
+  <data name="ResetCounter741318" xml:space="preserve">
+    <value>Reset Counter</value>
+  </data>
+  <data name="AllProperties100123" xml:space="preserve">
+    <value>All Properties</value>
+  </data>
+  <data name="DataVerifier936503" xml:space="preserve">
+    <value>Data-Verifier</value>
+  </data>
+  <data name="Properties295308" xml:space="preserve">
+    <value>Properties</value>
+  </data>
+  <data name="NumberProperties295308" xml:space="preserve">
+    <value>Number Properties</value>
+  </data>
+  <data name="ThingforPropertySubs849298" xml:space="preserve">
+    <value>Thing for Property Subs</value>
+  </data>
+  <data name="PropertiesperSecond849298" xml:space="preserve">
+    <value>Properties per Second</value>
+  </data>
+  <data name="Propertycounter208103" xml:space="preserve">
+    <value>Property counter</value>
+  </data>
+  <data name="MinimumLatencyms44483" xml:space="preserve">
+    <value>Minimum Latency (ms)</value>
+  </data>
+  <data name="MaximLatencyms44483" xml:space="preserve">
+    <value>Maxim Latency (ms)</value>
+  </data>
+  <data name="Reload403288" xml:space="preserve">
+    <value>Reload</value>
+  </data>
+  <data name="MemoryTags239667" xml:space="preserve">
+    <value>Memory-Tags</value>
+  </data>
+  <data name="Properties239667" xml:space="preserve">
+    <value>Properties</value>
+  </data>
+  <data name="AmountProperties598472" xml:space="preserve">
+    <value>Amount Properties</value>
+  </data>
+  <data name="Reload598472" xml:space="preserve">
+    <value>Reload</value>
+  </data>
+  <data name="AllProperties957277" xml:space="preserve">
+    <value>All Properties</value>
+  </data>
+  <data name="NMIElements957277" xml:space="preserve">
+    <value>NMI Elements</value>
+  </data>
+  <data name="Settings793657" xml:space="preserve">
+    <value>Settings...</value>
+  </data>
+  <data name="AllProperties152462" xml:space="preserve">
+    <value>All Properties</value>
+  </data>
+  <data name="Source152462" xml:space="preserve">
+    <value>Source...</value>
+  </data>
+  <data name="SourceThing511267" xml:space="preserve">
+    <value>Source Thing</value>
+  </data>
+  <data name="SourceProperty511267" xml:space="preserve">
+    <value>Source Property</value>
+  </data>
+  <data name="ControlType347647" xml:space="preserve">
+    <value>Control Type</value>
+  </data>
+  <data name="NMIScreen347647" xml:space="preserve">
+    <value>NMI Screen</value>
+  </data>
+  <data name="Flags706452" xml:space="preserve">
+    <value>Flags</value>
+  </data>
+  <data name="Reload542832" xml:space="preserve">
+    <value>Reload</value>
+  </data>
+  <data name="Timer542832" xml:space="preserve">
+    <value>Timer</value>
+  </data>
+  <data name="TriggerCnt901637" xml:space="preserve">
+    <value>Trigger Cnt</value>
+  </data>
+  <data name="Settings901637" xml:space="preserve">
+    <value>Settings...</value>
+  </data>
+  <data name="MstoTrigger260442" xml:space="preserve">
+    <value>Ms to Trigger</value>
+  </data>
+  <data name="LoopTime96821" xml:space="preserve">
+    <value>Loop Time</value>
+  </data>
+  <data name="AutoStart96821" xml:space="preserve">
+    <value>Auto Start</value>
+  </data>
+  <data name="TriggerNow455626" xml:space="preserve">
+    <value>Trigger Now</value>
+  </data>
+  <data name="StopTimer814431" xml:space="preserve">
+    <value>Stop Timer</value>
+  </data>
+  <data name="VStateSensor650811" xml:space="preserve">
+    <value>V-State Sensor</value>
+  </data>
+  <data name="VSensorSettings650811" xml:space="preserve">
+    <value>V-Sensor Settings...</value>
+  </data>
+  <data name="SensorName9616" xml:space="preserve">
+    <value>Sensor Name</value>
+  </data>
+  <data name="SensorType9616" xml:space="preserve">
+    <value>Sensor Type</value>
+  </data>
+  <data name="SensorUnits845996" xml:space="preserve">
+    <value>Sensor Units</value>
+  </data>
+  <data name="SensorValueName204801" xml:space="preserve">
+    <value>Sensor Value Name</value>
+  </data>
+  <data name="MinValue204801" xml:space="preserve">
+    <value>Min Value</value>
+  </data>
+  <data name="MaxValue563606" xml:space="preserve">
+    <value>Max Value</value>
+  </data>
+  <data name="ThingPicker399986" xml:space="preserve">
+    <value>Thing Picker</value>
+  </data>
+  <data name="PropertyPicker758791" xml:space="preserve">
+    <value>Property Picker</value>
+  </data>
+  <data name="MakeGlobal758791" xml:space="preserve">
+    <value>Make Global</value>
+  </data>
+</root>
