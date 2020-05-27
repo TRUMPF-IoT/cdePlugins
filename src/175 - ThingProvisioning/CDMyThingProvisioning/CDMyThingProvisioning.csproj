@@ -11,6 +11,7 @@
     <Version>4.301.0</Version>
     <Product>CDMyThingProvisioning for $(TargetFramework)$(cdeDebugProductSuffix)</Product>
     <Copyright>Copyright © 2015-2020 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
   </PropertyGroup>
 
