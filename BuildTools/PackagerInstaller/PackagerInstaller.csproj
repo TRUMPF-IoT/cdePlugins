@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+ <!--
+ SPDX-FileCopyrightText: 2020 Connectivity-Labs LLC
+ SPDX-License-Identifier: CC0-1.0
+ -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net45</TargetFramework>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <OutDir>bin\$(Configuration)\$(TargetFramework)</OutDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="bin\**" />
+    <EmbeddedResource Remove="bin\**" />
+    <None Remove="bin\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="cdePackager" Version="5.105.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy &quot;$(TargetDir)c*&quot; &quot;$(ProjectDir)..\cdePackager\*&quot; /Y /I /F" />
+  </Target>
+
+</Project>
