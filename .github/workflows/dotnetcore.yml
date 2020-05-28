@@ -58,11 +58,11 @@ jobs:
       shell: powershell
 
     - name: Install dependencies
-      run: dotnet restore './src/CDEPlugins.sln'
+      run: dotnet restore './src/cdePlugins.sln'
 
     # Workaround for gitversiontask lock exception: build a single targetframework first
-    - name: Build CDMyMeshSender netstandard2.0
-      run: dotnet build './src/179 - Mesh Sender/CDMyMeshSender/CDMyMeshSender.csproj' --framework netstandard2.0 --configuration Release --no-restore --disable-parallel
+    - name: Build PackagerInstaller
+      run: dotnet build './BuildTools/PackagerInstaller\PackagerInstaller.csproj' --framework net45 --configuration Release --no-restore --disable-parallel
 
     - name: Build
       run: dotnet build './src/CDEPlugins.sln' --configuration Release --no-restore --disable-parallel
