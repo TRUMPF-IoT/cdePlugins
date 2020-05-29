@@ -14,6 +14,7 @@
     <Company>C-Labs</Company>
     <Product>CDMyMeshSender .Net Standard 2.0</Product>
     <Copyright>Copyright © 2015-2020 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
   </PropertyGroup>
 

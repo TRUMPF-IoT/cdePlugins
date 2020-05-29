@@ -5,14 +5,15 @@
 <Project Sdk="Microsoft.NET.Sdk"> 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net45;net40</TargetFrameworks>
-      <Version>4.302.1</Version>
-      <Authors>Chris Muench</Authors>
-      <Company>C-Labs</Company>
-      <Product>C-DMyVThings</Product>
-      <Description>Virtual Things for the C-DEngine</Description>
-      <Copyright>Copyright © 2017-2020 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
-      <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
-      <DefineConstants>CDE_SYSLOG;TRACE;$(DefineConstants)</DefineConstants>
+    <Version>4.302.1</Version>
+    <Authors>Chris Muench</Authors>
+    <Company>C-Labs</Company>
+    <Product>C-DMyVThings</Product>
+    <Description>Virtual Things for the C-DEngine</Description>
+    <Copyright>Copyright © 2017-2020 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
+    <DefineConstants>CDE_SYSLOG;TRACE;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

@@ -19,14 +19,6 @@ Files:  src/066 - C-MyVThings/C-DMyVThings/ClientBin/P066/images/*.png
 Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
 License: MPL-2.0
 
-Files:  BuildTools/*
-Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
-License: MPL-2.0
-
-Files:  BuildTools/cdePackager/*
-Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
-License: MPL-2.0
-
 Files:  README.md
 Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
 License: MPL-2.0
@@ -55,7 +47,7 @@ Files:  src/180 - Mesh Receiver/readme.md
 Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
 License: MPL-2.0
 
-Files:  src/CDEPlugins.sln
+Files:  src/cdePlugins.sln
 Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
 License: MPL-2.0
 
