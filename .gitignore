@@ -228,3 +228,4 @@ project.assets.json
 /src/C-DEngine/C-DEngine.xml
 /BuildTools/real.sign
 /BuildTools/cdePackager
+/BuildTools/signtool.exe
