@@ -61,7 +61,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Build", "_Build", "{D8C221
 		..\BuildTools\SignAndPackage.cmd = ..\BuildTools\SignAndPackage.cmd
 		..\BuildTools\SignAndPackageS.cmd = ..\BuildTools\SignAndPackageS.cmd
 		..\BuildTools\signMeSha.bat = ..\BuildTools\signMeSha.bat
-		..\BuildTools\signtool.exe = ..\BuildTools\signtool.exe
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Readme", "_Readme", "{1637ECB6-2E63-46DA-97EF-E4C0718305E7}"
