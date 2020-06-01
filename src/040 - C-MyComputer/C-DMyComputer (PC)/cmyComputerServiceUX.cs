@@ -75,33 +75,36 @@ namespace CDMyComputer
 
             TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 80,FldWidth=2, cdeA = 0xFF, Type = eFieldType.DateTime, Header = "Last Update", DataItem = "MyPropertyBag.LastUpdate.Value" });
 
-            int tBS = (int)TheThing.GetSafePropertyNumber(MyBaseThing, "ChartValues");
-            if (tBS < 10)
-                tBS = 10;
-            if (tBS > 10000)
-                tBS = 10000;
+
+            if (!TheBaseAssets.MyServiceHostInfo.IsCloudService)
+            {
+                int tBS = (int)TheThing.GetSafePropertyNumber(MyBaseThing, "ChartValues");
+                if (tBS < 10)
+                    tBS = 10;
+                if (tBS > 10000)
+                    tBS = 10000;
+
+                int tCS = (int)TheThing.GetSafePropertyNumber(MyBaseThing, "ChartSize");
+                if (tCS < 6)
+                    tCS = 6;
+
+                TheNMIEngine.AddChartScreen(MyBaseThing, new TheChartDefinition(TheThing.GetSafeThingGuid(MyBaseThing, "CPUState"), "Computer CPU State", tBS, "TheHealthHistory", true, "", "PB.HostAddress", "PB.CPULoad;PB.CPUTemp;PB.RAMAvailable") { GroupMode = 0, IntervalInMS = 0 }, 2, 3, 0, TheNMIEngine.GetNodeForCategory(), false, new ThePropertyBag() { ".TileHeight=8", ".NoTE=true", $".TileWidth={tCS}", $"Header={TheNMIEngine.GetNodeForCategory()}" });
+                TheNMIEngine.AddChartScreen(MyBaseThing, new TheChartDefinition(TheThing.GetSafeThingGuid(MyBaseThing, "CDERes"), "CDE Resources", tBS, "TheHealthHistory", true, "", "PB.HostAddress", "PB.cdeHandles;PB.cdeWorkingSetSize") { GroupMode = 0, IntervalInMS = 0 }, 5, 3, 0, TheNMIEngine.GetNodeForCategory(), false, new ThePropertyBag() { ".TileHeight=8", ".NoTE=true", $".TileWidth={tCS}", $"Header={TheNMIEngine.GetNodeForCategory()}" });
+                TheNMIEngine.AddChartScreen(MyBaseThing, new TheChartDefinition(TheThing.GetSafeThingGuid(MyBaseThing, "CDEKPIs"), "CDE KPIs", tBS, "TheHealthHistory", true, "", "PB.HostAddress", "PB.QSenders;PB.QSLocalProcessed;PB.QSSent;PB.QKBSent;PB.QKBReceived;PB.QSInserted;PB.EventTimeouts;PB.TotalEventTimeouts;PB.CCTSMsRelayed;PB.CCTSMsReceived;PB.CCTSMsEvaluated;PB.HTCallbacks;PB.KPI1;PB.KPI2;PB.KPI3;PB.KPI4;PB.KPI5;PB.KPI10") { GroupMode = 0, IntervalInMS = 0 }, 5, 3, 0, TheNMIEngine.GetNodeForCategory(), false, new ThePropertyBag() { ".TileHeight=8", ".NoTE=true", $".TileWidth={tCS}", $"Header={TheNMIEngine.GetNodeForCategory()}" });
 
 
-            int tCS = (int)TheThing.GetSafePropertyNumber(MyBaseThing, "ChartSize");
-            if (tCS < 6)
-                tCS = 6;
-
-            TheNMIEngine.AddChartScreen(MyBaseThing, new TheChartDefinition(TheThing.GetSafeThingGuid(MyBaseThing, "CPUState"), "Computer CPU State", tBS, "TheHealthHistory", true, "", "PB.HostAddress", "PB.CPULoad,PB.CPUTemp,PB.RAMAvailable") { GroupMode = 0, IntervalInMS = 0 }, 2, 3, 0, TheNMIEngine.GetNodeForCategory(), false, new ThePropertyBag() { ".TileHeight=8", ".NoTE=true", $".TileWidth={tCS}", $"Header={TheNMIEngine.GetNodeForCategory()}" });
-            TheNMIEngine.AddChartScreen(MyBaseThing, new TheChartDefinition(TheThing.GetSafeThingGuid(MyBaseThing, "CDERes"), "CDE Resources", tBS, "TheHealthHistory", true, "", "PB.HostAddress", "PB.cdeHandles,PB.cdeWorkingSetSize") { GroupMode = 0, IntervalInMS = 0 }, 5, 3, 0, TheNMIEngine.GetNodeForCategory(), false, new ThePropertyBag() { ".TileHeight=8", ".NoTE=true", $".TileWidth={tCS}", $"Header={TheNMIEngine.GetNodeForCategory()}" });
-            TheNMIEngine.AddChartScreen(MyBaseThing, new TheChartDefinition(TheThing.GetSafeThingGuid(MyBaseThing, "CDEKPIs"), "CDE KPIs", tBS, "TheHealthHistory", true, "", "PB.HostAddress", "PB.QSenders,PB.QSLocalProcessed,PB.QSSent,PB.QKBSent,PB.QKBReceived,PB.QSInserted,PB.EventTimeouts,PB.TotalEventTimeouts,PB.CCTSMsRelayed,PB.CCTSMsReceived,PB.CCTSMsEvaluated,PB.HTCallbacks,PB.KPI1,PB.KPI2,PB.KPI3,PB.KPI4,PB.KPI5,PB.KPI10") { GroupMode = 0, IntervalInMS = 0 }, 5, 3, 0, TheNMIEngine.GetNodeForCategory(), false, new ThePropertyBag() { ".TileHeight=8", ".NoTE=true", $".TileWidth={tCS}", $"Header={TheNMIEngine.GetNodeForCategory()}" });
-
-
-            var tMyLiveForm = TheNMIEngine.AddStandardForm(MyBaseThing, "Live CPU Chart", 18, "CPULoad",null,0,TheNMIEngine.GetNodeForCategory());
-            (tMyLiveForm["Header"] as TheFieldInfo).Header = $"{TheNMIEngine.GetNodeForCategory()} CPU Chart";
-            var tc = TheNMIEngine.AddSmartControl(MyBaseThing, tMyLiveForm["Form"] as TheFormInfo, eFieldType.UserControl, 22, 0, 0, "CPU Load", "LoadBucket", new ThePropertyBag()
+                var tMyLiveForm = TheNMIEngine.AddStandardForm(MyBaseThing, "Live CPU Chart", 18, "CPULoad", null, 0, TheNMIEngine.GetNodeForCategory());
+                (tMyLiveForm["Header"] as TheFieldInfo).Header = $"{TheNMIEngine.GetNodeForCategory()} CPU Chart";
+                var tc = TheNMIEngine.AddSmartControl(MyBaseThing, tMyLiveForm["Form"] as TheFormInfo, eFieldType.UserControl, 22, 0, 0, "CPU Load", "LoadBucket", new ThePropertyBag()
                 {   "ParentFld=1",
                     "ControlType=Line Chart", "Title=CPU Load", "SubTitle="+ GetProperty("HostAddress",true),
                     "SeriesNames=[{ \"name\":\"CPU-Load\", \"lineColor\":\"rgba(0,255,0,0.39)\"}, { \"name\":\"CDE-Load\", \"lineColor\":\"rgba(0,0,255,0.39)\"}]",
                     "TileHeight=4", "Speed=800", "Delay=0", "Background=rgba(0,0,0,0.01)", "MaxValue=100", "NoTE=true"
                 });
-            tc.AddOrUpdatePlatformBag(eWebPlatform.Any, new nmiPlatBag { TileWidth = 18 });
-            tc.AddOrUpdatePlatformBag(eWebPlatform.Mobile, new nmiPlatBag { TileWidth = 6 });
-            tc.AddOrUpdatePlatformBag(eWebPlatform.HoloLens, new nmiPlatBag { TileWidth = 12 });
+                tc.AddOrUpdatePlatformBag(eWebPlatform.Any, new nmiPlatBag { TileWidth = 18 });
+                tc.AddOrUpdatePlatformBag(eWebPlatform.Mobile, new nmiPlatBag { TileWidth = 6 });
+                tc.AddOrUpdatePlatformBag(eWebPlatform.HoloLens, new nmiPlatBag { TileWidth = 12 });
+            }
 
             if (TheCommonUtils.CBool(TheBaseAssets.MySettings.GetSetting("PCVitalsMaster")))
             {
