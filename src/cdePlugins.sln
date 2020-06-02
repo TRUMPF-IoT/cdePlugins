@@ -68,7 +68,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Readme", "_Readme", "{1637
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackagerInstaller", "..\BuildTools\PackagerInstaller\PackagerInstaller.csproj", "{CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PackagerInstaller", "..\BuildTools\PackagerInstaller\PackagerInstaller.csproj", "{CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "C-DMyNetwork", "093 - CDMyNetwork\C-DMyNetwork\C-DMyNetwork.csproj", "{FCCE39BA-5EA7-4D06-AD08-79FD7229FBDE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -112,6 +114,10 @@ Global
 		{CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCCE39BA-5EA7-4D06-AD08-79FD7229FBDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCCE39BA-5EA7-4D06-AD08-79FD7229FBDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCCE39BA-5EA7-4D06-AD08-79FD7229FBDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCCE39BA-5EA7-4D06-AD08-79FD7229FBDE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
