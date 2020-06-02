@@ -4,7 +4,7 @@
  -->
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net45</TargetFrameworks>
+    <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
     <Version>4.302.0</Version>
     <Authors>Chris Muench</Authors>
     <Company>C-Labs</Company>
@@ -30,12 +30,16 @@
   <ItemGroup>
     <PackageReference Include="C-DEngine" Version="5.*" />
     <PackageReference Include="cdeSensorTemplateShared" Version="5.*" GeneratePathProperty="true">
+      <IncludeAssets>contentFiles</IncludeAssets>
       <!--<ExcludeAssets>contentFiles</ExcludeAssets>--> <!-- Uncomment to use the DLL instead of source code-->
+    </PackageReference>
+    <PackageReference Include="System.Management">
+      <Version>4.7.0</Version>
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
-    <PackageReference Include="System.Management">
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Diagnostics.PerformanceCounter">
       <Version>4.7.0</Version>
     </PackageReference>
   </ItemGroup>
