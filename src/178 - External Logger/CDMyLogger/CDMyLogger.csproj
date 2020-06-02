@@ -9,7 +9,7 @@
     <AssemblyName>CDMyLogger</AssemblyName>
     <RootNamespace>CDMyLogger</RootNamespace>
     <PackageId>CDMyLogger</PackageId>
-    <Version>4.302.0</Version>
+    <Version>5.100.0-beta</Version>
     <Authors>Chris Muench</Authors>
     <Company>C-Labs</Company>
     <Product>CDMyLogger</Product>

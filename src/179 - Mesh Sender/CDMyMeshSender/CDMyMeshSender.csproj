@@ -9,7 +9,7 @@
     <AssemblyName>CDMyMeshSender</AssemblyName>
     <RootNamespace>CDMyMeshSender</RootNamespace>
     <PackageId>CDMyMeshSender</PackageId>
-    <Version>4.212.0</Version>
+    <Version>5.100.0-beta</Version>
     <Authors>Markus Horstmann</Authors>
     <Company>C-Labs</Company>
     <Product>CDMyMeshSender .Net Standard 2.0</Product>

@@ -5,15 +5,15 @@
  -->
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net45;net40;net35</TargetFrameworks>
-      <!-- Does NOT work on net4 due to missing Sync Lib -->
     <Authors>Chris Muench</Authors>
     <Company>C-Labs</Company>
+    <Product>CDMyRulesEngine</Product>
     <Description>Rules Engine for ($(TargetFramework))</Description>
-    <Copyright>Copyright © 2017-2020 C-Labs</Copyright>
-    <Version>4.301.0</Version>
+    <Copyright>Copyright © 2017-2020 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <Version>5.100.0-beta</Version>
     <AssemblyName>CDMyRulesEngine</AssemblyName>
-    <!-- Workaround for placing each DLL into a separate directory when using msbuild's GenerateProjectSpecificOutputFolder -->
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <Choose>
@@ -53,7 +53,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="C-DEngine" />
+    <PackageReference Include="C-DEngine" Version="5.*" />
     <PackageReference Include="jnm2.ReferenceAssemblies.net35" Version="1.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
