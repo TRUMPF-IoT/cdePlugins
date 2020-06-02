@@ -200,6 +200,7 @@ namespace CDMyNetwork
                 }
             }
             MyBaseEngine.SetStatusLevel(-1);
+            MyBaseEngine.LastMessage = "Scanning done";
             MyBaseThing.Value = CombinedCode.ToString();
             sinkStatChanged(null);
         }

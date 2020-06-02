@@ -1,5 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+  <!--
+ SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+ SPDX-License-Identifier: MPL-2.0
+ -->
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net45;net40;net35</TargetFrameworks>
         <Version>4.302.0</Version>
