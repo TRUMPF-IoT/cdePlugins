@@ -11,7 +11,7 @@
     <Company>C-Labs</Company>
     <Description>Visitor Log for ($(TargetFramework))</Description>
     <Copyright>Copyright © 2017-2020 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
-    <Version>4.302.1</Version>
+    <Version>5.100.0-beta</Version>
     <AssemblyName>C-DMyVisitorLog</AssemblyName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <!-- Workaround for placing each DLL into a separate directory when using msbuild's GenerateProjectSpecificOutputFolder -->

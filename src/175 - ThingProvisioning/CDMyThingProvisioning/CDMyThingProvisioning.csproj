@@ -8,7 +8,7 @@
     <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
     <Authors>Markus Horstmann</Authors>
     <Company>C-Labs</Company>
-    <Version>4.301.0</Version>
+    <Version>5.100.0-beta</Version>
     <Product>CDMyThingProvisioning for $(TargetFramework)$(cdeDebugProductSuffix)</Product>
     <Copyright>Copyright © 2015-2020 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>

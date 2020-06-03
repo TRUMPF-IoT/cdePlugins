@@ -9,7 +9,7 @@
     <AssemblyName>CDMyPrometheusExporter</AssemblyName>
     <RootNamespace>CDMyPrometheusExporter</RootNamespace>
     <PackageId>CDMyPrometheusExporter</PackageId>
-    <Version>4.301.0</Version>
+    <Version>5.100.0-beta</Version>
     <Authors>Markus Horstmann</Authors>
     <Company>C-Labs</Company>
     <Product>CDMyPrometheusExporter for $(TargetFramework)</Product>
