@@ -66,6 +66,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Readme", "_Readme", "{1637ECB6-2E63-46DA-97EF-E4C0718305E7}"
 	ProjectSection(SolutionItems) = preProject
 		..\README.md = ..\README.md
+		readme.md = readme.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PackagerInstaller", "..\BuildTools\PackagerInstaller\PackagerInstaller.csproj", "{CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125}"
@@ -73,6 +74,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "C-DMyNetwork", "093 - CDMyNetwork\C-DMyNetwork\C-DMyNetwork.csproj", "{FCCE39BA-5EA7-4D06-AD08-79FD7229FBDE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDMyRulesEngine", "149 - CDMyRulesEngine\CDMyRulesEngine\CDMyRulesEngine.csproj", "{A023A925-2B2C-49D0-A537-68A581938824}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "C-DMyMessages", "079 - CDMyMessages\C-DMyMessages\C-DMyMessages.csproj", "{BD605ABF-E950-4D45-8692-4FF0A81A4106}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -124,6 +127,10 @@ Global
 		{A023A925-2B2C-49D0-A537-68A581938824}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A023A925-2B2C-49D0-A537-68A581938824}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A023A925-2B2C-49D0-A537-68A581938824}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD605ABF-E950-4D45-8692-4FF0A81A4106}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD605ABF-E950-4D45-8692-4FF0A81A4106}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD605ABF-E950-4D45-8692-4FF0A81A4106}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD605ABF-E950-4D45-8692-4FF0A81A4106}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
