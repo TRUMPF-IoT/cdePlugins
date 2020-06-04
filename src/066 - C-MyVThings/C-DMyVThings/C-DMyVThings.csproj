@@ -39,10 +39,11 @@
 
   <ItemGroup>
     <PackageReference Include="C-DEngine" Version="5.*" />
-    <PackageReference Include="cdeCSVFileParserShared" Version="5.*" />
-    <PackageReference Include="cdeMeshManagerContractsShared" Version="5.*" />
-    <PackageReference Include="cdeSenderBaseShared" Version="5.*" />
-    <PackageReference Include="cdeSensorTemplateShared" Version="5.*" />
+    <PackageReference Include="cdeCSVFileParserShared" Version="5.*" IncludeAssets="ContentFiles" />
+    <PackageReference Include="cdeEventConvertersShared" Version="5.*" IncludeAssets="ContentFiles" />
+    <PackageReference Include="cdeMeshManagerContractsShared" Version="5.*" IncludeAssets="ContentFiles" />
+    <PackageReference Include="cdeOPCUAClientContractsShared" Version="5.*" IncludeAssets="ContentFiles" />
+    <PackageReference Include="cdeSensorTemplateShared" Version="5.*" IncludeAssets="ContentFiles" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
