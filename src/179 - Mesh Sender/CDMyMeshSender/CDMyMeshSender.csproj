@@ -12,7 +12,7 @@
     <Version>5.100.0-beta</Version>
     <Authors>Markus Horstmann</Authors>
     <Company>C-Labs</Company>
-    <Product>CDMyMeshSender .Net Standard 2.0</Product>
+    <Product>CDMyMeshSender</Product>
     <Copyright>Copyright © 2015-2020 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>

@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-﻿/*********************************************************************
+/*********************************************************************
 *
 * Project Name" 095-CDMyCloudServices
 *
@@ -16,30 +16,25 @@
 *               "FldOrder" for UX 10 to 
 *********************************************************************/
 //#define TESTDIRECTUPDATES
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using System.Threading.Tasks;
-using System.Threading;
-
-using nsCDEngine.Engines;
 using nsCDEngine.BaseClasses;
-using nsCDEngine.ViewModels;
+using nsCDEngine.Communication;
+using nsCDEngine.Engines;
 using nsCDEngine.Engines.NMIService;
 using nsCDEngine.Engines.ThingService;
-using nsCDEngine.Communication;
-using System.Net.Http;
-using System.Net;
-
-using nsTheSenderBase;
+using nsCDEngine.ViewModels;
 using nsTheEventConverters;
-using Prometheus.Advanced.DataContracts;
-using Prometheus.Advanced;
+using nsTheSenderBase;
 using Prometheus;
+using Prometheus.Advanced;
+using Prometheus.Advanced.DataContracts;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CDMyPrometheusExporter.ViewModel
 {
@@ -244,13 +239,13 @@ namespace CDMyPrometheusExporter.ViewModel
                     new TheFieldInfo() { FldOrder=12,DataItem="ChangeNaNToNull",Flags=2,Type=eFieldType.SingleCheck,Header="Dont Send Zeros",FldWidth=1 },
 
                     new TheFieldInfo() { FldOrder=20,DataItem="ThingMID",Flags=2, cdeA = 0xC0, Type=eFieldType.ThingPicker,Header="Thing to Export",PropertyBag=new nmiCtrlThingPicker() { IncludeEngines=true, FldWidth=3 } },
-                    new TheFieldInfo() { FldOrder=30,DataItem=nameof(TheSenderThing.EngineName), Flags=2, cdeA = 0xC0, Type=eFieldType.SingleEnded,Header="Engine Name",FldWidth=3,  PropertyBag=new nmiCtrlSingleEnded() { FldWidth=4 } },
-                    new TheFieldInfo() { FldOrder=35,DataItem=nameof(TheSenderThing.DeviceType), Flags=2, cdeA = 0xC0, Type=eFieldType.SingleEnded,Header="DeviceType",FldWidth=3,  PropertyBag=new nmiCtrlSingleEnded() { FldWidth=4 } },
+                    new TheFieldInfo() { FldOrder=30,DataItem=nameof(TheSenderThing.EngineName), Flags=2, cdeA = 0xC0, Type=eFieldType.ThingPicker,Header="Engine Name",FldWidth=3,  PropertyBag=new nmiCtrlThingPicker() { ValueProperty="EngineName", IncludeEngines=true, Filter="DeviceType=IBaseEngine", FldWidth=3 } },
+                    new TheFieldInfo() { FldOrder=35,DataItem=nameof(TheSenderThing.DeviceType), Flags=2, cdeA = 0xC0, Type=eFieldType.DeviceTypePicker,Header="DeviceType",FldWidth=3,  PropertyBag=new nmiCtrlDeviceTypePicker() { Filter="EngineName=%EngineName%", FldWidth=2 } },
 
-                    new TheFieldInfo() { FldOrder=40,DataItem="PropertiesIncluded",Flags=2, cdeA = 0xC0, Type=eFieldType.PropertyPicker,Header="Properties to Send", PropertyBag=new nmiCtrlPropertyPicker() { DefaultValue="Value", AllowMultiSelect=true, ThingFld=20,FldWidth=12 } },
-                    new TheFieldInfo() { FldOrder=40,DataItem="PropertiesExcluded",Flags=2, cdeA = 0xC0, Type=eFieldType.PropertyPicker,Header="Properties to Exclude",  PropertyBag=new nmiCtrlPropertyPicker() { DefaultValue="Value", AllowMultiSelect=true, ThingFld=20, FldWidth=12 } },
-                    new TheFieldInfo() { FldOrder=45,DataItem="TargetType",Flags=2, cdeA = 0xC0, Type=eFieldType.ComboBox,Header="Metric Type",  PropertyBag=new nmiCtrlComboBox() { Options="Gauge;Counter;Histogram;Summary", FldWidth=2 } },
-                    new TheFieldInfo() { FldOrder=50,DataItem="PartitionKey",Flags=2, cdeA = 0xC0, Type=eFieldType.PropertyPicker,Header="Properties for labels", PropertyBag=new nmiCtrlPropertyPicker() { FldWidth = 4, AllowMultiSelect=true, ThingFld=20, DefaultValue="NodeId,FriendlyName" } },
+                    new TheFieldInfo() { FldOrder=40,DataItem="TargetType",Flags=2, cdeA = 0xC0, Type=eFieldType.ComboBox,Header="Metric Type",  PropertyBag=new nmiCtrlComboBox() { DefaultValue="Gauge", Options="Gauge;Counter;Histogram;Summary", FldWidth=1 } },
+                    new TheFieldInfo() { FldOrder=41,DataItem="PropertiesIncluded",Flags=2, cdeA = 0xC0, Type=eFieldType.PropertyPicker,Header="Properties to Send", PropertyBag=new nmiCtrlPropertyPicker() { DefaultValue="Value", AllowMultiSelect=true, ThingFld=20,FldWidth=4 } },
+                    new TheFieldInfo() { FldOrder=42,DataItem="PropertiesExcluded",Flags=2, cdeA = 0xC0, Type=eFieldType.PropertyPicker,Header="Properties to Exclude",  PropertyBag=new nmiCtrlPropertyPicker() { AllowMultiSelect=true, ThingFld=20, FldWidth=4 } },
+                    new TheFieldInfo() { FldOrder=43,DataItem="PartitionKey",Flags=2, cdeA = 0xC0, Type=eFieldType.PropertyPicker,Header="Properties for labels", PropertyBag=new nmiCtrlPropertyPicker() { FldWidth = 4, AllowMultiSelect=true, ThingFld=20, DefaultValue="NodeId,FriendlyName", Separator=",", SystemProperties=true } },
                 });
                 TheNMIEngine.AddTableButtons(tSenderThingsForm, false, 100);
             }
@@ -259,9 +254,9 @@ namespace CDMyPrometheusExporter.ViewModel
 
             TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.CollapsibleGroup, 400, 2, 0, "KPIs", false, null, null, new nmiCtrlCollapsibleGroup() { IsSmall = true, DoClose = true, TileWidth = 6, ParentFld = 1 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.DateTime, 414, 0, 0, "Last Send", nameof(LastSendTime), new ThePropertyBag() { "ParentFld=400", "TileWidth=6", "TileHeight=1" });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.DateTime, 415, 0, 0, "Last Send Attempt", nameof(LastSendAttemptTime), new ThePropertyBag() { "ParentFld=400", "TileWidth=6", "TileHeight=1" });
+            //TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.DateTime, 415, 0, 0, "Last Send Attempt", nameof(LastSendAttemptTime), new ThePropertyBag() { "ParentFld=400", "TileWidth=6", "TileHeight=1" });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.Number, 416, 0, 0, "Events Sent", nameof(EventsSentSinceStart), new ThePropertyBag() { "ParentFld=400", "TileWidth=6", "TileHeight=1" });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.Number, 417, 0, 0, "Events Pending", nameof(PendingEvents), new ThePropertyBag() { "ParentFld=400", "TileWidth=6", "TileHeight=1" });
+            //TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.Number, 417, 0, 0, "Events Pending", nameof(PendingEvents), new ThePropertyBag() { "ParentFld=400", "TileWidth=6", "TileHeight=1" });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.Number, 418, 0, 0, "Send Error Count", nameof(EventsSentErrorCountSinceStart), new ThePropertyBag() { "ParentFld=400", "TileWidth=6", "TileHeight=1" });
 
             var tKPIBut = TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.TileButton, 425, 2, 0xC0, "Reset KPI", null, new nmiCtrlTileButton() { ParentFld = 400, NoTE = true, ClassName = "cdeBadActionButton" });
@@ -327,6 +322,7 @@ namespace CDMyPrometheusExporter.ViewModel
                 catch (ScrapeFailedException ex)
                 {
                     tRequest.StatusCode = 503;
+                    EventsSentErrorCountSinceStart++;
 
                     if (!string.IsNullOrWhiteSpace(ex.Message))
                     {
@@ -350,16 +346,20 @@ namespace CDMyPrometheusExporter.ViewModel
                         ScrapeHandler.ProcessScrapeRequest(metrics, contentType, outputStream);
                         tRequest.ResponseBuffer = outputStream.ToArray();
                     }
+                    EventsSentSinceStart++;
+                    LastSendTime = DateTimeOffset.Now;
                 }
                 else
                 {
                     tRequest.StatusCode = 503;
                     tRequest.ResponseBuffer = Encoding.UTF8.GetBytes("No accept header");
+                    EventsSentErrorCountSinceStart++;
                     return;
                 }
             }
             catch (Exception ex) when (!(ex is OperationCanceledException))
             {
+                EventsSentErrorCountSinceStart++;
                 TheBaseAssets.MySYSLOG.WriteToLog(95307, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(strPrometheusExporter, $"Error in metric server: {this.MyBaseThing?.Address}", eMsgLevel.l3_ImportantMessage, ex.ToString()));
                 try
                 {
@@ -415,9 +415,9 @@ namespace CDMyPrometheusExporter.ViewModel
                 {
                     continue;
                 }
+                if (string.IsNullOrEmpty(senderThing.PropertiesIncluded)) senderThing.PropertiesIncluded = "Value"; //Make sure we have at least one included
                 var propsIncludedConf = string.IsNullOrEmpty(senderThing.PropertiesIncluded) ? null : TheCommonUtils.cdeSplit(senderThing.PropertiesIncluded, ',', false, false);
                 var propsExcluded = string.IsNullOrEmpty(senderThing.PropertiesExcluded) ? null : TheCommonUtils.cdeSplit(senderThing.PropertiesExcluded, ',', false, false);
-
                 var propsIncludedSplit = propsIncludedConf?.Select(p => TheCommonUtils.cdeSplit(p, ';', false, false));
                 var propsIncluded = propsIncludedSplit.Select(p => p[0]);
 
