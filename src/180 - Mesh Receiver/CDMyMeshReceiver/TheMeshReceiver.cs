@@ -672,7 +672,7 @@ namespace CDMyMeshReceiver.ViewModel
         }
 #endif
 
-        internal override void UpdateConnectionThing(TheConnectionThing<TheConnectionThingParam> currentThing, TheConnectionThing<TheConnectionThingParam> newThing)
+        public override void UpdateConnectionThing(TheConnectionThing<TheConnectionThingParam> currentThing, TheConnectionThing<TheConnectionThingParam> newThing)
         {
             // Nothing to do: changes get picked up dynamically
         }
