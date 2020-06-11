@@ -24,7 +24,7 @@
     <EmbeddedResource Include="$(PkgCDESensorTemplateShared)\contentFiles\any\$(TargetFramework)\ClientBin\SENSORS\CSS\SensorsDark.min.css" Link="ClientBin\SENSORS\CSS\SensorsDark.min.css" />
     <EmbeddedResource Include="$(PkgCDESensorTemplateShared)\contentFiles\any\$(TargetFramework)\ClientBin\SENSORS\CSS\SensorsLite.min.css" Link="ClientBin\SENSORS\CSS\SensorsLite.min.css" />
     <EmbeddedResource Include="$(PkgCDESensorTemplateShared)\contentFiles\any\$(TargetFramework)\ClientBin\SENSORS\CSS\SensorStyles.min.css" Link="ClientBin\SENSORS\CSS\SensorStyles.min.css" />
-    <EmbeddedResource Include="$(PkgCDESensorTemplateShared)\contentFiles\any\$(TargetFramework)\ClientBin\SENSORS\Images\SensorLogo_156x78.png" Link="ClientBin\Images\SensorLogo_156x78.png" />
+    <EmbeddedResource Include="$(PkgCDESensorTemplateShared)\contentFiles\any\$(TargetFramework)\ClientBin\SENSORS\Images\SensorLogo_156x78.png" Link="ClientBin\SENSORS\Images\SensorLogo_156x78.png" />
   </ItemGroup>
 
   <ItemGroup>

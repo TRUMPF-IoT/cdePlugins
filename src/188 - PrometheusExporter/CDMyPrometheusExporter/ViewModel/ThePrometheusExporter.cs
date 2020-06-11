@@ -347,6 +347,7 @@ namespace CDMyPrometheusExporter.ViewModel
                         tRequest.ResponseBuffer = outputStream.ToArray();
                     }
                     EventsSentSinceStart++;
+                    TheThing.SetSafePropertyNumber(MyBaseThing, "QValue", EventsSentSinceStart); //Update for Faceplate
                     LastSendTime = DateTimeOffset.Now;
                 }
                 else
