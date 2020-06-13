@@ -132,10 +132,19 @@ namespace CDMyNetwork.ViewModel
             get { return TheThing.GetSafePropertyBool(MyBaseThing, "IsConnected"); }
             set { TheThing.SetSafePropertyBool(MyBaseThing, "IsConnected", value); }
         }
+
+        [ConfigProperty]
+        public string Address
+        {
+            get { return TheThing.MemberGetSafePropertyString(MyBaseThing); }
+            set { TheThing.MemberSetSafePropertyString(MyBaseThing, value); }
+        }
+
+        [ConfigProperty]
         public bool AutoConnect
         {
-            get { return TheThing.GetSafePropertyBool(MyBaseThing, "AutoConnect"); }
-            set { TheThing.SetSafePropertyBool(MyBaseThing, "AutoConnect", value); }
+            get { return TheThing.MemberGetSafePropertyBool(MyBaseThing); }
+            set { TheThing.MemberSetSafePropertyBool(MyBaseThing, value); }
         }
 
         void sinkUpdateUX(cdeP pProp)
