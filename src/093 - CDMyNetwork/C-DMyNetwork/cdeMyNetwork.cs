@@ -47,6 +47,7 @@ namespace CDMyNetwork
             MyBaseThing.Value = "0";
             MyBaseThing.RegisterEvent(eEngineEvents.IncomingMessage, HandleMessage);
             MyBaseEngine.RegisterEvent(eEngineEvents.ThingDeleted, OnThingDeleted);
+            MyBaseEngine.RegisterEvent(eEngineEvents.ThingRegistered, OnThingRegisterd);
 
             if (!TheBaseAssets.MyServiceHostInfo.IsCloudService && !TheThing.GetSafePropertyBool(MyBaseThing, "RanBefore"))
             {
@@ -86,6 +87,10 @@ namespace CDMyNetwork
             return true;
         }
 
+        void OnThingRegisterd(ICDEThing thing, object para)
+        {
+            InitNetworkServices();
+        }
 
         void OnThingDeleted(ICDEThing tThing, object deletedThing)
         {

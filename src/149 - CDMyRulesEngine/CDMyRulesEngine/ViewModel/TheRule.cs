@@ -124,6 +124,7 @@ namespace CDMyRulesEngine.ViewModel
                         if (tRule != null)
                         {
                             //FireAction(tRule, true);
+                            tRule.FireAction(true);
                             MyBaseEngine.ProcessMessage(new TheProcessMessage(new TSM(MyBaseEngine.GetEngineName(), "FIRE_RULE", MyBaseThing.cdeMID.ToString())));
                             TheCommCore.PublishToOriginator(pMSG.Message, new TSM(eEngineName.NMIService, "NMI_TOAST", string.Format("Rule {0} triggered", tRule.FriendlyName)));
                         }
@@ -148,7 +149,7 @@ namespace CDMyRulesEngine.ViewModel
                 /* Trigger Object Group */
                 {  new TheFieldInfo() { FldOrder=140,DataItem="MyPropertyBag.TriggerObject.Value",Flags=2,Type=eFieldType.ThingPicker,Header="Trigger Object", PropertyBag=new nmiCtrlThingPicker() { ParentFld=idGroupTriggerObject, HelpText="If this objects...", IncludeEngines=true }  }},
                 {  new TheFieldInfo() { FldOrder=150,DataItem="MyPropertyBag.TriggerProperty.Value",Flags=2,Type=eFieldType.PropertyPicker,Header="Trigger Property", DefaultValue="Value",PropertyBag=new nmiCtrlPropertyPicker() { ParentFld=idGroupTriggerObject, HelpText="...property is...", ThingFld=150 }   }},
-                {  new TheFieldInfo() { FldOrder=160,DataItem="MyPropertyBag.TriggerCondition.Value",Flags=2,Type=eFieldType.ComboBox,Header="Trigger Condition", DefaultValue="2",PropertyBag=new nmiCtrlComboBox() { ParentFld=idGroupTriggerObject, HelpText="... this value, this rule will fire...", DefaultValue="2", Options="Fire:0;State:1;Equals:2;Larger:3;Smaller:4;Not:5;Contains:6;Set:7;StartsWith:8;EndsWith:9;Flank:10" }}},
+                {  new TheFieldInfo() { FldOrder=160,DataItem="MyPropertyBag.TriggerCondition.Value",Flags=2,Type=eFieldType.ComboBox,Header="Trigger Condition", DefaultValue="2",PropertyBag=new nmiCtrlComboBox() { ParentFld=idGroupTriggerObject, HelpText="... then this value, this rule will fire...", DefaultValue="2", Options="Fire:0;State:1;Equals:2;Larger:3;Smaller:4;Not:5;Contains:6;Set:7;StartsWith:8;EndsWith:9;Flank:10" }}},
                 {  new TheFieldInfo() { FldOrder=170,DataItem="MyPropertyBag.TriggerValue.Value",Flags=2,Type=eFieldType.SingleEnded,Header="Trigger Value", PropertyBag=new ThePropertyBag() { "ParentFld=100", "HelpText=...this objects..." }  }},
 
                 /* Action Settings Group */
@@ -161,7 +162,7 @@ namespace CDMyRulesEngine.ViewModel
                 {  new TheFieldInfo() { FldOrder=563,DataItem="MyPropertyBag.ActionValue.Value",Flags=2,Type=eFieldType.SingleEnded,Header="Action Value", PropertyBag=new nmiCtrlSingleEnded { ParentFld=idGroupThingPropAction, HelpText = "...this value", Style="text-overflow:ellipsis;overflow:hidden; max-width:400px" } }},
 
                 /* TSM Action Sub-Group */
-                { new TheFieldInfo() { FldOrder=630,DataItem="MyPropertyBag.TSMEngine.Value",Flags=2,Type=eFieldType.ThingPicker,Header="TSM Engine",PropertyBag = new nmiCtrlThingPicker() { ParentFld=600, Filter="EngineNames" } }},
+                { new TheFieldInfo() { FldOrder=630,DataItem="MyPropertyBag.TSMEngine.Value",Flags=2,Type=eFieldType.ThingPicker,Header="TSM Engine",PropertyBag = new nmiCtrlThingPicker() { ParentFld=600,ValueProperty="EngineName", IncludeEngines=true, Filter="DeviceType=IBaseEngine" } }},
                 { new TheFieldInfo() { FldOrder=631,DataItem="MyPropertyBag.TSMText.Value",Flags=2,Type=eFieldType.SingleEnded,Header="TSM Text",PropertyBag = new ThePropertyBag() { "ParentFld=600", "HelpText=Command of the TSM" } }},
                 { new TheFieldInfo() { FldOrder=632,DataItem="MyPropertyBag.TSMPayload.Value",Flags=2,Type=eFieldType.TextArea,Header="TSM Payload", PropertyBag = new nmiCtrlTextArea() { ParentFld=idGroupTSMAction, TileHeight=2, HelpText="Body of the TSM" } }},
 
@@ -308,11 +309,20 @@ namespace CDMyRulesEngine.ViewModel
                     TheThing tActionThing = TheThingRegistry.GetThingByMID("*", TheCommonUtils.CGuid(ActionObject));
                     if (tActionThing != null)
                     {
+                        string tActionValue = ActionValue;
+                        if (!string.IsNullOrEmpty(tActionValue))
+                        {
+                            ICDEThing triggerThing = TheThingRegistry.GetThingByMID("*", TheCommonUtils.CGuid(TriggerObject)) as ICDEThing;
+                            tActionValue = TheCommonUtils.GenerateFinalStr(tActionValue, triggerThing);
+                            tActionValue = tActionValue.Replace("%OldValue%", TriggerOldValue);
+                            tActionValue = TheCommonUtils.GenerateFinalStr(tActionValue, MyBaseThing);
+                        }
+
                         ICDEThing tObject = tActionThing.GetObject() as ICDEThing;
                         if (tObject != null)
-                            tObject.SetProperty(ActionProperty, ActionValue);
+                            tObject.SetProperty(ActionProperty, tActionValue);
                         else
-                            tActionThing.SetProperty(ActionProperty, ActionValue);
+                            tActionThing.SetProperty(ActionProperty, tActionValue);
                     }
                     break;
             }
@@ -329,12 +339,10 @@ namespace CDMyRulesEngine.ViewModel
                 EventTime = DateTimeOffset.Now,
                 EventLevel = eMsgLevel.l4_Message,
                 StationName = TheBaseAssets.MyServiceHostInfo.GetPrimaryStationURL(false),
-                EventName = TheCommonUtils.GenerateFinalStr(FriendlyName)
+                EventName = TheCommonUtils.GenerateFinalStr(FriendlyName, MyBaseThing)
             };
             if (!string.IsNullOrEmpty(tSec.EventName))
             {
-                tSec.EventName = tSec.EventName.Replace("%TriggerValue%", TriggerValue);
-                tSec.EventName = tSec.EventName.Replace("%Value%", MyBaseThing.Value);
                 tSec.EventName = tSec.EventName.Replace("%OldValue%", TriggerOldValue);
             }
             tSec.EventTrigger = TriggerObject;
@@ -370,7 +378,9 @@ namespace CDMyRulesEngine.ViewModel
             //text = text.Replace("%DTO%", TheCommonUtils.CStr(DateTimeOffset.Now));
             ICDEThing triggerThing = TheThingRegistry.GetThingByMID("*", TheCommonUtils.CGuid(TriggerObject)) as ICDEThing;
             string escPayload = TheCommonUtils.GenerateFinalStr(payload, triggerThing);
+            escPayload = TheCommonUtils.GenerateFinalStr(escPayload, MyBaseThing);
             string escText = TheCommonUtils.GenerateFinalStr(text, triggerThing);
+            escText = TheCommonUtils.GenerateFinalStr(escText, MyBaseThing);
 
             if (!string.IsNullOrEmpty(engine) && !string.IsNullOrEmpty(text))
             {

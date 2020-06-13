@@ -31,6 +31,12 @@
     <EmbeddedResource Include="ClientBin\P066\images\iconVThingsGlow.png" />
     <EmbeddedResource Include="ClientBin\P066\images\iconVThingsRest.png" />
     <EmbeddedResource Include="ClientBin\P066\pages\VSFaceA.html" />
+
+    <!-- dotnet nuget doesn't properly apply embedded resources from referenced packages: add them explicitly -->
+    <EmbeddedResource Include="$(PkgCDESensorTemplateShared)\contentFiles\any\$(TargetFramework)\ClientBin\SENSORS\CSS\SensorsDark.min.css" Link="ClientBin\SENSORS\CSS\SensorsDark.min.css" />
+    <EmbeddedResource Include="$(PkgCDESensorTemplateShared)\contentFiles\any\$(TargetFramework)\ClientBin\SENSORS\CSS\SensorsLite.min.css" Link="ClientBin\SENSORS\CSS\SensorsLite.min.css" />
+    <EmbeddedResource Include="$(PkgCDESensorTemplateShared)\contentFiles\any\$(TargetFramework)\ClientBin\SENSORS\CSS\SensorStyles.min.css" Link="ClientBin\SENSORS\CSS\SensorStyles.min.css" />
+    <EmbeddedResource Include="$(PkgCDESensorTemplateShared)\contentFiles\any\$(TargetFramework)\ClientBin\SENSORS\Images\SensorLogo_156x78.png" Link="ClientBin\SENSORS\Images\SensorLogo_156x78.png" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='net40'">
@@ -43,7 +49,7 @@
     <PackageReference Include="cdeEventConvertersShared" Version="5.*" IncludeAssets="ContentFiles" />
     <PackageReference Include="cdeMeshManagerContractsShared" Version="5.*" IncludeAssets="ContentFiles" />
     <PackageReference Include="cdeOPCUAClientContractsShared" Version="5.*" IncludeAssets="ContentFiles" />
-    <PackageReference Include="cdeSensorTemplateShared" Version="5.*" IncludeAssets="ContentFiles" />
+    <PackageReference Include="cdeSensorTemplateShared" Version="5.*" IncludeAssets="ContentFiles" GeneratePathProperty="true"/>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

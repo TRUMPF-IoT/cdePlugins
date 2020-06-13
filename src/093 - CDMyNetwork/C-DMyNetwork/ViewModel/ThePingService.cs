@@ -5,12 +5,14 @@ using nsCDEngine.BaseClasses;
 using nsCDEngine.Engines;
 using nsCDEngine.Engines.NMIService;
 using nsCDEngine.Engines.ThingService;
+using nsCDEngine.ViewModels;
 using System;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 
 namespace CDMyNetwork.ViewModel
 {
+    [DeviceType(DeviceType = eNetworkServiceTypes.PingService, Description = "Ping Endpoint", Capabilities = new[] { eThingCaps.ConfigManagement })]
     class ThePingService : TheNetworkServiceBase
     {
         public ThePingService(TheThing tBaseThing, ICDEPlugin pPluginBase)
@@ -69,22 +71,31 @@ namespace CDMyNetwork.ViewModel
         }
 
 
-
+        [ConfigProperty]
         public int PingTimeOut
         {
             get { return TheCommonUtils.CInt(TheThing.GetSafePropertyNumber(MyBaseThing, "PingTimeOut")); }
             private set { TheThing.SetSafePropertyNumber(MyBaseThing, "PingTimeOut", value); }
         }
+        [ConfigProperty]
         public int PingDelay
         {
             get { return TheCommonUtils.CInt(TheThing.GetSafePropertyNumber(MyBaseThing, "PingDelay")); }
             private set { TheThing.SetSafePropertyNumber(MyBaseThing, "PingDelay", value); }
         }
+        [ConfigProperty]
         public int FailureLimit
         {
             get { return TheCommonUtils.CInt(TheThing.GetSafePropertyNumber(MyBaseThing, "FailureLimit")); }
             private set { TheThing.SetSafePropertyNumber(MyBaseThing, "FailureLimit", value); }
         }
+        [ConfigProperty]
+        public bool AllowRTT
+        {
+            get { return TheThing.MemberGetSafePropertyBool(MyBaseThing); }
+            private set { TheThing.MemberSetSafePropertyBool(MyBaseThing, value); }
+        }
+
         public long RoundTripTime
         {
             get { return TheCommonUtils.CLng(TheThing.GetSafePropertyNumber(MyBaseThing, "RoundTripTime")); }
@@ -114,7 +125,7 @@ namespace CDMyNetwork.ViewModel
                     }
                     else
                     {
-                        if (TheThing.GetSafePropertyBool(MyBaseThing, "AllowRTT"))
+                        if (AllowRTT)
                         {
                             RoundTripTime = reply.RoundtripTime;
                             MyBaseThing.LastUpdate = DateTimeOffset.Now;
