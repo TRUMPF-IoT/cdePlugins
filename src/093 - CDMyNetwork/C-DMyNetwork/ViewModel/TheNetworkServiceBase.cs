@@ -133,7 +133,7 @@ namespace CDMyNetwork.ViewModel
             set { TheThing.SetSafePropertyBool(MyBaseThing, "IsConnected", value); }
         }
 
-        [ConfigProperty]
+        [ConfigProperty(Generalize = true)]
         public string Address
         {
             get { return TheThing.MemberGetSafePropertyString(MyBaseThing); }
