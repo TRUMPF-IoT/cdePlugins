@@ -326,7 +326,7 @@ namespace CDMyRulesEngine.ViewModel
                             tActionThing.SetProperty(ActionProperty, tActionValue);
                         if (IsRuleLogged)
                             LogEvent(tActionValue);
-                        if (IsEVTLogged)
+                        if (TheThing.GetSafePropertyBool(MyBaseThing,"IsEVTLogged"))
                             TheLoggerFactory.LogEvent("Rule Fired", TheCommonUtils.GenerateFinalStr(MyBaseThing.FriendlyName, MyBaseThing), eMsgLevel.l4_Message, TheBaseAssets.MyServiceHostInfo.GetPrimaryStationURL(false), TriggerObject, tActionValue);
                     }
                     break;
@@ -396,7 +396,7 @@ namespace CDMyRulesEngine.ViewModel
             }
             if (IsRuleLogged)
                 LogEvent(escPayload);
-            if (IsEVTLogged)
+            if (TheThing.GetSafePropertyBool(MyBaseThing, "IsEVTLogged"))
                 TheLoggerFactory.LogEvent("Rule Fired", TheCommonUtils.GenerateFinalStr(MyBaseThing.FriendlyName, MyBaseThing), eMsgLevel.l4_Message, TheBaseAssets.MyServiceHostInfo.GetPrimaryStationURL(false), escText, escPayload);
         }
 
