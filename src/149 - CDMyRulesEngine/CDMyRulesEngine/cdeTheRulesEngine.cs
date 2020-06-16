@@ -46,19 +46,6 @@ namespace CDMyRulesEngine
                 return true;
             }
 
-            //if (!TheCommonUtils.CBool(TheThing.GetSafePropertyBool(MyBaseThing,"UpdateRuleIDs")))
-            {
-                List<TheThing> tList = TheThingRegistry.GetThingsByFunc(eEngineName.ThingService, s => TheThing.GetSafePropertyString(s, "DeviceType").Equals(eKnownDeviceTypes.TheThingRule));
-                if (tList != null && tList.Count > 0)
-                {
-                    foreach (TheThing tThing in tList)
-                    {
-                        tThing.Parent = MyBaseThing.ID;
-                        tThing.EngineName = MyBaseEngine.GetEngineName();
-                    }
-                }
-                //TheThing.SetSafePropertyBool(MyBaseThing, "UpdateRuleIDs", true);
-            }
             if (!TheBaseAssets.MyServiceHostInfo.IsCloudService)//TODO: Allow Cloud Rules
             {
                 TheCDEngines.MyThingEngine.RegisterEvent(eEngineEvents.ThingUpdated, sinkThingWasUpdated);
@@ -184,21 +171,6 @@ namespace CDMyRulesEngine
                 {  new TheFieldInfo() { FldOrder=20,DataItem="MyPropertyBag.IsRuleLogged.Value",Flags=2,Type=eFieldType.SingleCheck,Header="Logged", FldWidth=1, TileLeft=6,TileTop=6,TileWidth=4,TileHeight=1 }},
 
                 {  new TheFieldInfo() { FldOrder=30,DataItem="MyPropertyBag.FriendlyName.Value",Flags=2,Type=eFieldType.SingleEnded,Header="Rule Name", FldWidth=3, TileLeft=0,TileTop=1,TileWidth=11,TileHeight=1, PropertyBag=new nmiCtrlSingleEnded() { HelpText="Give this rule a friendly name" }   }},
-               // {  new TheFieldInfo() { FldOrder=40,DataItem="MyPropertyBag.TriggerObject.Value",Flags=2,Type=eFieldType.ThingPicker,Header="Trigger Object", FldWidth=3, TileLeft=0,TileTop=2,TileWidth=6,TileHeight=1, PropertyBag=new nmiCtrlThingPicker() { HelpText="If this objects...", IncludeEngines=true }  }},
-               // {  new TheFieldInfo() { FldOrder=50,DataItem="MyPropertyBag.TriggerProperty.Value",Flags=2,Type=eFieldType.PropertyPicker,Header="Trigger Property", FldWidth=3, DefaultValue="Value",TileLeft=1,TileTop=3,TileWidth=5,TileHeight=1, PropertyBag=new nmiCtrlPropertyPicker() { HelpText="...property is...", ThingFld=40 }   }},
-               // {  new TheFieldInfo() { FldOrder=60,DataItem="MyPropertyBag.TriggerCondition.Value",Flags=2,Type=eFieldType.ComboBox,Header="Trigger Condition", FldWidth=1, DefaultValue="2",TileLeft=1,TileTop=4,TileWidth=5,TileHeight=1, PropertyBag=new ThePropertyBag() { "HelpText=... this value, this rule will fire...", "Options=Fire:0;State:1;Equals:2;Larger:3;Smaller:4;Not:5;Contains:6;Set:7;StartsWith:8;EndsWith:9;Flank:10" }}},
-               // {  new TheFieldInfo() { FldOrder=70,DataItem="MyPropertyBag.TriggerValue.Value",Flags=2,Type=eFieldType.SingleEnded,Header="Trigger Value", FldWidth=1, TileLeft=1,TileTop=5,TileWidth=5,TileHeight=1 , PropertyBag=new ThePropertyBag() { "HelpText=...this objects..." }  }},
-
-               // {  new TheFieldInfo() { FldOrder=120,DataItem="MyPropertyBag.ActionObject.Value",Flags=2,Type=eFieldType.ThingPicker,Header="Action Object", FldWidth=3, TileLeft=6,TileTop=2,TileWidth=6,TileHeight=1, PropertyBag=new nmiCtrlThingPicker() { HelpText="...this objects...", IncludeEngines=true }  }},
-                 //{ new TheFieldInfo() { FldOrder=121,DataItem="MyPropertyBag.ActionObjectType.Value",Flags=2,Type=eFieldType.ComboBox,Header="Action Object Type",FldWidth=3,TileLeft=1,TileTop=7,TileWidth=4,TileHeight=1, PropertyBag = new ThePropertyBag() { "Options=a Thing:CDE_THING;Publish Central:CDE_PUBLISHCENTRAL;Publish to Service:CDE_PUBLISH2SERVICE", "DefaultValue=CDE_THING" } }},
-                //{  new TheFieldInfo() { FldOrder=122,DataItem="MyPropertyBag.ActionProperty.Value",Flags=2,Type=eFieldType.PropertyPicker,Header="Action Property", FldWidth=3, DefaultValue="Value",TileLeft=7,TileTop=3,TileWidth=5,TileHeight=1, PropertyBag=new nmiCtrlPropertyPicker() { HelpText="...property will change to...", ThingFld=120 } }},
-                //{  new TheFieldInfo() { FldOrder=123,DataItem="MyPropertyBag.ActionValue.Value",Flags=2,Type=eFieldType.SingleEnded,Header="Action Value", FldWidth=1, TileLeft=7,TileTop=4,TileWidth=5,TileHeight=1, PropertyBag=new nmiCtrlSingleEnded { HelpText="...this value", Style="text-overflow:ellipsis;overflow:hidden; max-width:400px" } }},
-                //{  new TheFieldInfo() { FldOrder=124,DataItem="MyPropertyBag.ActionDelay.Value",Flags=2,Type=eFieldType.Number,Header="Delay", FldWidth=1, DefaultValue="0",TileLeft=7,TileTop=5,TileWidth=5,TileHeight=1, PropertyBag=new ThePropertyBag() { "HelpText=...after a delay of these seconds..." }  }},
-
-               // { new TheFieldInfo() { FldOrder=130,DataItem="MyPropertyBag.TSMEngine.Value",Flags=2,Type=eFieldType.SingleEnded,Header="TSM Engine",FldWidth=3,TileLeft=7,TileTop=7,TileWidth=5,TileHeight=1, PropertyBag = new ThePropertyBag() { "HelpText=Target Engine" } }},
-               // { new TheFieldInfo() { FldOrder=131,DataItem="MyPropertyBag.TSMText.Value",Flags=2,Type=eFieldType.SingleEnded,Header="TSM Text",FldWidth=3,TileLeft=1,TileTop=8,TileWidth=5,TileHeight=1, PropertyBag = new ThePropertyBag() { "HelpText=Command of the TSM"} }},
-               // { new TheFieldInfo() { FldOrder=132,DataItem="MyPropertyBag.TSMPayload.Value",Flags=2,Type=eFieldType.TextArea,Header="TSM Payload",FldWidth=5,TileLeft=7,TileTop=8,TileWidth=5,TileHeight=2, PropertyBag = new ThePropertyBag() { "HelpText=Body of the TSM"} }},
-
                 {  new TheFieldInfo() { FldOrder=137,DataItem="cdeO",Flags=16,Type=eFieldType.SingleEnded,Header="Status", FldWidth=3, Format="<span style='font-size:xx-small'>Running:%MyPropertyBag.IsRuleRunning.Value%<br>TrigerAlive:%MyPropertyBag.IsTriggerObjectAlive.Value%</span>" }},
 
             });
@@ -206,8 +178,6 @@ namespace CDMyRulesEngine
 
 
             TheNMIEngine.AddTableButtons(tFormGuid, true, 1000,0xA2);
-
-            TheNMIEngine.AddDashPanel(MyDash, new TheDashPanelInfo(MyBaseThing, TheThing.GetSafeThingGuid(MyBaseThing, "CLAMRULE"), "Claim Rules", $"jsAction:cdeCommCore.PublishToOwner('{MyBaseThing.cdeMID}', '{MyBaseThing.EngineName}', 'CLAIM_RULES',''); ") { Category = TheNMIEngine.GetNodeForCategory(), FldOrder = 500, cdeA = 0x80 }); //Shows how to create a navigation button for the NMI UX
 
             TheFieldInfo tTriggerBut = TheNMIEngine.AddSmartControl(MyBaseThing, tFormGuid, eFieldType.TileButton, 5, 2, 0xC0, "Trigger Now", null, new nmiCtrlTileButton { ClassName = "cdeGoodActionButton", TileLeft = 1, TileTop = 6, TileWidth = 1, TileHeight = 1, NoTE = true });
             tTriggerBut.RegisterUXEvent(MyBaseThing, eUXEvents.OnClick, "TriggerNow", (psender, pPara) =>
@@ -233,8 +203,8 @@ namespace CDMyRulesEngine
 
 
 
-            tFormGuid = new TheFormInfo() { cdeMID = new Guid("{4EA67262-4F66-4EFF-B7AD-51B98DAF376C}"), FormTitle = "Event Log", defDataSource = "nsCDEngine.Engines.ThingService.TheEventLogData;:;50;:;True", IsReadOnly = true, IsNotAutoLoading = true }; //, GetFromFirstNodeOnly = false TODO: Verify!
-            TheNMIEngine.AddFormToThingUX(MyDash, MyBaseThing, tFormGuid, "CMyTable", "Event Log", 6, 3, 128, TheNMIEngine.GetNodeForCategory(), null, new ThePropertyBag { "Thumbnail=FA5:f073" });
+            tFormGuid = new TheFormInfo() { cdeMID = new Guid("{4EA67262-4F66-4EFF-B7AD-51B98DAF376C}"), FormTitle = "Event Log", defDataSource = "EventLog", IsReadOnly = true, IsNotAutoLoading = true }; 
+            TheNMIEngine.AddFormToThingUX(MyDash, MyBaseThing, tFormGuid, "CMyTable", "Event Log", 6, 3, 128, TheNMIEngine.GetNodeForCategory(), null, new ThePropertyBag { "Thumbnail=FA5:f073" }); //;:;50;:;True
             //TheNMIEngine.AddForm(tFormGuid);
             TheNMIEngine.AddFields(tFormGuid, new List<TheFieldInfo> {
                 {  new TheFieldInfo() { FldOrder=1,DataItem="EventTime",Flags=0,Type=eFieldType.DateTime,Header="Event Time",FldWidth=2 }},
@@ -561,19 +531,13 @@ namespace CDMyRulesEngine
                     MyRuleEventLog = new TheStorageMirror<TheEventLogData>(TheCDEngines.MyIStorageService);
                     MyRuleEventLog.CacheTableName = "EventLog";                 
                     MyRuleEventLog.UseSafeSave = true;
-                    // MyRuleEventLog.IsRAMStore = true;
                     MyRuleEventLog.SetRecordExpiration(604800, null);
                     MyRuleEventLog.CacheStoreInterval = 15;
                     MyRuleEventLog.IsStoreIntervalInSeconds = true;
-                    // MyRuleEventLog.IsCachePersistent = TheBaseAssets.MyServiceHostInfo.cdeNodeType == cdeNodeType.Relay;
                     MyRuleEventLog.AppendOnly = true;
 
                     if (!MyRuleEventLog.IsRAMStore)
-                    {
-                        MyRuleEventLog.CreateStore("The Event Log", "History of events fired by the RulesEngine", null, true, false);
-                        if (MyRuleEventLog.AppendOnly)
-                            MyRuleEventLog.InitializeStore(true, TheBaseAssets.MyServiceHostInfo.IsNewDevice);
-                    }
+                        MyRuleEventLog.CreateStore("The Event Log", "History of events fired by the RulesEngine", null, true, TheBaseAssets.MyServiceHostInfo.IsNewDevice);
                     else
                         MyRuleEventLog.InitializeStore(true, TheBaseAssets.MyServiceHostInfo.IsNewDevice);
                     LogEvent("Event Log Started", MyBaseThing.cdeMID.ToString(), "");

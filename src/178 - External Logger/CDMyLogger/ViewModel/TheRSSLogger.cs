@@ -5,6 +5,7 @@
 ﻿using nsCDEngine.BaseClasses;
 using nsCDEngine.Communication;
 using nsCDEngine.Engines;
+using nsCDEngine.Engines.NMIService;
 using nsCDEngine.Engines.StorageService;
 using nsCDEngine.Engines.ThingService;
 using nsCDEngine.ViewModels;
@@ -30,8 +31,15 @@ namespace CDMyLogger.ViewModel
             base.Connect(pMsg);
             if (TheCommCore.MyHttpService != null)
             {
+                if (!string.IsNullOrEmpty(MyBaseThing.Address))
+                {
+                    if (!MyBaseThing.Address.StartsWith("/"))
+                        MyBaseThing.Address = $"/{MyBaseThing.Address}";
+                    TheCommCore.MyHttpService.RegisterHttpInterceptorB4(MyBaseThing.Address, InterceptRSSRequest);
+                }
+                else
+                    TheCommCore.MyHttpService.RegisterHttpInterceptorB4("/SYSLOG.RSS", InterceptRSSRequest);
                 TheCommCore.MyHttpService.RegisterHttpInterceptorB4("/EVTLOG.RSS", InterceptRSSEvtRequest);
-                TheCommCore.MyHttpService.RegisterHttpInterceptorB4("/SYSLOG.RSS", InterceptRSSRequest);
             }
         }
 
@@ -41,7 +49,10 @@ namespace CDMyLogger.ViewModel
             if (TheCommCore.MyHttpService != null)
             {
                 TheCommCore.MyHttpService.UnregisterHttpInterceptorB4("/EVTLOG.RSS");
-                TheCommCore.MyHttpService.UnregisterHttpInterceptorB4("/SYSLOG.RSS");
+                if (!string.IsNullOrEmpty(MyBaseThing.Address))
+                    TheCommCore.MyHttpService.UnregisterHttpInterceptorB4(MyBaseThing.Address);
+                else
+                    TheCommCore.MyHttpService.UnregisterHttpInterceptorB4("/SYSLOG.RSS");
             }
         }
 
@@ -124,6 +135,12 @@ namespace CDMyLogger.ViewModel
                 TheRSSGenerator.CreateRSS(pRequest, new List<TheEventLogData>() { new TheEventLogData() { EventName = "No Eventlog on this Node" } }, 1);
         }
 
+        protected override void DoCreateUX(TheFormInfo pForm)
+        {
+            base.DoCreateUX(pForm);
+            var AdressFld = TheNMIEngine.GetFieldByFldOrder(pForm, 124);
+            AdressFld.Header = "RSS Endpoint";
+        }
     }
     internal class TheRSSGenerator
     {

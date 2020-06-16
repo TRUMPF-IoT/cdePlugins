@@ -102,14 +102,15 @@ namespace CDMyRulesEngine.ViewModel
                 // When the Friendly Name changes, propogate to the other UI elements that use it.
                 tstFlds["FriendlyName"].RegisterUXEvent(MyBaseThing, eUXEvents.OniValueChanged, null, (psender, pPara) =>
                 {
-                    (mThisFormFields["Header"] as TheFieldInfo).SetUXProperty(Guid.Empty, $"Title={this.FriendlyName}");
-                    (mThisFormFields["DashIcon"] as TheDashPanelInfo).SetUXProperty(Guid.Empty, $"Caption={this.FriendlyName}");
+                    (mThisFormFields["Header"] as TheFieldInfo).SetUXProperty(Guid.Empty, $"Title={MyBaseThing.FriendlyName}");
+                    (mThisFormFields["DashIcon"] as TheDashPanelInfo).SetUXProperty(Guid.Empty, $"Caption={MyBaseThing.FriendlyName}");
                 });
 
                 // Add fields to Status Block that are specific to this plugin.
                 TheNMIEngine.AddSmartControl(MyBaseThing, tFormGuid, eFieldType.SingleCheck, 60, 2, 0, "Activate Rule", "IsRuleActive", new nmiCtrlSingleCheck { ParentFld = idGroupStatus, TileWidth = 3 });
-                TheNMIEngine.AddSmartControl(MyBaseThing, tFormGuid, eFieldType.SingleCheck, 70, 2, 0, "Log Rule", "IsRuleLogged", new nmiCtrlSingleCheck { ParentFld = idGroupStatus, TileWidth = 3 });
-                TheFieldInfo tTriggerBut = TheNMIEngine.AddSmartControl(MyBaseThing, tFormGuid, eFieldType.TileButton, 80, 2, 0xC0, "Trigger Now", null, new nmiCtrlTileButton { ParentFld = idGroupStatus, ClassName = "cdeGoodActionButton", NoTE = true, TileWidth = 6 });
+                TheNMIEngine.AddSmartControl(MyBaseThing, tFormGuid, eFieldType.SingleCheck, 70, 2, 0, "Log Action", "IsRuleLogged", new nmiCtrlSingleCheck { ParentFld = idGroupStatus, TileWidth = 3 });
+                TheNMIEngine.AddSmartControl(MyBaseThing, tFormGuid, eFieldType.SingleCheck, 75, 2, 0, "Log Action to Eventlog", "IsEVTLogged", new nmiCtrlSingleCheck { ParentFld = idGroupStatus, TileWidth = 3 });
+                TheFieldInfo tTriggerBut = TheNMIEngine.AddSmartControl(MyBaseThing, tFormGuid, eFieldType.TileButton, 65, 2, 0xC0, "Trigger Now", null, new nmiCtrlTileButton { ParentFld = idGroupStatus, ClassName = "cdeGoodActionButton", NoTE = true, TileWidth = 3 });
                 tTriggerBut.RegisterUXEvent(MyBaseThing, eUXEvents.OnClick, "TriggerNow", (psender, pPara) =>
                 {
                     TheProcessMessage pMSG = pPara as TheProcessMessage;
@@ -126,7 +127,7 @@ namespace CDMyRulesEngine.ViewModel
                             //FireAction(tRule, true);
                             tRule.FireAction(true);
                             MyBaseEngine.ProcessMessage(new TheProcessMessage(new TSM(MyBaseEngine.GetEngineName(), "FIRE_RULE", MyBaseThing.cdeMID.ToString())));
-                            TheCommCore.PublishToOriginator(pMSG.Message, new TSM(eEngineName.NMIService, "NMI_TOAST", string.Format("Rule {0} triggered", tRule.FriendlyName)));
+                            TheCommCore.PublishToOriginator(pMSG.Message, new TSM(eEngineName.NMIService, "NMI_TOAST", string.Format("Rule {0} triggered", tRule.GetBaseThing().FriendlyName)));
                         }
                     }
                 });
@@ -323,30 +324,32 @@ namespace CDMyRulesEngine.ViewModel
                             tObject.SetProperty(ActionProperty, tActionValue);
                         else
                             tActionThing.SetProperty(ActionProperty, tActionValue);
+                        if (IsRuleLogged)
+                            LogEvent(tActionValue);
+                        if (IsEVTLogged)
+                            TheLoggerFactory.LogEvent("Rule Fired", TheCommonUtils.GenerateFinalStr(MyBaseThing.FriendlyName, MyBaseThing), eMsgLevel.l4_Message, TheBaseAssets.MyServiceHostInfo.GetPrimaryStationURL(false), TriggerObject, tActionValue);
                     }
                     break;
             }
             TheThing.SetSafePropertyDate(MyBaseThing, "LastAction", DateTimeOffset.Now);
             FireEvent("RuleFired", this, this, true);
-            if (IsRuleLogged)
-                LogEvent();
         }
 
-        public bool LogEvent()
+        public bool LogEvent(string ActionText)
         {
             TheEventLogData tSec = new TheEventLogData
             {
                 EventTime = DateTimeOffset.Now,
                 EventLevel = eMsgLevel.l4_Message,
                 StationName = TheBaseAssets.MyServiceHostInfo.GetPrimaryStationURL(false),
-                EventName = TheCommonUtils.GenerateFinalStr(FriendlyName, MyBaseThing)
+                EventName = TheCommonUtils.GenerateFinalStr(MyBaseThing.FriendlyName, MyBaseThing)
             };
             if (!string.IsNullOrEmpty(tSec.EventName))
             {
                 tSec.EventName = tSec.EventName.Replace("%OldValue%", TriggerOldValue);
             }
             tSec.EventTrigger = TriggerObject;
-            tSec.ActionObject = ActionObject;
+            tSec.ActionObject = ActionText;
             var tEng=MyBaseEngine.GetBaseThing().GetObject() as TheRulesEngine;
             tEng?.LogEvent(tSec);
             return true;
@@ -391,6 +394,10 @@ namespace CDMyRulesEngine.ViewModel
                 }
                 TheCommCore.PublishCentral(customTSM, true);
             }
+            if (IsRuleLogged)
+                LogEvent(escPayload);
+            if (IsEVTLogged)
+                TheLoggerFactory.LogEvent("Rule Fired", TheCommonUtils.GenerateFinalStr(MyBaseThing.FriendlyName, MyBaseThing), eMsgLevel.l4_Message, TheBaseAssets.MyServiceHostInfo.GetPrimaryStationURL(false), escText, escPayload);
         }
 
         public static double Evaluate(string expression)

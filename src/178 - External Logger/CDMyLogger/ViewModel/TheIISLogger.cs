@@ -30,8 +30,8 @@ namespace CDMyLogger.ViewModel
         [ConfigProperty(cdeT = ePropertyTypes.TString, DefaultValue = "", Description = "Path to the IIS failed request trace logs folder", Generalize = true, Required = true)]
         public string IISFailedReqTraceFolderPath
         {
-            get { return TheThing.MemberGetSafePropertyString(MyBaseThing); }
-            set { TheThing.MemberSetSafePropertyString(MyBaseThing, value); }
+            get { return MyBaseThing.Address; }
+            set { MyBaseThing.Address=value; }
         }
         /// <summary>
         /// Disables the write-through of IIS errors to the SYSLOG.  Allows for a quick deactivation if necessary.
@@ -72,7 +72,9 @@ namespace CDMyLogger.ViewModel
         protected override void DoCreateUX(TheFormInfo pForm)
         {
             base.DoCreateUX(pForm);
-            TheNMIEngine.AddSmartControl(MyBaseThing, pForm, eFieldType.SingleEnded, 200, 2, 0, "Path to IIS Trace Logs Folder", nameof(IISFailedReqTraceFolderPath), new nmiCtrlSingleEnded { TileWidth = 6, ParentFld = 120, HelpText = "e.g. C:\\inetpub\\logs\\FailedReqLogFiles\\W3SVC1" });
+            var AdressFld = TheNMIEngine.GetFieldByFldOrder(pForm, 124);
+            AdressFld.Header = "Path to IIS Trace Logs Folder";
+            //TheNMIEngine.AddSmartControl(MyBaseThing, pForm, eFieldType.SingleEnded, 200, 2, 0, "Path to IIS Trace Logs Folder", nameof(IISFailedReqTraceFolderPath), new nmiCtrlSingleEnded { TileWidth = 6, ParentFld = 120, HelpText = "e.g. C:\\inetpub\\logs\\FailedReqLogFiles\\W3SVC1" });
             TheNMIEngine.AddSmartControl(MyBaseThing, pForm, eFieldType.SingleCheck, 201, 2, 0, "Disable Write to SYSLOG", nameof(DisableWriteToSYSLOG), new nmiCtrlSingleCheck { ParentFld = 120, DefaultValue = "false" });
         }
 
@@ -155,7 +157,7 @@ namespace CDMyLogger.ViewModel
                         catch (Exception) { }
                         if (errorMsg != null)
                         {
-                            TheBaseAssets.MySYSLOG.WriteToLog(26012 + errorCount++, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseEngine.GetEngineName(), errorMsg, eMsgLevel.l1_Error));
+                            TheBaseAssets.MySYSLOG.WriteToLog(26012, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseEngine.GetEngineName(), errorMsg, eMsgLevel.l1_Error));
                         }
                     }
                 }
