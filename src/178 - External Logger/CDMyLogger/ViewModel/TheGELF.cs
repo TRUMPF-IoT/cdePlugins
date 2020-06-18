@@ -26,6 +26,8 @@ namespace CDMyLogger.ViewModel
         protected override void DoCreateUX(TheFormInfo pForm)
         {
             base.DoCreateUX(pForm);
+            var AdressFld = TheNMIEngine.GetFieldByFldOrder(pForm, 124);
+            AdressFld.Header = "Address of Graylog Server";
             var tcheck = TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleCheck, 140, 2, 0x80, "Write to Console", "ToConsole", new nmiCtrlSingleCheck { ParentFld=120 });
         }
 

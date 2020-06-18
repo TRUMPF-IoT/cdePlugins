@@ -201,7 +201,7 @@ namespace CDMyLogger
                 mMyDashboard = TheNMIEngine.AddDashboard(MyBaseThing, new TheDashboardInfo(MyBaseEngine, "System Logger") { PropertyBag = new ThePropertyBag() { "Category=Diagnostics", "Caption=<i class='fa faIcon fa-5x'>&#xf0f6;</i><br>System Logger" } });
 
                 var tFlds = TheNMIEngine.CreateEngineForms(MyBaseThing, TheThing.GetSafeThingGuid(MyBaseThing, "LOGGER"), "Logger Services", null, 20, 0x0F, 0xF0, TheNMIEngine.GetNodeForCategory(), "REFFRESHME", true, new eTheLoggerServiceTypes(), eTheLoggerServiceTypes.GELF);
-                (tFlds["DashIcon"] as TheDashPanelInfo).PanelTitle = "<i class='fa faIcon fa-5x'>&#xf0ce;</i></br>Logger Services";
+                (tFlds["DashIcon"] as TheDashPanelInfo).PanelTitle = "Logger Services";
                 var tForm = tFlds["Form"] as TheFormInfo;
                 tForm.AddButtonText = "Add new Logger Service";
 
