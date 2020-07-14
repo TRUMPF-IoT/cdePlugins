@@ -12,6 +12,7 @@ using System.Collections.Generic;
 
 namespace CDMyVThings.ViewModel
 {
+    [DeviceType(DeviceType = eVThings.eDataGenerator, Capabilities = new [] {  eThingCaps.ConfigManagement })]
     public class TheDataGenerator : ICDEThing
     {
         #region ICDEThing Methods
@@ -73,44 +74,46 @@ namespace CDMyVThings.ViewModel
 
         private IBaseEngine MyBaseEngine;
 
-        public long Config_NumberOfActiveProperties
+        [ConfigProperty]
+        public long Gen_Config_NumberOfActiveProperties
         {
-            get { return (long)TheThing.GetSafePropertyNumber(MyBaseThing, "Gen_Config_NumberOfActiveProperties"); }
-            set { TheThing.SetSafePropertyNumber(MyBaseThing, "Gen_Config_NumberOfActiveProperties", value); }
+            get { return (long)TheThing.MemberGetSafePropertyNumber(MyBaseThing); }
+            set { TheThing.MemberSetSafePropertyNumber(MyBaseThing, value); }
         }
 
+        [ConfigProperty]
         public long Gen_Config_PropertyUpdateInterval
         {
-            get { return (long)TheThing.GetSafePropertyNumber(MyBaseThing, nameof(Gen_Config_PropertyUpdateInterval)); }
-            set { TheThing.SetSafePropertyNumber(MyBaseThing, nameof(Gen_Config_PropertyUpdateInterval), value); }
+            get { return (long)TheThing.MemberGetSafePropertyNumber(MyBaseThing); }
+            set { TheThing.MemberSetSafePropertyNumber(MyBaseThing, value); }
         }
 
-        public double Stats_PropertiesPerSecond
+        public double Gen_Stats_PropertiesPerSecond
         {
-            get { return TheThing.GetSafePropertyNumber(MyBaseThing, "Gen_Stats_PropertiesPerSecond"); }
-            set { TheThing.SetSafePropertyNumber(MyBaseThing, "Gen_Stats_PropertiesPerSecond", value); }
+            get { return TheThing.MemberGetSafePropertyNumber(MyBaseThing); }
+            set { TheThing.MemberSetSafePropertyNumber(MyBaseThing, value); }
         }
-        public double Stats_PropertyCounter
+        public double Gen_Stats_PropertyCounter
         {
-            get { return TheThing.GetSafePropertyNumber(MyBaseThing, "Gen_Stats_PropertyCounter"); }
-            set { TheThing.SetSafePropertyNumber(MyBaseThing, "Gen_Stats_PropertyCounter", value); }
+            get { return TheThing.MemberGetSafePropertyNumber(MyBaseThing); }
+            set { TheThing.MemberSetSafePropertyNumber(MyBaseThing, value); }
         }
-        public DateTimeOffset Stats_UpdateTime
+        public DateTimeOffset Gen_Stats_UpdateTime
         {
-            get { return TheThing.GetSafePropertyDate(MyBaseThing, "Gen_Stats_UpdateTime"); }
-            set { TheThing.SetSafePropertyDate(MyBaseThing, "Gen_Stats_UpdateTime", value); }
+            get { return TheThing.MemberGetSafePropertyDate(MyBaseThing); }
+            set { TheThing.MemberSetSafePropertyDate(MyBaseThing, value); }
         }
 
-        public long Config_StatsUpdateInterval
+        public long Gen_Config_StatsUpdateInterval
         {
-            get { return (long)TheThing.GetSafePropertyNumber(MyBaseThing, "Gen_Config_StatsUpdateInterval"); }
-            set { TheThing.SetSafePropertyNumber(MyBaseThing, "Gen_Config_StatsUpdateInterval", value); }
+            get { return (long)TheThing.MemberGetSafePropertyNumber(MyBaseThing); }
+            set { TheThing.MemberSetSafePropertyNumber(MyBaseThing, value); }
         }
 
         public bool IsStarted
         {
-            get { return TheThing.GetSafePropertyBool(MyBaseThing, "IsStarted"); }
-            set { TheThing.SetSafePropertyBool(MyBaseThing, "IsStarted", value); }
+            get { return TheThing.MemberGetSafePropertyBool(MyBaseThing); }
+            set { TheThing.MemberSetSafePropertyBool(MyBaseThing, value); }
         }
 
         [ConfigProperty(DefaultValue = false)]
@@ -119,7 +122,12 @@ namespace CDMyVThings.ViewModel
             get { return TheThing.MemberGetSafePropertyBool(MyBaseThing); }
             set { TheThing.MemberSetSafePropertyBool(MyBaseThing, value); }
         }
-
+        [ConfigProperty(DefaultValue = false)]
+        public bool AutoStart
+        {
+            get { return TheThing.MemberGetSafePropertyBool(MyBaseThing); }
+            set { TheThing.MemberSetSafePropertyBool(MyBaseThing, value); }
+        }
 
         System.Threading.Timer m_Timer;
 
@@ -184,7 +192,7 @@ namespace CDMyVThings.ViewModel
             var sw = new System.Diagnostics.Stopwatch();
             sw.Start();
             var now = DateTimeOffset.UtcNow;
-            for (int i = 1; i <= this.Config_NumberOfActiveProperties; i++)
+            for (int i = 1; i <= this.Gen_Config_NumberOfActiveProperties; i++)
             {
                 var value = (double)valueCounter++; //r.Next(0, 1000);
                 if (valueCounter % 25 == 0)
@@ -209,24 +217,24 @@ namespace CDMyVThings.ViewModel
                 b35_Running = !b35_Running;
             }
 
-            if (g_sw.ElapsedMilliseconds > this.Config_StatsUpdateInterval)
+            if (g_sw.ElapsedMilliseconds > this.Gen_Config_StatsUpdateInterval)
             {
                 long elapsed = 0;
                 lock (g_sw)
                 {
                     elapsed = g_sw.ElapsedMilliseconds;
-                    if (elapsed > this.Config_StatsUpdateInterval)
+                    if (elapsed > this.Gen_Config_StatsUpdateInterval)
                     {
                         g_sw.Restart();
                     }
                 }
-                if (elapsed > this.Config_StatsUpdateInterval)
+                if (elapsed > this.Gen_Config_StatsUpdateInterval)
                 {
                     var newCount = System.Threading.Interlocked.Exchange(ref propGenerateCounter, 0);
-                    this.Stats_PropertyCounter += newCount;
-                    this.Stats_PropertiesPerSecond = newCount / (elapsed / 1000.0);
-                    this.Stats_UpdateTime = DateTimeOffset.Now;
-                    TheBaseAssets.MySYSLOG.WriteToLog(700, TSM.L(eDEBUG_LEVELS.FULLVERBOSE) ? null : new TSM("Data Generator", "Generate", eMsgLevel.l6_Debug, String.Format("Generate Rate: {0,11:N2} properties/s", this.Stats_PropertiesPerSecond)));
+                    this.Gen_Stats_PropertyCounter += newCount;
+                    this.Gen_Stats_PropertiesPerSecond = newCount / (elapsed / 1000.0);
+                    this.Gen_Stats_UpdateTime = DateTimeOffset.Now;
+                    TheBaseAssets.MySYSLOG.WriteToLog(700, TSM.L(eDEBUG_LEVELS.FULLVERBOSE) ? null : new TSM("Data Generator", "Generate", eMsgLevel.l6_Debug, String.Format("Generate Rate: {0,11:N2} properties/s", this.Gen_Stats_PropertiesPerSecond)));
                 }
 
             }
@@ -259,7 +267,7 @@ namespace CDMyVThings.ViewModel
             if (string.IsNullOrEmpty(MyBaseThing.ID))
             {
                 MyBaseThing.ID = Guid.NewGuid().ToString();
-                this.Config_StatsUpdateInterval = 5000;
+                this.Gen_Config_StatsUpdateInterval = 5000;
             }
             MyBaseThing.Value = "0";
             TheThing.SetSafePropertyBool(MyBaseThing, "IsActive", true);
@@ -310,17 +318,17 @@ namespace CDMyVThings.ViewModel
             tc["Group"].SetParent(1);
             ts["Group"].Header = "Settings...";
 
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 51, 2, 0x0, "###CDMyVThings.TheVThings#NumberProperties187329#Number Properties###", "Gen_Config_NumberOfActiveProperties", new nmiCtrlNumber() { TileWidth=3, ParentFld = 20 });
-            CountBar = TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 52, 2, 0x0, "###CDMyVThings.TheVThings#Frequencyms741318#Frequency###", "Gen_Config_PropertyUpdateInterval", new nmiCtrlNumber() { TileWidth = 3, ParentFld = 20 });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 53, 0, 0x0, "###CDMyVThings.TheVThings#PropertiesperSecond546134#Properties per Second###", "Gen_Stats_PropertiesPerSecond", new nmiCtrlNumber() { TileWidth=3, ParentFld = 20 });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 54, 0, 0x0, "###CDMyVThings.TheVThings#Propertycount904939#Property Counter###", "Gen_Stats_PropertyCounter", new nmiCtrlNumber() { TileWidth = 3, ParentFld = 20 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 51, 2, 0x0, "###CDMyVThings.TheVThings#NumberProperties187329#Number Properties###", nameof(Gen_Config_NumberOfActiveProperties), new nmiCtrlNumber() { TileWidth=3, ParentFld = 20 });
+            CountBar = TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 52, 2, 0x0, "###CDMyVThings.TheVThings#Frequencyms741318#Frequency###", nameof(Gen_Config_PropertyUpdateInterval), new nmiCtrlNumber() { TileWidth = 3, ParentFld = 20 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 53, 0, 0x0, "###CDMyVThings.TheVThings#PropertiesperSecond546134#Properties per Second###", nameof(Gen_Stats_PropertiesPerSecond), new nmiCtrlNumber() { TileWidth=3, ParentFld = 20 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 54, 0, 0x0, "###CDMyVThings.TheVThings#Propertycount904939#Property Counter###", nameof(Gen_Stats_PropertyCounter), new nmiCtrlNumber() { TileWidth = 3, ParentFld = 20 });
             TheFieldInfo mSendbutton = TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.TileButton, 60, 2, 0, "###CDMyVThings.TheVThings#ResetCounter741318#Reset Counter###", false, "", null, new nmiCtrlTileButton() { TileWidth = 3, ParentFld = 20, ClassName = "cdeGoodActionButton", NoTE = true });
             mSendbutton.RegisterUXEvent(MyBaseThing, eUXEvents.OnClick, "", (pThing, pPara) =>
             {
                 TheProcessMessage pMsg = pPara as TheProcessMessage;
                 if (pMsg == null || pMsg.Message == null) return;
-                this.Stats_PropertyCounter = 0;
-                this.Stats_PropertiesPerSecond = 0;
+                this.Gen_Stats_PropertyCounter = 0;
+                this.Gen_Stats_PropertiesPerSecond = 0;
                 sinkStatChanged(null, null);
             });
 
