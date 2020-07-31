@@ -149,7 +149,7 @@ namespace CDMyRulesEngine.ViewModel
             {
                 /* Trigger Object Group */
                 {  new TheFieldInfo() { FldOrder=140,DataItem="MyPropertyBag.TriggerObject.Value",Flags=2,Type=eFieldType.ThingPicker,Header="Trigger Object", PropertyBag=new nmiCtrlThingPicker() { ParentFld=idGroupTriggerObject, HelpText="If this objects...", IncludeEngines=true }  }},
-                {  new TheFieldInfo() { FldOrder=150,DataItem="MyPropertyBag.TriggerProperty.Value",Flags=2,Type=eFieldType.PropertyPicker,Header="Trigger Property", DefaultValue="Value",PropertyBag=new nmiCtrlPropertyPicker() { ParentFld=idGroupTriggerObject, HelpText="...property is...", ThingFld=150 }   }},
+                {  new TheFieldInfo() { FldOrder=150,DataItem="MyPropertyBag.TriggerProperty.Value",Flags=2,Type=eFieldType.PropertyPicker,Header="Trigger Property", DefaultValue="Value",PropertyBag=new nmiCtrlPropertyPicker() { ParentFld=idGroupTriggerObject, HelpText="...property is...", ThingFld=140 }   }},
                 {  new TheFieldInfo() { FldOrder=160,DataItem="MyPropertyBag.TriggerCondition.Value",Flags=2,Type=eFieldType.ComboBox,Header="Trigger Condition", DefaultValue="2",PropertyBag=new nmiCtrlComboBox() { ParentFld=idGroupTriggerObject, HelpText="... then this value, this rule will fire...", DefaultValue="2", Options="Fire:0;State:1;Equals:2;Larger:3;Smaller:4;Not:5;Contains:6;Set:7;StartsWith:8;EndsWith:9;Flank:10" }}},
                 {  new TheFieldInfo() { FldOrder=170,DataItem="MyPropertyBag.TriggerValue.Value",Flags=2,Type=eFieldType.SingleEnded,Header="Trigger Value", PropertyBag=new ThePropertyBag() { "ParentFld=100", "HelpText=...this objects..." }  }},
 
