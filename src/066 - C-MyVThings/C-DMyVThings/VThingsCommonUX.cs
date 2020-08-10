@@ -19,7 +19,7 @@ namespace CDMyVThings
 
             MyDashboard = TheNMIEngine.AddDashboard(MyBaseThing, new TheDashboardInfo(MyBaseEngine, "Virtual Things") { FldOrder = 5000, PropertyBag = new ThePropertyBag { "Category=Services", "Caption=<i class='fa faIcon fa-5x'>&#xf61f;</i></br>Virtual Things" } });
 
-            tVThingsForm = new TheFormInfo(TheThing.GetSafeThingGuid(MyBaseThing, "VTable"), eEngineName.NMIService, "Virtual Things", string.Format("TheThing;:;0;:;True;:;EngineName={0}", MyBaseThing.EngineName)) { IsNotAutoLoading = true, TileWidth = 11, AddButtonText = "Add V-Thing" };
+            tVThingsForm = new TheFormInfo(TheThing.GetSafeThingGuid(MyBaseThing, "VTable"), eEngineName.NMIService, "Virtual Things", string.Format("TheThing;:;0;:;True;:;EngineName={0}", MyBaseThing.EngineName)) { IsNotAutoLoading = true, TileWidth = 12, AddButtonText = "Add V-Thing" };
             TheNMIEngine.AddFormToThingUX(MyBaseThing, tVThingsForm, "CMyTable", "<i class='fa faIcon fa-5x'>&#xf0ce;</i></br>V-Things List", 1, 3, 0xF0, TheNMIEngine.GetNodeForCategory(), null, new ThePropertyBag() { });
             TheNMIEngine.AddCommonTableColumns(MyBaseThing, tVThingsForm, new eVThings(), eVThings.eVCountdown,false);
 
