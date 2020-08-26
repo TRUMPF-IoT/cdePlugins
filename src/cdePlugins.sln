@@ -77,6 +77,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDMyRulesEngine", "149 - CD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "C-DMyMessages", "079 - CDMyMessages\C-DMyMessages\C-DMyMessages.csproj", "{BD605ABF-E950-4D45-8692-4FF0A81A4106}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDMyMSSQLStorage", "150 - CDMyMSSQL\CDMyMSSQL\CDMyMSSQLStorage.csproj", "{CDE796FD-C24E-4AB5-B6FA-4213865C430A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDMyWebRelay", "151 - CDMyWebRelay\CDMyWebRelay\CDMyWebRelay.csproj", "{71B8DBFD-7DBE-4CA0-94EC-C7F13B5EF4A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -131,6 +135,14 @@ Global
 		{BD605ABF-E950-4D45-8692-4FF0A81A4106}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD605ABF-E950-4D45-8692-4FF0A81A4106}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD605ABF-E950-4D45-8692-4FF0A81A4106}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDE796FD-C24E-4AB5-B6FA-4213865C430A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDE796FD-C24E-4AB5-B6FA-4213865C430A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDE796FD-C24E-4AB5-B6FA-4213865C430A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDE796FD-C24E-4AB5-B6FA-4213865C430A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71B8DBFD-7DBE-4CA0-94EC-C7F13B5EF4A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71B8DBFD-7DBE-4CA0-94EC-C7F13B5EF4A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71B8DBFD-7DBE-4CA0-94EC-C7F13B5EF4A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71B8DBFD-7DBE-4CA0-94EC-C7F13B5EF4A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
