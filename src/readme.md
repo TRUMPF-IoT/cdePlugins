@@ -19,5 +19,9 @@ You can download CDEX deloyment packages (ZIP files) with compiled binaries for 
 | [CDMyNetwork](093%20-%20CDMyNetwork/readme.md)| The network services plugin allows to monitor services on the network|Service
 | [CDMyRulesEngine](149%20-%20CDMyRulesEngine/readme.md)| The rules engine allows to create simple rules to act on changes/trigger in Things managed by the C-DEngine|Service
 | [CDMyMessaging](079%20-%20CDMyMessages/readme.md)| The Messaging plugin can send email or text message to users|Service
+| [CDMyMSSQL](150%20-%20CDMyMSSQL/readme.md)| Storage Service for data collected by the C-DEngine |IStorageService
+| [CDMyWebRelay](151%20-%20CDMyWebRelay/readme.md)| Access to internal Web Servers|Service
 
-Additional plug-ins like OPC UA Client and Server, ModBus, MTConnect, Azure Event/IoTHub, Google IoTHub, SmartThings, Wemo, Alexa, OpenAuth2 are under review for future OSS release. Let us know if you have a particular interest or requirement. Feel free to open an Issue/Feature Request on GitHub, or contact us at [info@c-labs.com](mailto:info@c-labs.com).
+Additional plug-ins like OPC UA Client and Server, ModBus, MTConnect, Azure Event/IoTHub, Google IoTHub, OpenAuth2 are under review for future OSS release. Let us know if you have a particular interest or requirement. 
+
+Feel free to open an Issue/Feature Request on GitHub, or contact us at [info@c-labs.com](mailto:info@c-labs.com).

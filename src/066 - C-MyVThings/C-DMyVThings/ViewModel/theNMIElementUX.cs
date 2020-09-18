@@ -37,6 +37,9 @@ namespace CDMyVThings.ViewModel
             CountBar.Flags = TheCommonUtils.CInt(ThePropertyBag.PropBagGetValue(CountBar.PropertyBag, "Flags", "="));
             CountBar.PropertyBag = new TheNMIBaseControl { ParentFld = 1 };
             CountBar.UpdateUXProperties(Guid.Empty);
+            CountBar.RegisterUXEvent(MyBaseThing, eUXEvents.OnClick, "click", (sener, para) => {
+                TheThing.SetSafePropertyBool(MyBaseThing,"ClickState", !TheThing.GetSafePropertyBool(MyBaseThing,"ClickState"));
+            });
         }
 
 
@@ -45,7 +48,7 @@ namespace CDMyVThings.ViewModel
         protected TheFieldInfo ChangeTimestampField;
         public override bool DoCreateUX()
         {
-
+            MyBaseThing.RegisterProperty("ClickState");
             var tFlds = TheNMIEngine.AddStandardForm(MyBaseThing, null, 24, null, "Value");
             MyStatusForm = tFlds["Form"] as TheFormInfo;
             //MyStatusForm.PropertyBag = new ThePropertyBag { "TileWidth=6" };
