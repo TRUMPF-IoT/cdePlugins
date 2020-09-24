@@ -115,7 +115,7 @@ namespace CDMyNetwork
                 switch (tDevice.DeviceType)
                 {
                     case eNetworkServiceTypes.PingService:
-                        CreateOrUpdateService<ThePingService>(tDevice, true);
+                        CreateOrUpdateService<ThePingService>(tDevice);
                         break;
                 }
             }
@@ -123,29 +123,14 @@ namespace CDMyNetwork
             sinkStatChanged(null);
         }
 
-        T CreateOrUpdateService<T>(TheThing tDevice, bool bRegisterThing) where T : TheNetworkServiceBase
+        object createOrUpdateThingLock = new object();
+
+        T CreateOrUpdateService<T>(TheThing tDevice) where T : TheNetworkServiceBase
         {
-            T tServer;
-            if (tDevice == null || !tDevice.HasLiveObject)
+            T tServer = tDevice.GetOrCreateIThingObject((thing) => (T)Activator.CreateInstance(typeof(T), tDevice, this), out var bCreated);
+            if (bCreated)
             {
-                tServer = (T)Activator.CreateInstance(typeof(T), tDevice, this);
-                if (bRegisterThing)
-                {
-                    TheThingRegistry.RegisterThing(tServer);
-                    tServer.GetBaseThing().RegisterOnChange("DeviceType", OnServerDeviceTypeChanged);
-                }
-            }
-            else
-            {
-                tServer = tDevice.GetObject() as T;
-                if (tServer != null)
-                {
-                    //tServer.InitServer(null);
-                }
-                else
-                {
-                    tServer = (T)Activator.CreateInstance(typeof(T), tDevice, this);
-                }
+                tServer?.GetBaseThing().RegisterOnChange("DeviceType", OnServerDeviceTypeChanged);
             }
             return tServer;
         }
