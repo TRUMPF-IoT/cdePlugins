@@ -34,6 +34,7 @@ namespace CDMyNetwork
             MyBaseEngine.SetIsolationFlags(true, true);
             MyBaseEngine.SetEngineID(new Guid("{2592E784-2EDF-4691-A0CD-B2BBCFDAF9DD}"));
             MyBaseEngine.SetPluginInfo("This service allows to monitors network services", 0, null, "FA3:f6ff", "C-Labs", "http://www.c-labs.com", null);
+            MyBaseEngine.SetCDEMinVersion(5.110);
         }
         #endregion
 
