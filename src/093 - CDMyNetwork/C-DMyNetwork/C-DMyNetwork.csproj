@@ -13,28 +13,43 @@
         <Copyright>Copyright © 2017-2020 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
         <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <DefineConstants>CDE_SYSLOG;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
 
   <Choose>
     <When Condition="'$(TargetFramework)'=='netstandard2.0'">
-      <PropertyGroup>
-        <DefineConstants>CDE_STANDARD;NET_STANDARD;NETSTANDARD2_0;$(DefineConstants)</DefineConstants>
+      <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <DefineConstants>CDE_STANDARD;NET_STANDARD;NETSTANDARD2_0;</DefineConstants>
+      </PropertyGroup>
+
+      <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <DefineConstants>CDE_STANDARD;NET_STANDARD;NETSTANDARD2_0;</DefineConstants>
       </PropertyGroup>
     </When>
     <When Condition="'$(TargetFramework)'=='net35'">
-      <PropertyGroup>
-        <DefineConstants>CDE_NET35;NET35;$(DefineConstants)</DefineConstants>
+      <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <DefineConstants>CDE_NET35;NET35;</DefineConstants>
+      </PropertyGroup>
+
+      <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <DefineConstants>CDE_NET35;NET35;</DefineConstants>
       </PropertyGroup>
     </When>
     <When Condition="'$(TargetFramework)'=='net40'">
-      <PropertyGroup>
-        <DefineConstants>CDE_NET4;NET4;$(DefineConstants)</DefineConstants>
+      <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <DefineConstants>CDE_NET4;NET4</DefineConstants>
+      </PropertyGroup>
+
+      <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <DefineConstants>CDE_NET4;NET4</DefineConstants>
       </PropertyGroup>
     </When>
     <When Condition="'$(TargetFramework)'=='net45'">
-      <PropertyGroup>
-        <DefineConstants>CDE_NET45;NET45;$(DefineConstants)</DefineConstants>
+      <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <DefineConstants>CDE_NET45;NET45</DefineConstants>
+      </PropertyGroup>
+
+      <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <DefineConstants>CDE_NET45;NET45</DefineConstants>
       </PropertyGroup>
     </When>
   </Choose>

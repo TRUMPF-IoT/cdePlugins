@@ -37,8 +37,7 @@ namespace CDMyNetwork.ViewModel
                 MyBaseThing = new TheThing();
             }
             MyBaseEngine = pPluginBase.GetBaseEngine();
-            // Now handled by the caller via GetOrCreateAndSetIThingObject 
-            // MyBaseThing.SetIThingObject(this); 
+            MyBaseThing.SetIThingObject(this);
         }
 
         public override bool Init()
