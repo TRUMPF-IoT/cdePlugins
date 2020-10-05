@@ -1,17 +1,6 @@
-﻿/*********************************************************************
-*
-* Project Name: 182- CDMyMqttSender
-*
-* Description: This service allows to send data to or receive data from Cloud Services like Azure ServiceBus and Eventhub.
-*
-* Date of creation: 
-*
-* Author: Markus Horstmann
-*
-* Copyright © 2009-2019 C-Labs Corporation and its licensors. All rights reserved.
-*
-* 
-*********************************************************************/
+﻿// SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+//
+// SPDX-License-Identifier: MPL-2.0
 using System;
 using System.Collections.Generic;
 using System.Linq;

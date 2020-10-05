@@ -1,19 +1,6 @@
-﻿/*********************************************************************
-*
-* Project Name" 182-CDMyMqttSender
-*
-* Description: 
-*
-* Date of creation: 
-*
-* Author: 
-*
-* Copyright © 2009-2016 C-Labs Corporation and its licensors. All rights reserved.
-*
-* NOTES:
-*               "FldOrder" for UX 10 to 
-*********************************************************************/
-//#define TESTDIRECTUPDATES
+﻿// SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+//
+// SPDX-License-Identifier: MPL-2.0
 using System;
 using System.Collections.Generic;
 using System.Linq;

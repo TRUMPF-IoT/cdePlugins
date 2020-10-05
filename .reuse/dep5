@@ -82,3 +82,35 @@ License: Apache-2.0
 Files: src/HTML5/cdeTS/cde/cdeWorker.js
 Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
 License: MPL-2.0
+
+Files:  src/182 - MQTT Sender/GnatMQ/*
+Copyright: Copyright (c) 2013, 2014 Paolo Patierno
+License: EPL-1.0
+
+Files:  src/182 - MQTT Sender/GnatMQ/Communication/*
+Copyright: Copyright (c) 2013, 2014 Paolo Patierno
+License: EPL-1.0
+
+Files:  src/182 - MQTT Sender/GnatMQ/Exceptions/*
+Copyright: Copyright (c) 2013, 2014 Paolo Patierno
+License: EPL-1.0
+
+Files:  src/182 - MQTT Sender/GnatMQ/Internal/*
+Copyright: Copyright (c) 2013, 2014 Paolo Patierno
+License: EPL-1.0
+
+Files:  src/182 - MQTT Sender/GnatMQ/Managers/*
+Copyright: Copyright (c) 2013, 2014 Paolo Patierno
+License: EPL-1.0
+
+Files:  src/182 - MQTT Sender/GnatMQ/Net/*
+Copyright: Copyright (c) 2013, 2014 Paolo Patierno
+License: EPL-1.0
+
+Files:  src/182 - MQTT Sender/GnatMQ/Session/*
+Copyright: Copyright (c) 2013, 2014 Paolo Patierno
+License: EPL-1.0
+
+Files:  src/182 - MQTT Sender/GnatMQ/Utility/*
+Copyright: Copyright (c) 2013, 2014 Paolo Patierno
+License: EPL-1.0
