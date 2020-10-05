@@ -17,6 +17,8 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -37,11 +39,21 @@
 	<PackageReference Include="cdeOPCUAClientContractsShared" Version="5.*" IncludeAssets="ContentFiles" />
 	<PackageReference Include="cdeThingMatcherShared" Version="5.*" IncludeAssets="ContentFiles" />
 
-	<ProjectReference Include="..\GnatMQ\GnatMQ.Std.csproj" />
+	<ProjectReference Include="..\GnatMQ\GnatMQ.Std.csproj">
+		<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+		<PrivateAssets>All</PrivateAssets>
+	</ProjectReference>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="call &quot;$(ProjectDir)..\..\..\BuildTools\signandpackage.cmd&quot; &quot;$(ProjectDir)&quot; &quot;$(TargetDir)&quot; &quot;$(TargetFileName)&quot;" />
   </Target>
+
+  <!-- From https://dev.to/wabbbit/include-both-nuget-package-references-and-project-reference-dll-using-dotnet-pack-2d8p -->
+	<Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
+    <ItemGroup>
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))"/>
+     </ItemGroup>
+   </Target>
 
 </Project>
