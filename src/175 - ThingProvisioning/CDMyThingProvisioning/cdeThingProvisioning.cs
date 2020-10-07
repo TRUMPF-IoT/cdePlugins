@@ -295,7 +295,7 @@ namespace CDMyThingProvisioning
             }
             catch (DirectoryNotFoundException)
             {
-                TheBaseAssets.MySYSLOG.WriteToLog(175001, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(MyBaseThing.EngineName, "Error finding or running script files", eMsgLevel.l2_Warning, "Script directory not found"));
+                TheBaseAssets.MySYSLOG.WriteToLog(175001, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(MyBaseThing.EngineName, "Error finding or running script files", eMsgLevel.l3_ImportantMessage, "Script directory not found"));
                 MyBaseThing.SetStatus(1, "No script directory found.");
             }
             catch (Exception e)
