@@ -27,6 +27,7 @@ using System.Threading;
 
 namespace CDMyVThings.ViewModel
 {
+    [DeviceType(DeviceType = eVThings.eVCountdown, Description = "", Capabilities = new[] { eThingCaps.ConfigManagement })]
     class TheVCountdown : TheNMILiveTag
     {
         [ConfigProperty(DefaultValue = false)]
@@ -36,10 +37,38 @@ namespace CDMyVThings.ViewModel
             set { TheThing.MemberSetSafePropertyBool(MyBaseThing, value); }
         }
 
+        [ConfigProperty(DefaultValue = false)]
+        public bool AutoStart
+        {
+            get { return TheThing.MemberGetSafePropertyBool(MyBaseThing); }
+            set { TheThing.MemberSetSafePropertyBool(MyBaseThing, value); }
+        }
+
+        [ConfigProperty(DefaultValue = false)]
+        public bool Restart
+        {
+            get { return TheThing.MemberGetSafePropertyBool(MyBaseThing); }
+            set { TheThing.MemberSetSafePropertyBool(MyBaseThing, value); }
+        }
+
+        [ConfigProperty]
+        public double StartValue
+        {
+            get { return TheThing.MemberGetSafePropertyNumber(MyBaseThing); }
+            set { TheThing.MemberSetSafePropertyNumber(MyBaseThing, value); }
+        }
+
+        [ConfigProperty]
+        public double Frequence
+        {
+            get { return TheThing.MemberGetSafePropertyNumber(MyBaseThing); }
+            set { TheThing.MemberSetSafePropertyNumber(MyBaseThing, value); }
+        }
+
         public override cdeP SetProperty(string pName, object pValue)
         {
             cdeP tProp = base.SetProperty(pName, pValue);
-            if (pName == "StartValue")
+            if (pName == nameof(StartValue))
                 sinkTriggered(tProp);
             if (pName == "Value")
                 sinkValueReset(tProp);
@@ -71,7 +100,7 @@ namespace CDMyVThings.ViewModel
         private void sinkValueReset(cdeP pProp)
         {
             if (mTimer == null && TheCommonUtils.CInt(pProp.ToString())>0)
-                this.SetProperty("StartValue", pProp.ToString());
+                this.SetProperty(nameof(StartValue), pProp.ToString());
         }
 
         private void UpdateUx()
@@ -155,8 +184,8 @@ namespace CDMyVThings.ViewModel
                         });
                     }
 
-                    if (TheThing.GetSafePropertyBool(MyBaseThing, "Restart"))
-                        sinkTriggered(this.GetProperty("StartValue", false));
+                    if (Restart)
+                        sinkTriggered(this.GetProperty(nameof(StartValue), false));
                     else
                     {
                         CountBar?.SetUXProperty(Guid.Empty, string.Format("MaxValue=100"));
@@ -188,7 +217,7 @@ namespace CDMyVThings.ViewModel
             if (TheThing.GetSafePropertyNumber(MyBaseThing, "Frequence") < 100)
                 TheThing.SetSafePropertyNumber(MyBaseThing, "Frequence", 1000);
 
-            GetProperty("StartValue", true).RegisterEvent(eThingEvents.PropertyChanged, sinkTriggered);
+            GetProperty(nameof(StartValue), true).RegisterEvent(eThingEvents.PropertyChanged, sinkTriggered);
             GetProperty("Value", true).RegisterEvent(eThingEvents.PropertyChanged, sinkValueReset);
             if (!TheThing.GetSafePropertyBool(MyBaseThing, "IsStateSensor"))
             {
@@ -204,7 +233,7 @@ namespace CDMyVThings.ViewModel
                 IsActive = false;
                 MyBaseThing.StatusLevel = 0;
                 MyBaseThing.LastMessage = "Countdown ready";
-                if (TheThing.GetSafePropertyBool(MyBaseThing, "AutoStart") && mTimer == null)
+                if (AutoStart && mTimer == null)
                     sinkTriggered(this.GetProperty("Value", false));
             }
             return true;
@@ -249,13 +278,13 @@ namespace CDMyVThings.ViewModel
                     mTimer.Dispose();
                     mTimer = null;
                 }
-                sinkTriggered(this.GetProperty("StartValue", false));
+                sinkTriggered(this.GetProperty(nameof(StartValue), false));
                 //UpdateUx();
             });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 152, 2, MyBaseThing.cdeA, "###CDMyVThings.TheVThings#StartValue633339#Start Value###", "StartValue", new nmiCtrlNumber { TileWidth = 3, TileHeight = 1, ParentFld = 150 });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 153, 2, MyBaseThing.cdeA, "###CDMyVThings.TheVThings#Ticktimeinms633339#Tick time in ms###", "Frequence", new nmiCtrlNumber { TileWidth = 3, TileHeight = 1, ParentFld = 150 });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleCheck, 154, 2, MyBaseThing.cdeA, "###CDMyVThings.TheVThings#ContinueonRestart992144#Continue on Restart###", "AutoStart", new nmiCtrlNumber { TileWidth = 3, TileHeight = 1, ParentFld = 150 });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleCheck, 155, 2, MyBaseThing.cdeA, "###CDMyVThings.TheVThings#StartOverwhenzero992144#Start Over when zero###", "Restart", new nmiCtrlNumber { TileWidth = 3, TileHeight = 1, ParentFld = 150 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 152, 2, MyBaseThing.cdeA, "###CDMyVThings.TheVThings#StartValue633339#Start Value###", nameof(StartValue), new nmiCtrlNumber { TileWidth = 3, TileHeight = 1, ParentFld = 150 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 153, 2, MyBaseThing.cdeA, "###CDMyVThings.TheVThings#Ticktimeinms633339#Tick time in ms###", nameof(Frequence), new nmiCtrlNumber { TileWidth = 3, TileHeight = 1, ParentFld = 150 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleCheck, 154, 2, MyBaseThing.cdeA, "###CDMyVThings.TheVThings#ContinueonRestart992144#Continue on Restart###", nameof(AutoStart), new nmiCtrlNumber { TileWidth = 3, TileHeight = 1, ParentFld = 150 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleCheck, 155, 2, MyBaseThing.cdeA, "###CDMyVThings.TheVThings#StartOverwhenzero992144#Start Over when zero###", nameof(Restart), new nmiCtrlNumber { TileWidth = 3, TileHeight = 1, ParentFld = 150 });
 
             int tControl = TheCommonUtils.CInt(TheThing.GetSafePropertyNumber(MyBaseThing, "ControlType"));
             ThePropertyBag tBag = ThePropertyBag.CreateUXBagFromProperties(MyBaseThing);
