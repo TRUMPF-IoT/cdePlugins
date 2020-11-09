@@ -14,7 +14,7 @@ namespace CDMyComputer
     public partial class TheCDMyComputerEngine 
     {
         public TheDashboardInfo MyPCVitalsDashboard;
-        public bool CreateUX()
+        public override bool CreateUX()
         {
             if (mIsUXInitCalled) return false;
             mIsUXInitCalled = true;

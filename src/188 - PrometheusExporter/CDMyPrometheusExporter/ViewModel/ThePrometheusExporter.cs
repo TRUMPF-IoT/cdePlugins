@@ -208,11 +208,13 @@ namespace CDMyPrometheusExporter.ViewModel
             if (mIsUXInitCalled) return false;
             mIsUXInitCalled = true;
 
+            TheThing.SetSafePropertyString(MyBaseThing, "StateSensorValueName", "Number of Exports");
+            TheThing.SetSafePropertyString(MyBaseThing, "StateSensorUnit", "");
             var t = TheNMIEngine.AddStandardForm(MyBaseThing, $"FACEPLATE", 18);
             MyForm = t["Form"] as TheFormInfo;
             var tStatBlock = TheNMIEngine.AddStatusBlock(MyBaseThing, MyForm, 10);
             tStatBlock["Group"].SetParent(1);
-            var tConnBlock = TheNMIEngine.AddConnectivityBlock(MyBaseThing, MyForm, 100, (pMsg, DoConnect) =>
+            var tConnBlock = TheNMIEngine.AddStartingBlock(MyBaseThing, MyForm, 100, (pMsg, DoConnect) =>
             {
                 if (DoConnect)
                 {
@@ -222,7 +224,10 @@ namespace CDMyPrometheusExporter.ViewModel
                 {
                     Disconnect(true);
                 }
-            });
+            }, 192,"IsConnected", "AutoConnect");
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.SingleEnded, 110, 2, 0x80, "Host Path", "Address", new nmiCtrlSingleEnded() { ParentFld = 100, PlaceHolder = "###Address of service###" });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.Number, 9991, 0, 0x80, "QV", "QValue", new nmiCtrlSingleEnded() { Visibility=false });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.Number, 9992, 0, 0x80, "SSU", "StateSensorUnit", new nmiCtrlSingleEnded() { Visibility = false });
             tConnBlock["Group"].SetParent(1);
             TheNMIEngine.DeleteFieldById(tStatBlock["Value"].cdeMID);
 
@@ -232,8 +237,8 @@ namespace CDMyPrometheusExporter.ViewModel
                 string tDataSource = "TheSenderThings";
                 if (MySenderThings != null)
                     tDataSource = MySenderThings.StoreMID.ToString();
-                tSenderThingsForm = new TheFormInfo(TheThing.GetSafeThingGuid(MyBaseThing, "SenderThings_ID"), eEngineName.NMIService, "Things to export to Prometheus", tDataSource) { AddButtonText = "New Thing" };
-                TheNMIEngine.AddFormToThingUX(MyBaseThing, tSenderThingsForm, "CMyTable", "Sender Thing List", 1, 3, 0xF0, null, null, new ThePropertyBag() { "Visibility=false" });
+                tSenderThingsForm = new TheFormInfo(TheThing.GetSafeThingGuid(MyBaseThing, "SenderThings_ID"), eEngineName.NMIService, "Things to export to Prometheus", tDataSource) { AddButtonText = "New Export Definition" };
+                TheNMIEngine.AddFormToThingUX(MyBaseThing, tSenderThingsForm, "CMyTable", "Export List", 1, 3, 0xF0, null, null, new ThePropertyBag() { "Visibility=false" });
                 TheNMIEngine.AddFields(tSenderThingsForm, new List<TheFieldInfo> {
                     new TheFieldInfo() { FldOrder=11,DataItem="Disable",Flags=2,Type=eFieldType.SingleCheck,Header="Disable",FldWidth=1,  DefaultValue="true" },
                     new TheFieldInfo() { FldOrder=12,DataItem="ChangeNaNToNull",Flags=2,Type=eFieldType.SingleCheck,Header="Dont Send Zeros",FldWidth=1 },
@@ -243,23 +248,23 @@ namespace CDMyPrometheusExporter.ViewModel
                     new TheFieldInfo() { FldOrder=35,DataItem=nameof(TheSenderThing.DeviceType), Flags=2, cdeA = 0xC0, Type=eFieldType.DeviceTypePicker,Header="DeviceType",FldWidth=3,  PropertyBag=new nmiCtrlDeviceTypePicker() { Filter="EngineName=%EngineName%", FldWidth=2 } },
 
                     new TheFieldInfo() { FldOrder=40,DataItem="TargetType",Flags=2, cdeA = 0xC0, Type=eFieldType.ComboBox,Header="Metric Type",  PropertyBag=new nmiCtrlComboBox() { DefaultValue="Gauge", Options="Gauge;Counter;Histogram;Summary", FldWidth=1 } },
-                    new TheFieldInfo() { FldOrder=41,DataItem="PropertiesIncluded",Flags=2, cdeA = 0xC0, Type=eFieldType.PropertyPicker,Header="Properties to Send", PropertyBag=new nmiCtrlPropertyPicker() { DefaultValue="Value", AllowMultiSelect=true, ThingFld=20,FldWidth=4 } },
-                    new TheFieldInfo() { FldOrder=42,DataItem="PropertiesExcluded",Flags=2, cdeA = 0xC0, Type=eFieldType.PropertyPicker,Header="Properties to Exclude",  PropertyBag=new nmiCtrlPropertyPicker() { AllowMultiSelect=true, ThingFld=20, FldWidth=4 } },
+                    new TheFieldInfo() { FldOrder=41,DataItem="PropertiesIncluded",Flags=2, cdeA = 0xC0, Type=eFieldType.PropertyPicker,Header="Properties to Export", PropertyBag=new nmiCtrlPropertyPicker() { DefaultValue="Value", Separator=",", AllowMultiSelect=true, ThingFld=20,FldWidth=4 } },
+                    //new TheFieldInfo() { FldOrder=42,DataItem="PropertiesExcluded",Flags=2, cdeA = 0xC0, Type=eFieldType.PropertyPicker,Header="Properties to Exclude",  PropertyBag=new nmiCtrlPropertyPicker() { Separator=",", AllowMultiSelect=true, ThingFld=20, FldWidth=4 } },
                     new TheFieldInfo() { FldOrder=43,DataItem="PartitionKey",Flags=2, cdeA = 0xC0, Type=eFieldType.PropertyPicker,Header="Properties for labels", PropertyBag=new nmiCtrlPropertyPicker() { FldWidth = 4, AllowMultiSelect=true, ThingFld=20, DefaultValue="NodeId,FriendlyName", Separator=",", SystemProperties=true } },
                 });
                 TheNMIEngine.AddTableButtons(tSenderThingsForm, false, 100);
             }
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.TileButton, 80, 2, 0xF0, "Sender Thing List", null, new nmiCtrlTileButton() { OnClick = $"TTS:{tSenderThingsForm.cdeMID}", ClassName = "cdeTransitButton", TileWidth = 6, NoTE = true, ParentFld = 10 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.TileButton, 80, 2, 0xF0, "List of Exported Things", null, new nmiCtrlTileButton() { OnClick = $"TTS:{tSenderThingsForm.cdeMID}", ClassName = "cdeTransitButton", TileWidth = 6, NoTE = true, ParentFld = 10 });
             #endregion
 
             TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.CollapsibleGroup, 400, 2, 0, "KPIs", false, null, null, new nmiCtrlCollapsibleGroup() { IsSmall = true, DoClose = true, TileWidth = 6, ParentFld = 1 });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.DateTime, 414, 0, 0, "Last Send", nameof(LastSendTime), new ThePropertyBag() { "ParentFld=400", "TileWidth=6", "TileHeight=1" });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.DateTime, 414, 0, 0, "Last Export", nameof(LastSendTime), new ThePropertyBag() { "ParentFld=400", "TileWidth=6", "TileHeight=1" });
             //TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.DateTime, 415, 0, 0, "Last Send Attempt", nameof(LastSendAttemptTime), new ThePropertyBag() { "ParentFld=400", "TileWidth=6", "TileHeight=1" });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.Number, 416, 0, 0, "Events Sent", nameof(EventsSentSinceStart), new ThePropertyBag() { "ParentFld=400", "TileWidth=6", "TileHeight=1" });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.Number, 416, 0, 0, "Exports Sent", nameof(EventsSentSinceStart), new ThePropertyBag() { "ParentFld=400", "TileWidth=6", "TileHeight=1" });
             //TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.Number, 417, 0, 0, "Events Pending", nameof(PendingEvents), new ThePropertyBag() { "ParentFld=400", "TileWidth=6", "TileHeight=1" });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.Number, 418, 0, 0, "Send Error Count", nameof(EventsSentErrorCountSinceStart), new ThePropertyBag() { "ParentFld=400", "TileWidth=6", "TileHeight=1" });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.Number, 418, 0, 0, "Export Error Count", nameof(EventsSentErrorCountSinceStart), new ThePropertyBag() { "ParentFld=400", "TileWidth=6", "TileHeight=1" });
 
-            var tKPIBut = TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.TileButton, 425, 2, 0xC0, "Reset KPI", null, new nmiCtrlTileButton() { ParentFld = 400, NoTE = true, ClassName = "cdeBadActionButton" });
+            var tKPIBut = TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.TileButton, 425, 2, 0xC0, "Reset KPIs", null, new nmiCtrlTileButton() { ParentFld = 400, NoTE = true, ClassName = "cdeBadActionButton" });
             tKPIBut.RegisterUXEvent(MyBaseThing, eUXEvents.OnClick, "ResetKPI", (sender, para) => {
                 PendingEvents = 0;
                 EventsSentErrorCountSinceStart = 0;
@@ -347,8 +352,9 @@ namespace CDMyPrometheusExporter.ViewModel
                         tRequest.ResponseBuffer = outputStream.ToArray();
                     }
                     EventsSentSinceStart++;
-                    TheThing.SetSafePropertyNumber(MyBaseThing, "QValue", EventsSentSinceStart); //Update for Faceplate
+                    TheThing.SetSafePropertyNumber(MyBaseThing, "QValue", EventsSentSinceStart);
                     LastSendTime = DateTimeOffset.Now;
+                    TheThing.SetSafePropertyString(MyBaseThing, "StateSensorUnit", TheCommonUtils.GetDateTimeString(LastSendTime,-1));
                 }
                 else
                 {
@@ -416,11 +422,11 @@ namespace CDMyPrometheusExporter.ViewModel
                 {
                     continue;
                 }
-                if (string.IsNullOrEmpty(senderThing.PropertiesIncluded)) senderThing.PropertiesIncluded = "Value"; //Make sure we have at least one included
+                //if (string.IsNullOrEmpty(senderThing.PropertiesIncluded)) senderThing.PropertiesIncluded = "Value"; //Make sure we have at least one included
                 var propsIncludedConf = string.IsNullOrEmpty(senderThing.PropertiesIncluded) ? null : TheCommonUtils.cdeSplit(senderThing.PropertiesIncluded, ',', false, false);
                 var propsExcluded = string.IsNullOrEmpty(senderThing.PropertiesExcluded) ? null : TheCommonUtils.cdeSplit(senderThing.PropertiesExcluded, ',', false, false);
                 var propsIncludedSplit = propsIncludedConf?.Select(p => TheCommonUtils.cdeSplit(p, ';', false, false));
-                var propsIncluded = propsIncludedSplit.Select(p => p[0]);
+                var propsIncluded = propsIncludedSplit?.Select(p => p[0]);
 
                 foreach (var tThing in thingsToSend)
                 {

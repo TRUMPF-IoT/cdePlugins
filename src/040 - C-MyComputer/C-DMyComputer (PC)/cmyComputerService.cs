@@ -101,7 +101,7 @@ namespace CDMyComputer
         /// </summary>
         /// <param name="Command"></param>
         /// <param name="pMessage"></param>
-        public void HandleMessage(ICDEThing sender, object pIncoming)
+        public override void HandleMessage(ICDEThing sender, object pIncoming)
         {
             if (!(pIncoming is TheProcessMessage pMsg)) return;
             try

@@ -18,86 +18,21 @@ using nsCDEngine.Engines.StorageService;
 
 namespace CDMyComputer
 {
-    public partial class TheCDMyComputerEngine : ICDEThing, ICDEPlugin
+    public partial class TheCDMyComputerEngine : ThePluginBase
     {
-        #region ICDEPlugin Methods
-        public IBaseEngine MyBaseEngine;
-
-        public void InitEngineAssets(IBaseEngine pBase)
+        public override void InitEngineAssets(IBaseEngine pBase)
         {
-            MyBaseEngine = pBase;
-            MyBaseEngine.SetEngineName(GetType().FullName);   //Can be any arbitrary name - recommended is the class name
-            MyBaseEngine.SetEngineType(GetType());   //Can be any arbitrary name - recommended is the class name
+            base.InitEngineAssets(pBase);
             MyBaseEngine.SetFriendlyName("Computer Management");
             MyBaseEngine.SetEngineID(new Guid("{8FB08B63-1A2D-4DF6-8DC8-BADB12500F94}"));
-            MyBaseEngine.SetEngineService(true);    //Set to True if this class is a service
             MyBaseEngine.GetEngineState().IsAcceptingFilePush = true;
            // MyBaseEngine.RegisterJSEngine(null);
             MyBaseEngine.AddCapability(eThingCaps.ComputerHealth);
             MyBaseEngine.AddCapability(eThingCaps.HardwareAccess);
             MyBaseEngine.AddCapability(eThingCaps.DoNotIsolate);
-            MyBaseEngine.SetCDEMinVersion(4.1040);
-
-            MyBaseEngine.SetPluginInfo("Monitors the health of all your Nodes", 0, null, "FA3:f812", "C-Labs and its licensors", "http://www.c-labs.com", new List<string>());
+            MyBaseEngine.SetPluginInfo("Monitors the health of all your Nodes", 0, null, "FA3:f108", "C-Labs and its licensors", "http://www.c-labs.com", new List<string>());
         }
 
-        public IBaseEngine GetBaseEngine()
-        {
-            return MyBaseEngine;
-        }
-        #endregion
-
-        #region ICDEThing Methods
-        public void SetBaseThing(TheThing pThing)
-        {
-            MyBaseThing = pThing;
-        }
-        public TheThing GetBaseThing()
-        {
-            return MyBaseThing;
-        }
-        public cdeP GetProperty(string pName, bool DoCreate)
-        {
-            return MyBaseThing?.GetProperty(pName, DoCreate);
-        }
-        public cdeP SetProperty(string pName, object pValue)
-        {
-            return MyBaseThing?.SetProperty(pName, pValue);
-        }
-        public void RegisterEvent(string pName, Action<ICDEThing, object> pCallBack)
-        {
-            MyBaseThing?.RegisterEvent(pName, pCallBack);
-        }
-        public void UnregisterEvent(string pName, Action<ICDEThing, object> pCallBack)
-        {
-            MyBaseThing?.UnregisterEvent(pName, pCallBack);
-        }
-        public void FireEvent(string pEventName, ICDEThing sender, object pPara, bool FireAsync)
-        {
-            MyBaseThing?.FireEvent(pEventName, sender, pPara, FireAsync);
-        }
-        public bool HasRegisteredEvents(string pEventName)
-        {
-            if (MyBaseThing != null)
-                return MyBaseThing.HasRegisteredEvents(pEventName);
-            return false;
-        }
-        protected TheThing MyBaseThing;
-
-        protected bool mIsUXInitCalled;
-        protected bool mIsUXInitialized;
-        protected bool mIsInitCalled ;
-        protected bool mIsInitialized;
-        public bool IsUXInit()
-        { return mIsUXInitialized; }
-        public bool IsInit()
-        { return mIsInitialized; }
-
-        public void HandleMessage(TheProcessMessage pMsg)
-        {
-            HandleMessage(this, pMsg);
-        }
-        #endregion
         public int HealthCollectionCycle
         {
             get { return TheCommonUtils.CInt(TheThing.GetSafePropertyString(MyBaseThing, "HealthCollectionCycle")); }
@@ -120,7 +55,7 @@ namespace CDMyComputer
             set { TheThing.SetSafePropertyNumber(MyBaseThing, "SensorAccelDeadband", value); }
         }
 
-        public bool Init()
+        public override bool Init()
         {
             if (mIsInitCalled) return false;
             mIsInitCalled = true;
@@ -236,13 +171,5 @@ namespace CDMyComputer
                 CreateTHHUx(fiNext.Name, null);
             }
         }
-
-        public bool Delete()
-        {
-            mIsInitialized = false;
-            // TODO Properly implement delete
-            return true;
-        }
-
     }
 }
