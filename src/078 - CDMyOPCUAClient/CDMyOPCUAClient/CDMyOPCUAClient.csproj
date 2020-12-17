@@ -1,0 +1,55 @@
+﻿<!--
+ SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+ SPDX-License-Identifier: MPL-2.0
+ -->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <AssemblyName>CDMyOPCUAClient</AssemblyName>
+    <RootNamespace>CDMyOPCUAClient</RootNamespace>
+    <PackageId>CDMyOPCUAClient</PackageId>
+    <Version>4.212.0</Version>
+    <Authors>Markus Horstmann</Authors>
+    <Company>C-Labs</Company>
+    <Product>CDMyOPCUAClient for $(TargetFramework)</Product>
+    <Copyright>Copyright © 2017-2020 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <Choose>
+    <When Condition="'$(TargetFramework)'=='netstandard2.0'">
+      <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;NETSTANDARD2_0;CDE_STANDARD;CDE_SYSLOG</DefineConstants>
+      </PropertyGroup>
+      <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;RELEASE;NETSTANDARD2_0;CDE_STANDARD;CDE_SYSLOG</DefineConstants>
+      </PropertyGroup>
+    </When>
+  </Choose>
+
+  <ItemGroup>
+    <Compile Remove="ViewModel\IFileServer.cs" />
+    <Compile Remove="ViewModel\TheFileInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="clientbin\images\opcLarge.png" />
+    <EmbeddedResource Include="clientbin\images\OPCLogo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="C-DEngine" Version="5.*" />
+    <PackageReference Include="cdeCommonMessageContractsShared" Version="5.*" />
+    <PackageReference Include="cdeOPCUAClientContractsShared" Version="5.*" />
+    <PackageReference Include="cdeThingMatcherShared" Version="5.*" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Client" Version="1.4.363.107" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Configuration" Version="1.4.363.107" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Core" Version="1.4.363.107" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="&quot;$(ProjectDir)..\..\..\BuildTools\signandpackage.cmd&quot; &quot;$(ProjectDir)&quot; &quot;$(TargetDir)&quot; &quot;$(TargetFileName)&quot; " />
+  </Target>
+</Project>

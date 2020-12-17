@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>87d6ea89-f134-41b9-8015-5e5cf7b93da2</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>NModbus4Shared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Data\DataStore.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\DataStoreEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\DataStoreFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\DiscreteCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\IModbusMessageDataCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\ModbusDataCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\ModbusDataType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\RegisterCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Device\IModbusMaster.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Device\IModbusSerialMaster.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Device\ModbusDevice.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Device\ModbusIpMaster.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Device\ModbusMaster.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Device\ModbusMasterTcpConnection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Device\ModbusSerialMaster.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Device\ModbusSerialSlave.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Device\ModbusSlave.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Device\ModbusSlaveRequestEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Device\ModbusTcpSlave.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Device\ModbusUdpSlave.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Device\TcpConnectionEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\Enron\EnronModbus.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GlobalSuppressions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)InvalidModbusRequestException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\EmptyTransport.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\IStreamResource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\ModbusAsciiTransport.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\ModbusIpTransport.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\ModbusRtuTransport.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\ModbusSerialTransport.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\ModbusTransport.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\StreamResourceUtility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\TcpClientAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\UdpClientAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Message\AbstractModbusMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Message\AbstractModbusMessageWithData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Message\DiagnosticsRequestResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Message\IModbusMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Message\IModbusRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Message\ModbusMessageFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Message\ModbusMessageImpl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Message\ReadCoilsInputsRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Message\ReadCoilsInputsResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Message\ReadHoldingInputRegistersRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Message\ReadHoldingInputRegistersResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Message\ReadWriteMultipleRegistersRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Message\SlaveExceptionResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Message\WriteMultipleCoilsRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Message\WriteMultipleCoilsResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Message\WriteMultipleRegistersRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Message\WriteMultipleRegistersResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Message\WriteSingleCoilRequestResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Message\WriteSingleRegisterRequestResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Modbus.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NModbus4.Serial.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resources.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SlaveException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Unme.Common\DisposableUtility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Unme.Common\SequenceUtility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utility\DiscriminatedUnion.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utility\ModbusUtility.cs" />
+  </ItemGroup>
+</Project>

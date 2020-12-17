@@ -87,7 +87,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MQTT Sender", "MQTT Sender"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GnatMQ.Std", "182 - MQTT Sender\GnatMQ\GnatMQ.Std.csproj", "{CE4F65F7-9FFC-4499-A201-B0462C1F0D52}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modbus", "Modbus", "{E4BAAA74-B2C3-4398-924B-E9DB953B0B1C}"
+	ProjectSection(SolutionItems) = preProject
+		123 - CDMyModbus\readme.md = 123 - CDMyModbus\readme.md
+	EndProjectSection
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "NModbus4Shared", "123 - CDMyModbus\NModbus4Shared\NModbus4Shared.shproj", "{87D6EA89-F134-41B9-8015-5E5CF7B93DA2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDMyModbus", "123 - CDMyModbus\CDMyModbus\CDMyModbus.csproj", "{F810D2D8-ABB9-43C5-9053-827CB51CA6BA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDMyOPCUAClient", "078 - CDMyOPCUAClient\CDMyOPCUAClient\CDMyOPCUAClient.csproj", "{0C64460B-FA2F-412B-B1FC-DBB5AFF10FFF}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		123 - CDMyModbus\NModbus4Shared\NModbus4Shared.projitems*{87d6ea89-f134-41b9-8015-5e5cf7b93da2}*SharedItemsImports = 13
+		123 - CDMyModbus\NModbus4Shared\NModbus4Shared.projitems*{f810d2d8-abb9-43c5-9053-827cb51ca6ba}*SharedItemsImports = 5
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -157,6 +172,14 @@ Global
 		{CE4F65F7-9FFC-4499-A201-B0462C1F0D52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE4F65F7-9FFC-4499-A201-B0462C1F0D52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE4F65F7-9FFC-4499-A201-B0462C1F0D52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F810D2D8-ABB9-43C5-9053-827CB51CA6BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F810D2D8-ABB9-43C5-9053-827CB51CA6BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F810D2D8-ABB9-43C5-9053-827CB51CA6BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F810D2D8-ABB9-43C5-9053-827CB51CA6BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C64460B-FA2F-412B-B1FC-DBB5AFF10FFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C64460B-FA2F-412B-B1FC-DBB5AFF10FFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C64460B-FA2F-412B-B1FC-DBB5AFF10FFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C64460B-FA2F-412B-B1FC-DBB5AFF10FFF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -165,6 +188,8 @@ Global
 		{CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125} = {D8C22184-8D50-440E-AFA0-2090A6A6AC98}
 		{4165FED4-1E63-4915-B096-F02EAE28ABEC} = {52B297F8-501B-4E8F-B7B4-E5040973F429}
 		{CE4F65F7-9FFC-4499-A201-B0462C1F0D52} = {52B297F8-501B-4E8F-B7B4-E5040973F429}
+		{87D6EA89-F134-41B9-8015-5E5CF7B93DA2} = {E4BAAA74-B2C3-4398-924B-E9DB953B0B1C}
+		{F810D2D8-ABB9-43C5-9053-827CB51CA6BA} = {E4BAAA74-B2C3-4398-924B-E9DB953B0B1C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {65B36CB7-1C08-480C-96F5-F480F39A709F}
