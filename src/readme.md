@@ -21,6 +21,8 @@ You can download CDEX deloyment packages (ZIP files) with compiled binaries for 
 | [CDMyMessaging](079%20-%20CDMyMessages/readme.md)| The Messaging plugin can send email or text message to users|Service
 | [CDMyMSSQL](150%20-%20CDMyMSSQL/readme.md)| Storage Service for data collected by the C-DEngine |IStorageService
 | [CDMyWebRelay](151%20-%20CDMyWebRelay/readme.md)| Access to internal Web Servers|Service
+| [CDMyOPCUAClient](078%20-%20CDMyOPCUAClient/CDMyOPCUAClient/readme.md)| OPC UA Client plugin to read values from OPC UA Servers|Protocol
+| [CDMyModbus](123%20-%20CDMyModbus/readme.md)| Access Modus TCP Devices|Protocol
 
 Additional plug-ins like OPC UA Client and Server, ModBus, MTConnect, Azure Event/IoTHub, Google IoTHub, OpenAuth2 are under review for future OSS release. Let us know if you have a particular interest or requirement. 
 
