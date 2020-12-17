@@ -88,6 +88,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GnatMQ.Std", "182 - MQTT Sender\GnatMQ\GnatMQ.Std.csproj", "{CE4F65F7-9FFC-4499-A201-B0462C1F0D52}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modbus", "Modbus", "{E4BAAA74-B2C3-4398-924B-E9DB953B0B1C}"
+	ProjectSection(SolutionItems) = preProject
+		123 - CDMyModbus\readme.md = 123 - CDMyModbus\readme.md
+	EndProjectSection
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "NModbus4Shared", "123 - CDMyModbus\NModbus4Shared\NModbus4Shared.shproj", "{87D6EA89-F134-41B9-8015-5E5CF7B93DA2}"
 EndProject
