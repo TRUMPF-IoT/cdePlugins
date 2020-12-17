@@ -48,7 +48,7 @@ namespace CDMyPrometheusExporter
         public override void InitEngineAssets(IBaseEngine pBase)
         {
             base.InitEngineAssets(pBase);
-            MyBaseEngine.SetFriendlyName("C-Labs Prometheus Exporter");      
+            MyBaseEngine.SetFriendlyName("Prometheus Exporter");      
             MyBaseEngine.SetEngineID(new Guid("{AF65D637-191B-40BA-8302-BDD254E11DFE}"));
             MyBaseEngine.SetPluginInfo("This service allows to export Thing properties as metrics to Prometheus.", 0, null, "images/prometheus_logo_grey.png", "C-Labs and its licensors", "http://www.c-labs.com", new List<string>() { });
             MyBaseEngine.AddManifestFiles(new List<string> {

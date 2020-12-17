@@ -114,3 +114,19 @@ License: EPL-1.0
 Files:  src/182 - MQTT Sender/GnatMQ/Utility/*
 Copyright: Copyright (c) 2013, 2014 Paolo Patierno
 License: EPL-1.0
+
+Files:  src/123 - CDMyModbus/NModbus4Shared/*
+Copyright: Copyright (c) 2006 Scott Alexander, 2015 Dmitry Turin
+License: MIT
+
+Files:  src/123 - CDMyModbus/CDMyModbus/ModbusExt/*
+Copyright: Copyright (c) 2006 Scott Alexander, 2015 Dmitry Turin
+License: MIT
+
+Files: src/123 - CDMyModbus/CDMyModbus/ClientBin/*
+Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+License: MPL-2.0
+
+Files: src/078 - CDMyOPCUAClient/CDMyOPCUAClient/clientbin
+Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+License: MPL-2.0

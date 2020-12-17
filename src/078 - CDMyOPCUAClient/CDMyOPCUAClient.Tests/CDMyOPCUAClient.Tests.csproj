@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{41AA622C-BCC6-4A95-AA07-D08286C428BF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CDMyOPCUAClient.Tests</RootNamespace>
+    <AssemblyName>CDMyOPCUAClient.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>False</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\095 - CDMyCloudServices\MyCloudServicesAPI\MyCloudServicesAPI\MsgAddThingToPublish.cs">
+      <Link>ViewModel\MsgAddThingToPublish.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModel\TheOPCUARemoteServerTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\025 - C-DEngine\C-DEngine\C-DEngine.csproj">
+      <Project>{25ac2757-e112-48f7-af07-ee8f219f4838}</Project>
+      <Name>C-DEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\025 - C-DEngine\Tests\CommonTestHost\CommonTestHost.csproj">
+      <Project>{8bd593b9-6893-45c8-b525-d1bfc45a55b3}</Project>
+      <Name>CommonTestHost</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\092 - CDMyFileService\C-DMyFileService\C-DMyFileService.csproj">
+      <Project>{26b137e9-a3d8-4439-8327-f6757bb82cbb}</Project>
+      <Name>C-DMyFileService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\097 - CDMyOPCUAServer\CDMyOPCUAServer\CDMyOPCUAServer.csproj">
+      <Project>{143ee39c-6022-492a-9e61-0fa8f02c49f0}</Project>
+      <Name>CDMyOPCUAServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CDMyOPCUAClient\CDMyOPCUAClient.csproj">
+      <Project>{a9eaa816-94cf-4e69-b5a3-ffe2a4ab0ac0}</Project>
+      <Name>CDMyOPCUAClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\_OPCUA\Client\UA Client Library.csproj">
+      <Project>{42e9198c-ed2c-4bc8-b0a1-55d91d8f1e90}</Project>
+      <Name>UA Client Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\_OPCUA\Configuration\UA Configuration Library.csproj">
+      <Project>{8ab4cb8e-e216-425d-b600-350d0b6b59cd}</Project>
+      <Name>UA Configuration Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\_OPCUA\Server\UA Server Library.csproj">
+      <Project>{e16f908b-c338-4b0c-9e72-2adad8fb98d5}</Project>
+      <Name>UA Server Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\_OPCUA\Stack\Core\UA Core Library.csproj">
+      <Project>{7543afcb-f5af-44af-83c9-23164474c1e9}</Project>
+      <Name>UA Core Library</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NUnit">
+      <Version>3.12.0</Version>
+    </PackageReference>
+    <PackageReference Include="NUnit3TestAdapter">
+      <Version>3.16.1</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestData\CL009Tags.csv" />
+  </ItemGroup>
+  <Import Project="..\APIs\MyOPCUAClientAPI\MyOPCUAClientAPI.projitems" Label="Shared" />
+  <Import Project="..\APIs\MyOPCUAClientContracts\MyOPCUAClientContracts.projitems" Label="Shared" />
+  <Import Project="..\..\097 - CDMyOPCUAServer\MyOPCUAServerAPI\MyOPCUAServerAPI\MyOPCUAServerAPI.projitems" Label="Shared" />
+  <Import Project="..\..\144 - TheCommonMessageContracts\TheCommonMessageContracts\TheCommonMessageContracts.projitems" Label="Shared" />
+  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
