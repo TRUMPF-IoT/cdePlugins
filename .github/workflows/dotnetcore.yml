@@ -84,8 +84,8 @@ jobs:
 
     - name: REUSE Compliance Check
       run: |
-        pip3 install --user reuse
-        reuse lint
+    #    pip3 install --user reuse
+    #    reuse lint
 
     - name: Push NuGet Packages
       # Only publish if the commit was tagged
