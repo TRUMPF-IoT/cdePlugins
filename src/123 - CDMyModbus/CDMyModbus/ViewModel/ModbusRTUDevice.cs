@@ -52,8 +52,14 @@ namespace Modbus
         [ConfigProperty]
         int Baudrate
         {
-            get { return (int)TheThing.GetSafePropertyNumber(MyBaseThing, nameof(Interval)); }
-            set { TheThing.SetSafePropertyNumber(MyBaseThing, nameof(Interval), value); }
+            get { return (int)TheThing.GetSafePropertyNumber(MyBaseThing, nameof(Baudrate)); }
+            set { TheThing.SetSafePropertyNumber(MyBaseThing, nameof(Baudrate), value); }
+        }
+        [ConfigProperty]
+        int BitFormat
+        {
+            get { return (int)TheThing.GetSafePropertyNumber(MyBaseThing, nameof(BitFormat)); }
+            set { TheThing.SetSafePropertyNumber(MyBaseThing, nameof(BitFormat), value); }
         }
 
         [ConfigProperty]
@@ -106,11 +112,8 @@ namespace Modbus
                     MyBaseThing.FriendlyName = MyDevice.Name;
                 if (!string.IsNullOrEmpty(MyDevice.IpAddress))
                     MyBaseThing.Address = MyDevice.IpAddress;
-                if (MyDevice.IpPort == 0)
-                    MyDevice.IpPort = 502;
                 if (ConnectionType == 0)
                     ConnectionType = 3;
-                TheThing.SetSafePropertyNumber(MyBaseThing, "CustomPort", MyDevice.IpPort);
                 TheThing.SetSafePropertyNumber(MyBaseThing, "SlaveAddress", MyDevice.SlaveAddress);
                 if (MyDevice.Mapping != null)
                 {
@@ -154,7 +157,8 @@ namespace Modbus
             MyBaseThing.DeclareConfigProperty(new TheThing.TheConfigurationProperty { Name = nameof(MyBaseThing.Address), cdeT = ePropertyTypes.TString, Required = true, Description = "", Generalize = true });
             MyBaseThing.DeclareConfigProperty(new TheThing.TheConfigurationProperty { Name = nameof(MyBaseThing.FriendlyName), cdeT = ePropertyTypes.TString, Description = "" });
             MyBaseThing.DeclareConfigProperty(new TheThing.TheConfigurationProperty { Name = nameof(Interval), cdeT = ePropertyTypes.TNumber, DefaultValue = 1000, RangeMin = 100, Description = "Time interval at which to poll the sensor for values" });
-            MyBaseThing.DeclareConfigProperty(new TheThing.TheConfigurationProperty { Name = nameof(Baudrate), cdeT = ePropertyTypes.TNumber, DefaultValue = 502, Description = "Serial Baud Rate" });
+            MyBaseThing.DeclareConfigProperty(new TheThing.TheConfigurationProperty { Name = nameof(Baudrate), cdeT = ePropertyTypes.TNumber, DefaultValue = 9600, Description = "Serial Baud Rate" });
+            MyBaseThing.DeclareConfigProperty(new TheThing.TheConfigurationProperty { Name = nameof(BitFormat), cdeT = ePropertyTypes.TNumber, DefaultValue = 0, Description = "Serial Bit Format" });
             MyBaseThing.DeclareConfigProperty(new TheThing.TheConfigurationProperty { Name = nameof(SlaveAddress), cdeT = ePropertyTypes.TNumber, DefaultValue = 1, Description = "" });
             MyBaseThing.DeclareConfigProperty(new TheThing.TheConfigurationProperty { Name = nameof(AutoConnect), cdeT = ePropertyTypes.TBoolean, DefaultValue = false, Description = "" });
             MyBaseThing.DeclareConfigProperty(new TheThing.TheConfigurationProperty { Name = nameof(KeepOpen), cdeT = ePropertyTypes.TBoolean, DefaultValue = true, Description = "" });
@@ -170,8 +174,8 @@ namespace Modbus
                 MyBaseThing.ID = Guid.NewGuid().ToString();
                 if (MyDevice != null && !string.IsNullOrEmpty(MyDevice.Id))
                     MyBaseThing.ID = MyDevice.Id;
-                TheThing.SetSafePropertyNumber(MyBaseThing, "CustomPort", 502);
-                TheThing.SetSafePropertyNumber(MyBaseThing, "SlaveAddress", 1);
+                if (GetProperty("SlaveAddress", false) == null)
+                    TheThing.SetSafePropertyNumber(MyBaseThing, "SlaveAddress", 1);
                 Interval = 1000;
             }
             MyModFieldStore.CacheTableName = $"MBFLDS{MyBaseThing.ID}";
@@ -292,15 +296,23 @@ namespace Modbus
             tConnectBlock["ConnectButton"].FldOrder = 280;
             tConnectBlock["DisconnectButton"].FldOrder = 290;
             tConnectBlock["Address"].Type = eFieldType.ComboBox;
-            var sports = SerialPort.GetPortNames();
-            string tp = TheCommonUtils.CListToString(sports, ";");
-            tConnectBlock["Address"].PropertyBag = new nmiCtrlComboBox { Options = tp };
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.ComboBox, 205, 2, 0, "Baud", nameof(Baudrate), new nmiCtrlComboBox() { TileWidth = 3, ParentFld = 200, Options = "2400;4800;9600;57600" });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.Number, 206, 2, 0, "Slave Address", nameof(SlaveAddress), new nmiCtrlNumber() { TileWidth = 3, ParentFld = 200, MaxValue = 255, MinValue = 0 });
+            try
+            {
+                var sports = SerialPort.GetPortNames();
+                string tp = TheCommonUtils.CListToString(sports, ";");
+                tConnectBlock["Address"].PropertyBag = new nmiCtrlComboBox { Options = tp };
+            }
+            catch (Exception eee) 
+            {
+                TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseThing.EngineName, $"GetPortNames failed : {eee}", eMsgLevel.l1_Error));
+            }
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.ComboBox, 205, 2, 0, "Baud", nameof(Baudrate), new nmiCtrlComboBox() { TileWidth = 3, ParentFld = 200, Options = "2400;4800;9600;19200;38400;57600" });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.ComboBox, 206, 2, 0, "Bit Format", nameof(BitFormat), new nmiCtrlComboBox() { TileWidth = 3, ParentFld = 200, Options = "8,N,1:0;8,E,1:1;8,O,1:2" });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.Number, 207, 2, 0, "Slave Address", nameof(SlaveAddress), new nmiCtrlNumber() { TileWidth = 3, ParentFld = 200, MaxValue = 255, MinValue = 0 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.Number, 240, 2, 0, "Base Offset", nameof(Offset), new nmiCtrlSingleEnded() { TileWidth = 3, ParentFld = 200 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.Number, 250, 2, 0, "Polling Interval", nameof(Interval), new nmiCtrlNumber() { TileWidth = 3, MinValue = 100, ParentFld = 200 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.SingleCheck, 260, 2, 0, "Keep Open", nameof(KeepOpen), new nmiCtrlSingleEnded() { TileWidth = 3, ParentFld = 200 });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.ComboBox, 270, 2, 0, "Address Type", nameof(ConnectionType), new nmiCtrlComboBox() { NoTE = true, Options = "Read Coils:1;Read Input:2;Holding Registers:3;Input Register:4;Read Multiple Register:23", DefaultValue = "3", TileWidth = 6, ParentFld = 200 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.ComboBox, 270, 2, 0, "Address Type", nameof(ConnectionType), new nmiCtrlComboBox() { Options = "Read Coils:1;Read Input:2;Holding Registers:3;Input Register:4;Read Multiple Register:23", DefaultValue = "3", ParentFld = 200 });
 
 
             ////METHODS Form
@@ -311,7 +323,7 @@ namespace Modbus
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.Number, 60, 2, 0, "Source Offset", "SourceOffset", new nmiCtrlNumber() { TileWidth = 3, FldWidth = 1 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.Number, 70, 2, 0, "Source Size", "SourceSize", new nmiCtrlNumber() { TileWidth = 3, FldWidth = 1, DefaultValue = "1" });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.Number, 75, 2, 0, "Scale Factor", "ScaleFactor", new nmiCtrlNumber() { TileWidth = 3, FldWidth = 1, DefaultValue = "1" });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.ComboBox, 80, 2, 0, "Source Type", "SourceType", new nmiCtrlComboBox() { Options = "float;double;int32;int64;float32;uint16;int16;utf8;byte;float-abcd;double-cdab", TileWidth = 2, FldWidth = 2 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.ComboBox, 80, 2, 0, "Source Type", "SourceType", new nmiCtrlComboBox() { DefaultValue="byte", Options = "float;double;int32;int64;float32;uint16;int16;utf8;byte;float-abcd;double-cdab", TileWidth = 2, FldWidth = 2 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.SingleCheck, 90, 2, 0, "Allow Write", "AllowWrite", new nmiCtrlSingleEnded() { TileWidth = 1, FldWidth = 1 });
             TheNMIEngine.AddTableButtons(MyFldMapperTable);
 
@@ -569,6 +581,8 @@ namespace Modbus
                                 Dictionary<string, object> dict = ReadAll();
                                 var timestamp = DateTimeOffset.Now;
                                 TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.VERBOSE) ? null : new TSM(MyBaseThing.EngineName, String.Format("Setting properties for {0}", MyBaseThing.FriendlyName), eMsgLevel.l4_Message, String.Format("{0}: {1}", timestamp, dict.Aggregate("", (s, kv) => s + string.Format("{0}={1};", kv.Key, kv.Value)))));
+                                MyBaseThing.LastMessage = $"{timestamp} - {dict?.Count} tags read from Modbus Device";
+                                MyBaseThing.LastUpdate = timestamp;
                                 MyBaseThing.SetProperties(dict, timestamp);
                                 if (!KeepOpen)
                                 {
@@ -621,17 +635,28 @@ namespace Modbus
             try
             {
                 CloseModBus();
+                MyBaseThing.LastMessage = $"{DateTimeOffset.Now}: Opening modbus connection...";
 
-                SerialPort slavePort = new SerialPort("COM1");  //todo: linux is different!
-                // configure serial port
+                slavePort = new SerialPort(MyBaseThing.Address); 
                 if (Baudrate == 0) Baudrate = 9600;
                 slavePort.BaudRate = Baudrate; //Todo: get from UX
                 slavePort.DataBits = 8;
-                slavePort.Parity = Parity.Even;
+                switch (BitFormat)
+                {
+                    case 2:
+                        slavePort.Parity = Parity.Odd;
+                        break;
+                    case 1:
+                        slavePort.Parity = Parity.Even;
+                        break;
+                    default:
+                        slavePort.Parity = Parity.None;
+                        break;
+                }
                 slavePort.StopBits = StopBits.One;
                 slavePort.Open();
-                slavePort.ReadTimeout = 50;
-                slavePort.WriteTimeout = 500;
+                //slavePort.ReadTimeout = 5000;
+                //slavePort.WriteTimeout = 5000;
 
                 var adapter = new SerialPortAdapter(slavePort);
                 // create modbus slave
@@ -647,12 +672,7 @@ namespace Modbus
 
         public void CloseModBus()
         {
-            try
-            {
-                MyModMaster?.Dispose();
-            }
-            catch { }
-            MyModMaster = null;
+            MyBaseThing.LastMessage = $"{DateTimeOffset.Now}: closing modbus...";
 
             try
             {
@@ -660,6 +680,16 @@ namespace Modbus
             }
             catch { }
             slavePort = null;
+            MyBaseThing.LastMessage = $"{DateTimeOffset.Now}: modbus closed";
+
+            try
+            {
+                MyModMaster?.Dispose();
+            }
+            catch { }
+            MyModMaster = null;
+            MyBaseThing.LastMessage = $"{DateTimeOffset.Now}: modbus master closed";
+            TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseThing.EngineName, MyBaseThing.LastMessage, eMsgLevel.l4_Message));
         }
 
         public Dictionary<string, object> ReadAll()

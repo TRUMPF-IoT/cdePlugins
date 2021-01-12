@@ -10,7 +10,7 @@
     <Authors>Chris Muench</Authors>
     <Company>C-Labs</Company>
     <Description>Visitor Log for ($(TargetFramework))</Description>
-    <Copyright>Copyright © 2017-2020 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <Copyright>Copyright © 2017-2021 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
     <Version>5.100.0-beta</Version>
     <AssemblyName>C-DMyVisitorLog</AssemblyName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>

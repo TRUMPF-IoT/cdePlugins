@@ -83,7 +83,7 @@ namespace CDMyOPCUAClient
         {
             TheFieldInfo tTargetButton = null;
             var flds = TheNMIEngine.AddNewWizard<TheOPCSetClass>(new Guid("{56565656-6AD1-45AE-BE61-96AF02329614}"), Guid.Empty, TheNMIEngine.GetEngineDashBoardByThing(MyBaseThing).cdeMID, "Welcome to the OPC Wizard",
-                new nmiCtrlWizard { PanelTitle = "New OPC Client", SideBarTitle = "New OPC Client Wizard", SideBarIconFA = "&#xf545;", TileThumbnail="FA5:f545" },
+                new nmiCtrlWizard { PanelTitle = "<i class='fa faIcon fa-3x'>&#xf0d0;</i></br>New OPC Client", SideBarTitle = "New OPC Client Wizard", SideBarIconFA = "&#xf545;", TileThumbnail="FA5:f545" },
                 (myClass, pClientInfo) =>
                 {
                     myClass.cdeMID = Guid.Empty;

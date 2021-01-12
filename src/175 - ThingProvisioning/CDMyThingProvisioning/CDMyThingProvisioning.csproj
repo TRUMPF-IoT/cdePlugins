@@ -10,7 +10,7 @@
     <Company>C-Labs</Company>
     <Version>5.100.0-beta</Version>
     <Product>CDMyThingProvisioning for $(TargetFramework)$(cdeDebugProductSuffix)</Product>
-    <Copyright>Copyright © 2015-2020 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <Copyright>Copyright © 2015-2021 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
   </PropertyGroup>

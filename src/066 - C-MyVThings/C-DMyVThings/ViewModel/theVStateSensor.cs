@@ -144,10 +144,12 @@ namespace CDMyVThings.ViewModel
             }
             int prepro = TheCommonUtils.CInt(TheThing.GetSafePropertyNumber(MyBaseThing, "PrePro"));
             int preprotime = TheCommonUtils.CInt(TheThing.GetSafePropertyNumber(MyBaseThing, "PreProTime"));
+            double valScale = TheCommonUtils.CDbl(TheThing.GetSafePropertyNumber(MyBaseThing, "StateSensorScaleFactor"));
+
 
             var pPropString = TheCommonUtils.CStr(pProp);
 
-            if (!String.IsNullOrEmpty(ValueFilterPattern))
+            if (!string.IsNullOrEmpty(ValueFilterPattern))
             {
                 try
                 {
@@ -171,7 +173,7 @@ namespace CDMyVThings.ViewModel
 
             double pValue;
 
-            if (!String.IsNullOrEmpty(ValueMatchPattern))
+            if (!string.IsNullOrEmpty(ValueMatchPattern))
             {
                 try
                 {
@@ -201,8 +203,12 @@ namespace CDMyVThings.ViewModel
             }
             else
             {
-                pValue = TheCommonUtils.CDbl(pPropString); 
+                pValue = TheCommonUtils.CDbl(pPropString);
             }
+            if (valScale != 0)
+                pValue /= valScale;
+            if (pValue < 0 && TheThing.GetSafePropertyBool(MyBaseThing, "StateSensorIsAbs"))
+                pValue = Math.Abs(pValue);
             if (preprotime > 0 && prepro > 0)
             {
                 if (pValue < min) min = pValue;
@@ -235,7 +241,13 @@ namespace CDMyVThings.ViewModel
                         break;
                 }
             }
-            SetProperty("Value", pValue);
+            if (GetProperty("StateSensorDigits", false) != null)
+            {
+                int tDigits = (int)TheThing.GetSafePropertyNumber(MyBaseThing, "StateSensorDigits");
+                SetProperty("Value", decimal.Round((decimal)pValue, tDigits, MidpointRounding.AwayFromZero));
+            }
+            else
+                SetProperty("Value", pValue);
         }
 
 
@@ -261,28 +273,31 @@ namespace CDMyVThings.ViewModel
         Guid mRealThingGuid = Guid.Empty;
         public override bool DoCreateUX()
         {
-            var tFlds = TheNMIEngine.AddStandardForm(MyBaseThing, "FACEPLATE");
+            var tFlds = TheNMIEngine.AddStandardForm(MyBaseThing, "FACEPLATE", 18, null, null, 0, "...Virtual State Sensors");
             SummaryForm = (tFlds["DashIcon"] as TheDashPanelInfo);
             MyStatusForm = tFlds["Form"] as TheFormInfo;
             MyStatusForm.ModelID = "VStateSensorForm";
             TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.TileButton, 1112, 2, 0, "Details...", null, new nmiCtrlTileButton { OnClick = $"TTS:%RealSensorThing%", RenderTarget = "VSDETBUT%cdeMID%", NoTE = true, Background = "transparent", TileWidth = 3, TileHeight = 1, TileFactorY = 2, ClassName = "cdeEmptyButtoninner" });
 
-            var ts=TheNMIEngine.AddStatusBlock(MyBaseThing, MyStatusForm, 100);
+            var ts = TheNMIEngine.AddStatusBlock(MyBaseThing, MyStatusForm, 100);
             ts["Group"].SetParent(1);
 
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.CollapsibleGroup, 200, 2, 0xc0, "V-Sensor Settings...", null, ThePropertyBag.Create(new nmiCtrlCollapsibleGroup() { DoClose = true, MaxTileWidth = 6, IsSmall=true,ParentFld=1 }));
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.CollapsibleGroup, 200, 2, 0xc0, "V-Sensor Settings...", null, ThePropertyBag.Create(new nmiCtrlCollapsibleGroup() { DoClose = true, MaxTileWidth = 6, IsSmall = true, ParentFld = 1 }));
 
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.ComboBox, 210, 2, 0xc0, "Sensor Type", "StateSensorType", new nmiCtrlComboBox { ParentFld = 200, FldWidth=4, TileWidth=6, Options="analog;binary;state" });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.ComboBox, 210, 2, 0xc0, "Sensor Type", "StateSensorType", new nmiCtrlComboBox { ParentFld = 200, FldWidth = 4, TileWidth = 6, Options = "analog;binary;state" });
 
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.CollapsibleGroup, 220, 2, 0xc0, "Settings (Analog Sensor Only)...", null, ThePropertyBag.Create(new nmiCtrlCollapsibleGroup() { DoClose = true, MaxTileWidth = 6, ParentFld=1, IsSmall=true }));
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleEnded, 225, 2, 0xc0, "Sensor Units", "StateSensorUnit", new nmiCtrlSingleEnded { ParentFld=220, TileWidth=3 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.CollapsibleGroup, 220, 2, 0xc0, "Settings (Analog Sensor Only)...", null, ThePropertyBag.Create(new nmiCtrlCollapsibleGroup() { DoClose = true, MaxTileWidth = 6, ParentFld = 1, IsSmall = true }));
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleEnded, 225, 2, 0xc0, "Sensor Units", "StateSensorUnit", new nmiCtrlSingleEnded { ParentFld = 220, TileWidth = 3 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleEnded, 221, 2, 0x0, "Sensor Value Name", "StateSensorValueName", new nmiCtrlSingleEnded { ParentFld = 220, TileWidth = 6 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 228, 2, 0xc0, "Average Value", "StateSensorAverage", new nmiCtrlNumber { ParentFld = 220, TileWidth = 3 });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 230, 2, 0xc0, "Min Value", "StateSensorMinValue", new nmiCtrlNumber { ParentFld=220, TileWidth=3 });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 240, 2, 0xc0, "Max Value", "StateSensorMaxValue", new nmiCtrlNumber { ParentFld=220, TileWidth=3  });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 230, 2, 0xc0, "Min Value", "StateSensorMinValue", new nmiCtrlNumber { ParentFld = 220, TileWidth = 3 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 240, 2, 0xc0, "Max Value", "StateSensorMaxValue", new nmiCtrlNumber { ParentFld = 220, TileWidth = 3 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 245, 2, 0xc0, "Value Divider", "StateSensorScaleFactor", new nmiCtrlNumber { TileWidth = 3, ParentFld = 220 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 246, 2, 0xc0, "Digits", "StateSensorDigits", new nmiCtrlNumber { MinValue=0, TileWidth = 3, ParentFld = 220 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleCheck, 247, 2, 0xc0, "Force Absolute", "StateSensorIsAbs", new nmiCtrlSingleCheck { TileWidth = 3, ParentFld = 220 });
 
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.ThingPicker, 212, 2, 0xc0, "Thing Picker", "RealSensorThing", new nmiCtrlThingPicker() { ParentFld = 200, IncludeEngines=true, IncludeRemotes = true });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.PropertyPicker, 213, 2, 0xc0, "Property Picker", "RealSensorProperty", new nmiCtrlPropertyPicker() { ParentFld = 200, ThingFld=212 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.ThingPicker, 212, 2, 0xc0, "Thing Picker", "RealSensorThing", new nmiCtrlThingPicker() { ParentFld = 200, IncludeEngines = true, IncludeRemotes = true });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.PropertyPicker, 213, 2, 0xc0, "Property Picker", "RealSensorProperty", new nmiCtrlPropertyPicker() { ParentFld = 200, ThingFld = 212 });
             GetProperty("RealSensorProperty", true).RegisterEvent(eThingEvents.PropertyChanged, (p) =>
             {
                 EngageMapper();
@@ -290,11 +305,11 @@ namespace CDMyVThings.ViewModel
             var tEngage = TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.TileButton, 214, 2, 0xC0, "Restart Sensor", null, new nmiCtrlNumber { ParentFld = 200, TileWidth = 6, NoTE = true });
             tEngage.RegisterUXEvent(MyBaseThing, eUXEvents.OnClick, "reset", (sender, para) => { EngageMapper(); });
 
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.CollapsibleGroup, 249, 2, 0xc0, "Advanced Settings...", null, ThePropertyBag.Create(new nmiCtrlCollapsibleGroup() { DoClose = true, MaxTileWidth = 6, ParentFld = 200, IsSmall=true }));
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.CollapsibleGroup, 249, 2, 0xc0, "Advanced Settings...", null, ThePropertyBag.Create(new nmiCtrlCollapsibleGroup() { DoClose = true, MaxTileWidth = 6, ParentFld = 200, IsSmall = true }));
             TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleCheck, 250, 2, 0xC0, "Replicate", "IsGlobal", new nmiCtrlNumber { ParentFld = 249, TileWidth = 3 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 255, 2, 0xC0, "NMI Interval", "Interval", new nmiCtrlNumber { ParentFld = 249, TileWidth = 3 });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.CollapsibleGroup, 260, 2, 0xc0, "Pre-Processing...", null, ThePropertyBag.Create(new nmiCtrlCollapsibleGroup() { DoClose = true, MaxTileWidth = 6, ParentFld=220, IsSmall=true }));
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.ComboBox, 261, 2, 0xC0, "Pre-Processing", "PrePro", new nmiCtrlComboBox { Options="Raw Value:0;Min Value:1;Max Value:2;Average:3", ParentFld = 260, TileWidth = 6, DefaultValue="0" });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.CollapsibleGroup, 260, 2, 0xc0, "Pre-Processing...", null, ThePropertyBag.Create(new nmiCtrlCollapsibleGroup() { DoClose = true, MaxTileWidth = 6, ParentFld = 220, IsSmall = true }));
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.ComboBox, 261, 2, 0xC0, "Pre-Processing", "PrePro", new nmiCtrlComboBox { Options = "Raw Value:0;Min Value:1;Max Value:2;Average:3", ParentFld = 260, TileWidth = 6, DefaultValue = "0" });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 265, 2, 0xC0, "PrePro Window", "PreProTime", new nmiCtrlNumber { ParentFld = 260, TileWidth = 3 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleEnded, 216, 2, 0x0, "Match Pattern", nameof(ValueMatchPattern), new nmiCtrlSingleEnded { ParentFld = 200, TileWidth = 6 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleEnded, 217, 2, 0x0, "Filter Pattern", nameof(ValueFilterPattern), new nmiCtrlSingleEnded { ParentFld = 200, TileWidth = 6 });
