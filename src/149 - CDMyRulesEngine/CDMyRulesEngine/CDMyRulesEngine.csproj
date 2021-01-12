@@ -9,7 +9,7 @@
     <Company>C-Labs</Company>
     <Product>CDMyRulesEngine</Product>
     <Description>Rules Engine for ($(TargetFramework))</Description>
-    <Copyright>Copyright © 2017-2020 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <Copyright>Copyright © 2017-2021 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
     <Version>5.100.0-beta</Version>
     <AssemblyName>CDMyRulesEngine</AssemblyName>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>

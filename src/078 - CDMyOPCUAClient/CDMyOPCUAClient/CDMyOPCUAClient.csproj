@@ -13,7 +13,7 @@
     <Authors>Markus Horstmann</Authors>
     <Company>C-Labs</Company>
     <Product>CDMyOPCUAClient for $(TargetFramework)</Product>
-    <Copyright>Copyright © 2017-2020 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <Copyright>Copyright © 2017-2021 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>

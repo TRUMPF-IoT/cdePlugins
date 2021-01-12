@@ -8,7 +8,7 @@
     <Authors>Chris Muench</Authors>
     <Company>C-Labs</Company>
     <Description>Image management for ($(TargetFramework))</Description>
-    <Copyright>Copyright © 2015-2020 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <Copyright>Copyright © 2015-2021 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
     <AssemblyName>CDMyImages</AssemblyName>
