@@ -167,8 +167,10 @@ namespace Modbus
                 MyBaseThing.ID = Guid.NewGuid().ToString();
                 if (MyDevice != null && !string.IsNullOrEmpty(MyDevice.Id))
                     MyBaseThing.ID = MyDevice.Id;
-                TheThing.SetSafePropertyNumber(MyBaseThing, "CustomPort", 502);
-                TheThing.SetSafePropertyNumber(MyBaseThing, "SlaveAddress", 1);
+                if (GetProperty("CustomPort", false) == null)
+                    TheThing.SetSafePropertyNumber(MyBaseThing, "CustomPort", 502);
+                if (GetProperty("SlaveAddress", false) == null)
+                    TheThing.SetSafePropertyNumber(MyBaseThing, "SlaveAddress", 1);
                 Interval = 1000;
             }
             MyModFieldStore.CacheTableName = $"MBFLDS{MyBaseThing.ID}";
