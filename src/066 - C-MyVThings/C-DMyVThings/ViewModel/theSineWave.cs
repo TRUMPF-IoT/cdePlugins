@@ -206,7 +206,7 @@ namespace CDMyVThings.ViewModel
 
         private void SinkRangeChanged(cdeP obj)
         {
-            MyBaseThing.DeclareSensorProperty("Value", ePropertyTypes.TNumber, new cdeP.TheSensorMeta { RangeMax = Amplitude / 2 + Shift, RangeMin = Amplitude / 2 - Shift, RangeAverage = Shift, Kind = "analog" });
+            MyBaseThing.DeclareSensorProperty("Value", ePropertyTypes.TNumber, new cdeP.TheSensorMeta { RangeMax = Amplitude / 2 + Shift, RangeMin = Amplitude / 2 - Shift });
         }
 
         private double _index;

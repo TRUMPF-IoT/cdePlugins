@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace CDMyNetwork.ViewModel
 {
-    [DeviceType(DeviceType = eNetworkServiceTypes.PingService, Description = "Ping Endpoint", Capabilities = new[] { eThingCaps.ConfigManagement })]
+    [DeviceType(DeviceType = eNetworkServiceTypes.PingService, Description = "Ping Endpoint", Capabilities = new[] { eThingCaps.ConfigManagement, eThingCaps.SensorContainer })]
     class ThePingService : TheNetworkServiceBase
     {
         public ThePingService(TheThing tBaseThing, ICDEPlugin pPluginBase)
@@ -31,11 +31,20 @@ namespace CDMyNetwork.ViewModel
                 PingDelay = 1000;
             if (PingTimeOut < 50)
                 PingTimeOut = 50;
+            MyBaseThing.DeclareSensorProperty(nameof(RoundTripTime), ePropertyTypes.TNumber, new cdeP.TheSensorMeta { RangeMin = 0, RangeMax = PingTimeOut, Units = "ms" })
+                .RegisterEvent(eThingEvents.PropertyChanged, onPingTimeoutChanged);
+            MyBaseThing.DeclareSensorProperty(nameof(MyBaseThing.Value), ePropertyTypes.TNumber, new cdeP.TheSensorMeta { RangeMin = 0, RangeMax = PingTimeOut, Units = "ms" });
             if (AutoConnect)
                 Connect();
 
             mIsInitialized = true;
             return true;
+        }
+
+        private void onPingTimeoutChanged(cdeP obj)
+        {
+            MyBaseThing.DeclareSensorProperty(nameof(RoundTripTime), ePropertyTypes.TNumber, new cdeP.TheSensorMeta { RangeMin = 0, RangeMax = PingTimeOut, Units = "ms" });
+            MyBaseThing.DeclareSensorProperty(nameof(MyBaseThing.Value), ePropertyTypes.TNumber, new cdeP.TheSensorMeta { RangeMin = 0, RangeMax = PingTimeOut, Units = "ms" });
         }
 
         public override void Connect()

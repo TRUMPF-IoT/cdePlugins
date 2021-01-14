@@ -105,7 +105,7 @@ namespace CDMyVThings.ViewModel
 
         private void sinkStartValueChanged(cdeP pProp)
         {
-            this.MyBaseThing.DeclareSensorProperty("Value", ePropertyTypes.TNumber, new cdeP.TheSensorMeta { RangeMax = StartValue, RangeMin = 0, RangeAverage = (StartValue / 2), Units = "ticks", Kind = "analog" });
+            this.MyBaseThing.DeclareSensorProperty("Value", ePropertyTypes.TNumber, new cdeP.TheSensorMeta { RangeMax = StartValue, RangeMin = 0, Units = "ticks" });
         }
 
 
@@ -227,7 +227,7 @@ namespace CDMyVThings.ViewModel
             GetProperty(nameof(StartValue), true).RegisterEvent(eThingEvents.PropertyChanged, sinkStartValueChanged);
             GetProperty("Value", true).RegisterEvent(eThingEvents.PropertyChanged, sinkValueReset);
 
-            this.MyBaseThing.DeclareSensorProperty("Value", ePropertyTypes.TNumber, new cdeP.TheSensorMeta { RangeMax = 100, RangeMin = 0, RangeAverage = 25, Units = "ticks", Kind = "analog" });
+            this.MyBaseThing.DeclareSensorProperty("Value", ePropertyTypes.TNumber, new cdeP.TheSensorMeta { RangeMax = 100, RangeMin = 0, Units = "ticks", });
 
             if (!TheThing.GetSafePropertyBool(MyBaseThing, "IsStateSensor"))
             {
