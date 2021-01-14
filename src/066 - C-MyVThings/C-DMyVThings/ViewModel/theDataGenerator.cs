@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 namespace CDMyVThings.ViewModel
 {
-    [DeviceType(DeviceType = eVThings.eDataGenerator, Capabilities = new [] {  eThingCaps.ConfigManagement })]
+    [DeviceType(DeviceType = eVThings.eDataGenerator, Capabilities = new [] {  eThingCaps.ConfigManagement, eThingCaps.SensorContainer })]
     public class TheDataGenerator : ICDEThing
     {
         #region ICDEThing Methods
@@ -133,6 +133,7 @@ namespace CDMyVThings.ViewModel
 
         void OnChangeTimer(object t)
         {
+            bFirstRun = true;
             if (IsDisabled)
             {
                 StopGenerator();
@@ -180,6 +181,7 @@ namespace CDMyVThings.ViewModel
         System.Diagnostics.Stopwatch g_sw = new System.Diagnostics.Stopwatch();
 
         bool b35_Running = false;
+        bool bFirstRun = true;
         void GenerateStressThingData(object stressThingObj)
         {
             if (!TheBaseAssets.MasterSwitch)
@@ -199,10 +201,16 @@ namespace CDMyVThings.ViewModel
                 {
                     value = double.NaN;
                 }
-                this.MyBaseThing.SetProperty(String.Format("Gen_Prop{0:D4}", i), value, now);
+                var propName = String.Format("Gen_Prop{0:D4}", i);
+                if (bFirstRun && this.MyBaseThing.GetProperty(propName, false)?.IsSensor != true)
+                {
+                    this.MyBaseThing.DeclareSensorProperty(propName, ePropertyTypes.TNumber, new cdeP.TheSensorMeta { });
+                }
+                this.MyBaseThing.SetProperty(propName, value, now);
 
                 var newCount = System.Threading.Interlocked.Increment(ref propGenerateCounter);
             }
+            bFirstRun = false;
 
             if (TheThing.GetSafePropertyBool(MyBaseThing, "Gen_Config_35Running"))
             {
@@ -272,6 +280,7 @@ namespace CDMyVThings.ViewModel
             MyBaseThing.Value = "0";
             TheThing.SetSafePropertyBool(MyBaseThing, "IsActive", true);
             MyBaseThing.GetProperty(nameof(Gen_Config_PropertyUpdateInterval), true).RegisterEvent(eThingEvents.PropertyChanged, OnChangeTimer);
+            MyBaseThing.GetProperty(nameof(Gen_Config_NumberOfActiveProperties), true).RegisterEvent(eThingEvents.PropertyChanged, OnChangeTimer);
             MyBaseThing.StatusLevel = 0;
             if (TheThing.GetSafePropertyBool(MyBaseThing, "AutoStart"))
                 OnChangeTimer(null);

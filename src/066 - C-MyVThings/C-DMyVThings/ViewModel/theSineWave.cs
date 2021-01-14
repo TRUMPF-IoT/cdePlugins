@@ -21,6 +21,36 @@ namespace CDMyVThings.ViewModel
             get { return TheThing.MemberGetSafePropertyBool(MyBaseThing); }
             set { TheThing.MemberSetSafePropertyBool(MyBaseThing, value); }
         }
+        [ConfigProperty]
+        public int Frequency
+        {
+            get { return TheCommonUtils.CInt(TheThing.MemberGetSafePropertyNumber(MyBaseThing)); }
+            set { TheThing.MemberSetSafePropertyNumber(MyBaseThing, value); }
+        }
+        [ConfigProperty]
+        public double Amplitude
+        {
+            get { return TheThing.MemberGetSafePropertyNumber(MyBaseThing); }
+            set { TheThing.MemberSetSafePropertyNumber(MyBaseThing, value); }
+        }
+        [ConfigProperty]
+        public double Shift
+        {
+            get { return TheThing.MemberGetSafePropertyNumber(MyBaseThing); }
+            set { TheThing.MemberSetSafePropertyNumber(MyBaseThing, value); }
+        }
+        [ConfigProperty]
+        public double Step
+        {
+            get { return TheThing.MemberGetSafePropertyNumber(MyBaseThing); }
+            set { TheThing.MemberSetSafePropertyNumber(MyBaseThing, value); }
+        }
+        [ConfigProperty]
+        public bool AutoStart
+        {
+            get { return TheThing.MemberGetSafePropertyBool(MyBaseThing); }
+            set { TheThing.MemberSetSafePropertyBool(MyBaseThing, value); }
+        }
 
 
         private IBaseEngine MyBaseEngine;
@@ -45,16 +75,18 @@ namespace CDMyVThings.ViewModel
 
         public override bool DoInit()
         {
-            if (TheThing.GetSafePropertyNumber(MyBaseThing, "Frequency") < 100)
+            if (Frequency < 100)
             {
-                TheThing.SetSafePropertyNumber(MyBaseThing, "Frequency", 1000);
+                Frequency = 1000;
             }
-            if (TheThing.GetSafePropertyBool(MyBaseThing, "AutoStart"))
+            if (AutoStart)
             {
                 SinkTriggered(GetProperty("Value", false));
             }
             GetProperty("Value", true).RegisterEvent(eThingEvents.PropertyChanged, SinkValueReset);
-
+            GetProperty(nameof(Amplitude), true).RegisterEvent(eThingEvents.PropertyChanged, SinkRangeChanged);
+            GetProperty(nameof(Shift), true).RegisterEvent(eThingEvents.PropertyChanged, SinkRangeChanged);
+            SinkRangeChanged(null);
             return true;
         }
 
@@ -116,11 +148,11 @@ namespace CDMyVThings.ViewModel
             });
             // Settings Controls & User Input
             TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.CollapsibleGroup, 151, 2, 0x80, "Settings...", null, ThePropertyBag.Create(new nmiCtrlCollapsibleGroup { ParentFld=1,TileWidth=6, IsSmall=true, DoClose = true }));
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 153, 2, 0x80, "Tick time in ms", "Frequency", new nmiCtrlNumber { TileWidth = 3, TileHeight = 1, ParentFld = 151 });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 156, 2, 0x80, "Step", "Step", new nmiCtrlNumber { TileWidth = 3, TileHeight = 1, ParentFld = 151 });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 157, 2, 0x80, "Amplitude", "Amplitude", new nmiCtrlNumber { TileWidth = 3, TileHeight = 1, ParentFld = 151 });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 158, 2, 0x80, "Shift", "Shift", new nmiCtrlNumber { TileWidth = 3, TileHeight = 1, ParentFld = 151 });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleCheck, 180, 2, 0x80, "Autostart", "AutoStart", new nmiCtrlNumber { TileWidth = 3, TileHeight = 1, ParentFld = 151 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 153, 2, 0x80, "Tick time in ms", nameof(Frequency), new nmiCtrlNumber { TileWidth = 3, TileHeight = 1, ParentFld = 151 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 156, 2, 0x80, "Step", nameof(Step), new nmiCtrlNumber { TileWidth = 3, TileHeight = 1, ParentFld = 151 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 157, 2, 0x80, "Amplitude", nameof(Amplitude), new nmiCtrlNumber { TileWidth = 3, TileHeight = 1, ParentFld = 151 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 158, 2, 0x80, "Shift", nameof(Shift), new nmiCtrlNumber { TileWidth = 3, TileHeight = 1, ParentFld = 151 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleCheck, 180, 2, 0x80, "Autostart", nameof(AutoStart), new nmiCtrlNumber { TileWidth = 3, TileHeight = 1, ParentFld = 151 });
 
             return true;
         }
@@ -153,11 +185,11 @@ namespace CDMyVThings.ViewModel
             _index = 0;
             _mTimer?.Dispose();
 
-            _mTimer = new Timer(SinkTriggerTimeout, null, 0, TheCommonUtils.CInt(TheThing.GetSafePropertyNumber(MyBaseThing, "Frequency")));
+            _mTimer = new Timer(SinkTriggerTimeout, null, 0, Frequency);
             MyBaseThing.Value = _index.ToString();
             IsActive = true;
 
-            var xMax = GetProperty("Amplitude", false);
+            var xMax = GetProperty(nameof(Amplitude), false);
             CountBar?.SetUXProperty(Guid.Empty, $"MaxValue={xMax}");
             MyGauge?.SetUXProperty(Guid.Empty, $"MaxValue={xMax}");
             MyBaseThing.LastMessage = "Countdown started: " + MyBaseThing.FriendlyName;
@@ -169,6 +201,12 @@ namespace CDMyVThings.ViewModel
             {
                 SetProperty("StartValue", pProp.ToString());
             }
+        }
+
+
+        private void SinkRangeChanged(cdeP obj)
+        {
+            MyBaseThing.DeclareSensorProperty("Value", ePropertyTypes.TNumber, new cdeP.TheSensorMeta { RangeMax = Amplitude / 2 + Shift, RangeMin = Amplitude / 2 - Shift });
         }
 
         private double _index;
@@ -211,9 +249,9 @@ namespace CDMyVThings.ViewModel
         {
             //const int amplitude = 10;
             //const int verticalShift = 10;
-            var amplitude = TheThing.GetSafePropertyNumber(MyBaseThing, "Amplitude");
+            var amplitude = Amplitude;
             if (amplitude < 10) amplitude = 10;
-            var verticalShift = TheThing.GetSafePropertyNumber(MyBaseThing, "Shift");
+            var verticalShift = Shift;
             return (amplitude/2) * Math.Sin(x) + verticalShift;
         }
     }

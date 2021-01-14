@@ -20,6 +20,15 @@ namespace CDMyNetwork
         public const string PingService = "Ping Service";
     }
 
+    [EngineAssetInfo(
+        FriendlyName ="Network Services",
+        EngineID = "{2592E784-2EDF-4691-A0CD-B2BBCFDAF9DD}",
+        //AllowIsolation = true, AllowNodeHop = true,
+        LongDescription = "This service allows to monitors network services",
+        IconUrl = "FA3:f6ff",
+        Developer = "C-Labs",
+        DeveloperUrl = "http://www.c-labs.com"
+        )]
     partial class MyNetworkServices : ThePluginBase
     {
         #region ICDEPlugin
@@ -30,10 +39,7 @@ namespace CDMyNetwork
         public override void InitEngineAssets(IBaseEngine pBase)
         {
             base.InitEngineAssets(pBase);
-            MyBaseEngine.SetFriendlyName("Network Services");
             MyBaseEngine.SetIsolationFlags(true, true);
-            MyBaseEngine.SetEngineID(new Guid("{2592E784-2EDF-4691-A0CD-B2BBCFDAF9DD}"));
-            MyBaseEngine.SetPluginInfo("This service allows to monitors network services", 0, null, "FA3:f6ff", "C-Labs", "http://www.c-labs.com", null);
         }
         #endregion
 
