@@ -14,6 +14,7 @@ using System;
 
 namespace CDMyVThings.ViewModel
 {
+    [DeviceType(DeviceType = eVThings.eMemoryTag, Description = "", Capabilities = new[] { eThingCaps.ConfigManagement, eThingCaps.SensorContainer })]
     public class TheMemoryTag : ICDEThing
     {
         #region ICDEThing Methods
