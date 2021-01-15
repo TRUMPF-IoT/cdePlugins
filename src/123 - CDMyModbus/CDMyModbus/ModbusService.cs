@@ -331,7 +331,7 @@ namespace Modbus
             TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.SingleEnded, 2, 1, 2, 0, "IP Address or DNS", "Address", new TheNMIBaseControl { Explainer = "1. Enter IP Address or DNS name of Server.", });
             TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.Number,    2, 2, 2, 0, "Port", "Port", new TheNMIBaseControl { DefaultValue = "502", Explainer = "2. Enter port of the modbus server.", });
             TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.Number,      2, 3, 2, 0, "Slave Address", "SlaveAddress", new nmiCtrlNumber() { DefaultValue="1", TileWidth = 3, ParentFld = 200, MaxValue = 255, MinValue = 0 });
-            TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.SingleCheck, 2, 4, 2, 0, "Auto-Connect", "AutoConnect", new nmiCtrlSingleCheck { DefaultValue = "true", Explainer = "2. If selected the connection will auto-connect.", });
+            TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.SingleCheck, 2, 4, 2, 0, "Auto-Connect", "AutoConnect", new nmiCtrlSingleCheck { DefaultValue = "true", Explainer = "3. If selected the connection will auto-connect.", });
 
             tFlds = TheNMIEngine.AddNewWizardPage(MyBaseThing, tMyForm2, 1, 3, 0, null /*"Name and Address"*/);
             var ComSelect=TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.ComboBox, 3, 1, 2, 0, "Select COM Port", "Address", new TheNMIBaseControl { Explainer = "1. Select the COM port connected to your Server.", });
