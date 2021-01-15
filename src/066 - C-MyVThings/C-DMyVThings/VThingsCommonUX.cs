@@ -70,9 +70,9 @@ namespace CDMyVThings
             var tMyForm2 = flds["Form"] as TheFormInfo;
 
             var tFlds = TheNMIEngine.AddNewWizardPage(MyBaseThing, tMyForm2, 1, 1, 0, "Sensor Selector");
-            TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.SingleEnded, 1, 1, 2, 0, "Dashboard Name", "ClientName", new TheNMIBaseControl { Explainer = "1. Enter name for the new Modbus connection.", });
-            var tf =TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.ThingPicker, 1, 2, 2, 0, "Select Sensor Thing", "SelectedSensor", new nmiCtrlThingPicker() { IncludeEngines=true, Explainer = "1. Select a thing to show in Dashboard" });
-            TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.PropertyPicker, 1, 3, 2, 0, "Select Property", "SelectedProp", new nmiCtrlPropertyPicker() { ThingFld=tf.FldOrder, Explainer = "1. Select a property of the Thing" });
+            TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.SingleEnded, 1, 1, 2, 0, "Dashboard Name", "ClientName", new TheNMIBaseControl { Explainer = "1. Enter name for the new Dashboard.", });
+            var tf =TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.ThingPicker, 1, 2, 2, 0, "Select Sensor Thing", "SelectedSensor", new nmiCtrlThingPicker() { IncludeEngines=true, Explainer = "2. Select a thing to show in Dashboard" });
+            TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.PropertyPicker, 1, 3, 2, 0, "Select Property", "SelectedProp", new nmiCtrlPropertyPicker() { ThingFld=tf.FldOrder, Explainer = "3. Select a property of the Thing" });
 
             TheNMIEngine.AddWizardFinishPage(MyBaseThing, tMyForm2, 3);
             mResultInfo = TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.SmartLabel, 3, 1, 0, 0, null, "Error", new nmiCtrlSmartLabel { FontSize = 24, NoTE = true, TileWidth = 7 });
