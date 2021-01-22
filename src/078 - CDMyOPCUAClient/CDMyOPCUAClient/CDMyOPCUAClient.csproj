@@ -16,6 +16,7 @@
     <Copyright>Copyright © 2017-2021 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <Choose>
