@@ -16,6 +16,7 @@
     <Copyright>Copyright © 2017-2021 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <Choose>
@@ -41,9 +42,9 @@
 
   <ItemGroup>
     <PackageReference Include="C-DEngine" Version="5.*" />
-    <PackageReference Include="cdeCommonMessageContractsShared" Version="5.*" />
-    <PackageReference Include="cdeOPCUAClientContractsShared" Version="5.*" />
-    <PackageReference Include="cdeThingMatcherShared" Version="5.*" />
+    <PackageReference Include="cdeCommonMessageContractsShared" Version="5.*"  IncludeAssets="ContentFiles" />
+    <PackageReference Include="cdeOPCUAClientContractsShared" Version="5.*"  IncludeAssets="ContentFiles"/>
+    <PackageReference Include="cdeThingMatcherShared" Version="5.*"  IncludeAssets="ContentFiles"/>
     <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Client" Version="1.4.363.107" />
     <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Configuration" Version="1.4.363.107" />
     <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Core" Version="1.4.363.107" />
