@@ -13,7 +13,7 @@
   </PropertyGroup>
   <!-- GitVersion-based auto-versioning -->
   <ItemGroup Condition="'$(GitVersionTaskExcluded)' != 'True'" >
-    <PackageReference Include="GitVersion.MsBuild" Version="5.7.0-pullrequest2581-174">
+    <PackageReference Include="GitVersion.MsBuild" Version="5.7.0-pullrequest2581-187">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
