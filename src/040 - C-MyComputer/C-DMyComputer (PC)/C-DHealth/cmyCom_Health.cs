@@ -599,7 +599,7 @@ namespace CDMyComputer
             if (pMyHealthData == null || TheCommonUtils.cdeIsLocked(UpdateDiagInfoLock)) return;
             lock (UpdateDiagInfoLock)
             {
-                uint s;
+                //uint s;
                 //GetCurrentCoreInfo(out t, out s);
                 //pMyHealthData.cdeTemp = t;
                 //pMyHealthData.cdeSpeed = s;
@@ -792,7 +792,7 @@ namespace CDMyComputer
 
         private static PerformanceCounter MyCPULoadCounter;
         private static PerformanceCounter MyCDELoadCounter;
-        private static PerformanceCounter MyRamCounter;
+        //private static PerformanceCounter MyRamCounter;
         [DllImport("kernel32")]
         static extern int GetCurrentThreadId();
         [DllImport("kernel32.dll")]
