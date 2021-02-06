@@ -65,7 +65,7 @@ jobs:
       run: dotnet build './BuildTools/PackagerInstaller\PackagerInstaller.csproj' --framework net45 --configuration Release --no-restore --disable-parallel
 
     - name: Build
-      run: dotnet build './src/cdePlugins.sln' --configuration Release --no-restore --disable-parallel
+      run: dotnet build './src/cdePlugins.sln' --configuration Release --no-restore --disable-parallel /nowarn:nu5105
 
     - name: Test
       run: dotnet test './src/cdePlugins.sln' --configuration Release --no-build --no-restore --verbosity normal
