@@ -135,7 +135,3 @@ Files: BuildTools/gitversion.json
 Copyright: 2021 C-Labs
 License: MPL-2.0
 
-Files: BuildTools/PrivateNuGets/GitVersion.MsBuild.5.7.0-pullrequest2581-187.nupkg
-Copyright: 2021 C-Labs
-License: MIT
-
