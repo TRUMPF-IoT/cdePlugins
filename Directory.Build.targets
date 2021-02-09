@@ -8,8 +8,6 @@
     <GitVersionTaskExcludedProjects Condition="'$(GitVersionTaskExcludedProjects)' == ''">CertIssuerWeb;docker-compose;ActivationKeyPurchase;CDMyPowerMeter</GitVersionTaskExcludedProjects> <!-- Performance optimization: only look at certain package references -->
     <GitVersionTaskExcluded>$(GitVersionTaskExcludedProjects.Contains($(ProjectName)))</GitVersionTaskExcluded>
     <WriteVersionInfoToBuildLog>false</WriteVersionInfoToBuildLog> <!-- Prevent the Azure DevOps build number to be written twice and forced to semver: should only be done by gitversion task in the build pipeline -->
-    <GitVersionOutputFile>$(SolutionDir)\gitversion.json</GitVersionOutputFile>
-	<GitVersion_ToolArgments>-output file -outputfile $(GitVersionOutputFile)</GitVersion_ToolArgments>
   </PropertyGroup>
   <!-- GitVersion-based auto-versioning -->
   <ItemGroup Condition="'$(GitVersionTaskExcluded)' != 'True'" >
