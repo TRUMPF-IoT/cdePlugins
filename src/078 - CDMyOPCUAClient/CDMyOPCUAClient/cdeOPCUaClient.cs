@@ -34,6 +34,7 @@ namespace CDMyOPCUAClient
         Developer = "C-Labs and its licensors",
         DeveloperUrl = "http://www.c-labs.com",
         AcceptsFilePush = true,
+        Categories = new string[] { "Protocol" },
         ManifestFiles = new []
         {
                 "Opc.Ua.Core.dll",

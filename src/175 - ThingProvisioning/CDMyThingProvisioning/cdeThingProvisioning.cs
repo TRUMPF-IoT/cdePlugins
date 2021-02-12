@@ -19,12 +19,8 @@ using System.Text.RegularExpressions;
 
 namespace CDMyThingProvisioning
 {
-    class cdeThingProvisioning : ICDEPlugin, ICDEThing
+    class cdeThingProvisioning : ThePluginBase
     {
-        // Base object references 
-        protected TheThing MyBaseThing;      // Base thing
-        private IBaseEngine MyBaseEngine;    // Base engine (service)
-
         // Initialization flags
         protected bool mIsInitStarted = false;
         protected bool mIsInitCompleted = false;
@@ -35,11 +31,6 @@ namespace CDMyThingProvisioning
         private readonly string strFriendlyName = "Thing Provisioning Service";
 
         #region ICDEPlugin - interface methods for service (engine)
-        public IBaseEngine GetBaseEngine()
-        {
-            return MyBaseEngine;
-        }
-
         /// <summary>
         /// InitEngineAssets - The C-DEngine calls this initialization
         /// function as part of registering this service (engine)
@@ -48,81 +39,28 @@ namespace CDMyThingProvisioning
         /// This parameter is a reference to that base engine object.
         /// We keep a copy because it will be very useful to us.
         /// </param>
-        public void InitEngineAssets(IBaseEngine pBase)
+        public override void InitEngineAssets(IBaseEngine pBase)
         {
-            MyBaseEngine = pBase;
+            base.InitEngineAssets(pBase);
 
             MyBaseEngine.SetEngineID(guidEngineID);          // Unique identifier for our service (engine)
             MyBaseEngine.SetFriendlyName(strFriendlyName);
 
-            MyBaseEngine.SetEngineName(GetType().FullName);  // Can be any arbitrary name - recommended is the class name
-            MyBaseEngine.SetEngineType(GetType());           // Has to be the type of this class
-            MyBaseEngine.SetEngineService(true);             // Keep True if this class is a service
-            MyBaseEngine.SetVersion(0);
             MyBaseEngine.SetCDEMinVersion(4.1111);
-
             MyBaseEngine.SetPluginInfo("This service lets you create and configure things.",       // Describe plugin for Plugin Store
                                        0,                       // pPrice - retail price (default = 0)
                                        null,                    // Custom home page - default = /ServiceID
                                        "toplogo-150.png",       // pIcon - custom icon.
                                        "C-Labs",                // pDeveloper - name of the plugin developer.
                                        "http://www.c-labs.com", // pDeveloperUrl - URL to developer home page.
-                                       new List<string>() { }); // pCategories - Search categories for service.
-        }
-        #endregion
-
-        #region ICDEThing - interface methods (rare to override)
-        public bool IsInit()
-        {
-            return mIsInitCompleted;
-        }
-        public bool IsUXInit()
-        {
-            return mIsUXInitCompleted;
-        }
-
-        public TheThing GetBaseThing()
-        {
-            return MyBaseThing;
-        }
-        public void SetBaseThing(TheThing pThing)
-        {
-            MyBaseThing = pThing;
-        }
-
-        public cdeP GetProperty(string pName, bool DoCreate)
-        {
-            return MyBaseThing?.GetProperty(pName, DoCreate);
-        }
-        public cdeP SetProperty(string pName, object pValue)
-        {
-            return MyBaseThing?.SetProperty(pName, pValue);
-        }
-
-        public void RegisterEvent(string pName, Action<ICDEThing, object> pCallBack)
-        {
-            MyBaseThing?.RegisterEvent(pName, pCallBack);
-        }
-        public void UnregisterEvent(string pName, Action<ICDEThing, object> pCallBack)
-        {
-            MyBaseThing?.UnregisterEvent(pName, pCallBack);
-        }
-        public void FireEvent(string pEventName, ICDEThing sender, object pPara, bool FireAsync)
-        {
-            MyBaseThing?.FireEvent(pEventName, sender, pPara, FireAsync);
-        }
-        public bool HasRegisteredEvents(string pEventName)
-        {
-            if (MyBaseThing != null)
-                return MyBaseThing.HasRegisteredEvents(pEventName);
-            return false;
+                                       new List<string> { "Service" }); // pCategories - Search categories for service.
         }
         #endregion
 
         TheStorageMirror<ScriptSnapshot> MyScriptTableStorage;
         //List<ScriptSnapshot> MyScriptTableList;
         //Dictionary<string, Guid> SnapShotGuids;
-        public bool Init()
+        public override bool Init()
         {
             if (!mIsInitStarted)
             {
@@ -601,7 +539,7 @@ namespace CDMyThingProvisioning
         }
 
         protected TheFormInfo MyScriptTable = null;
-        public bool CreateUX()
+        public override bool CreateUX()
         {
             if (!mIsUXInitStarted)
             {
@@ -683,11 +621,6 @@ namespace CDMyThingProvisioning
             public DateTimeOffset LastUpdate { get; set; }
         }
 
-        public bool Delete()
-        {
-            return true;
-        }
-
         //Helper Function
         private void SetupStorageMirror()
         {
@@ -716,7 +649,7 @@ namespace CDMyThingProvisioning
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="pIncoming"></param>
-        public void HandleMessage(ICDEThing sender, object pIncoming)
+        public override void HandleMessage(ICDEThing sender, object pIncoming)
         {
             if (!(pIncoming is TheProcessMessage pMsg)) return;
 

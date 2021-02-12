@@ -27,7 +27,8 @@ namespace CDMyNetwork
         LongDescription = "This service allows to monitors network services",
         IconUrl = "FA3:f6ff",
         Developer = "C-Labs",
-        DeveloperUrl = "http://www.c-labs.com"
+        DeveloperUrl = "http://www.c-labs.com",
+        Categories = new string[] { "Service" }
         )]
     partial class MyNetworkServices : ThePluginBase
     {

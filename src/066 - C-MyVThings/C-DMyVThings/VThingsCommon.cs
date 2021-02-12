@@ -43,7 +43,7 @@ namespace CDMyVThings
         IconUrl = iconUrl,
         Developer = "C-Labs",
         DeveloperUrl = "http://www.c-labs.com",
-        Categories = new string[] { },
+        Categories = new string[] { "Digital-Thing" },
         IsService = true,
         EngineID = "{B9DBC881-0EA8-4FA6-98B8-2C646B6B848F}",
         AcceptsFilePush = true,
@@ -60,16 +60,14 @@ namespace CDMyVThings
     [DeviceType(DeviceType = eVThings.eMemoryTag, Description = "Memory tag stores custom data", Capabilities = new eThingCaps[] { })]
 #endif
     
-    public partial class TheVThings : ICDEPlugin, ICDEThing
+    public partial class TheVThings : ThePluginBase
     {
-#region ICDEPlugin
-        public IBaseEngine MyBaseEngine;
 
         const string longDescription = "This plug-in hosts many different functions and other virtual devices";
         const string iconUrl = "<i class='fa faIcon cl-3x'>&#xf61f;</i>";
-        public void InitEngineAssets(IBaseEngine pBase)
+        public override void InitEngineAssets(IBaseEngine pBase)
         {
-            MyBaseEngine = pBase;
+            base.InitEngineAssets(pBase);
             MyBaseEngine.RegisterCSS("/P066/css/SensorTileStyle.min.css", null, sinkRes);
 #if !USEENGINEATTRIBUTEINFO || CDE_NET35 || CDE_NET4
             MyBaseEngine.SetPluginInfo(longDescription, 0, null, iconUrl, "C-Labs", "http://www.c-labs.com", new List<string>());
@@ -83,66 +81,13 @@ namespace CDMyVThings
             MyBaseEngine.SetCDEMinVersion(4.2010);
 #endif
         }
-        public IBaseEngine GetBaseEngine()
-        {
-            return MyBaseEngine;
-        }
 
         void sinkRes(TheRequestData pReq)
         {
             MyBaseEngine.GetPluginResource(pReq);
         }
 
-#endregion
-
-#region Rare To Overide
-        public void SetBaseThing(TheThing pThing)
-        {
-            MyBaseThing = pThing;
-        }
-        public TheThing GetBaseThing()
-        {
-            return MyBaseThing;
-        }
-        public cdeP GetProperty(string pName, bool DoCreate)
-        {
-            return MyBaseThing?.GetProperty(pName, DoCreate);
-        }
-        public cdeP SetProperty(string pName, object pValue)
-        {
-            return MyBaseThing?.SetProperty(pName, pValue);
-        }
-        public void RegisterEvent(string pName, Action<ICDEThing, object> pCallBack)
-        {
-            MyBaseThing?.RegisterEvent(pName, pCallBack);
-        }
-        public void UnregisterEvent(string pName, Action<ICDEThing, object> pCallBack)
-        {
-            MyBaseThing?.UnregisterEvent(pName, pCallBack);
-        }
-        public void FireEvent(string pEventName, ICDEThing sender, object pPara, bool FireAsync)
-        {
-            MyBaseThing?.FireEvent(pEventName, sender, pPara, FireAsync);
-        }
-        public bool HasRegisteredEvents(string pEventName)
-        {
-            if (MyBaseThing != null)
-                return MyBaseThing.HasRegisteredEvents(pEventName);
-            return false;
-        }
-        protected TheThing MyBaseThing ;
-
-        protected bool mIsUXInitCalled;
-        protected bool mIsUXInitialized;
-        protected bool mIsInitCalled;
-        protected bool mIsInitialized;
-        public bool IsUXInit()
-        { return mIsUXInitialized; }
-        public bool IsInit()
-        { return mIsInitialized; }
-
-#endregion
-        public bool Init()
+        public override bool Init()
         {
             if (mIsInitCalled) return false;
             mIsInitCalled = true;
@@ -176,18 +121,11 @@ namespace CDMyVThings
             StartEngineServices();
         }
 
-        public bool Delete()
-        {
-            mIsInitialized = false;
-            // TODO Properly implement delete
-            return true;
-        }
-
         public void HandleMessage(TheProcessMessage pMsg)
         {
             HandleMessage(this, pMsg);
         }
-        public void HandleMessage(ICDEThing pThing, object oMsg)
+        public override void HandleMessage(ICDEThing pThing, object oMsg)
         {
             if (!(oMsg is TheProcessMessage pMsg)) return;
 

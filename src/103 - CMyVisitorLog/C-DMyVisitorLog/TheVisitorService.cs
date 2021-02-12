@@ -28,47 +28,23 @@ namespace CDMyVisitorLog
         public int ExactCount { get; set; }
     }
 
-    class TheVisitorService : ICDEPlugin, ICDEThing
+    class TheVisitorService : ThePluginBase
     {
         #region ICDEPlugin    
-        private IBaseEngine MyBaseEngine;
-        public IBaseEngine GetBaseEngine()
-        {
-            return MyBaseEngine;
-        }
         /// <summary>
         /// This constructor is called by The C-DEngine during initialization in order to register this service
         /// </summary>
         /// <param name="pBase">The C-DEngine is creating a Host for this engine and hands it to the Plugin Service</param>
-        public void InitEngineAssets(IBaseEngine pBase)
+        public override void InitEngineAssets(IBaseEngine pBase)
         {
-            MyBaseEngine = pBase;
-            MyBaseEngine.SetEngineName(GetType().FullName);      
-            MyBaseEngine.SetEngineType(GetType());               
+            base.InitEngineAssets(pBase);
             MyBaseEngine.SetFriendlyName("My Visitor Log Service");   
-            MyBaseEngine.SetEngineService(true);                      
-
             MyBaseEngine.SetEngineID(new Guid("{AAE144FE-364F-4FA0-9E67-ABC0A3A26A53}")); 
-            MyBaseEngine.SetPluginInfo("This service allows you to track Visitors", 0, null, "toplogo-150.png", "C-Labs", "http://www.c-labs.com", null); 
-
-            MyBaseEngine.SetVersion(0);
+            MyBaseEngine.SetPluginInfo("This service allows you to track Visitors", 0, null, "toplogo-150.png", "C-Labs", "http://www.c-labs.com", new List<string> { "Service" }); 
         }
         #endregion
 
-        #region - Rare to Override
-        public void SetBaseThing(TheThing pThing)
-        {
-            MyBaseThing = pThing;
-        }
-        public TheThing GetBaseThing()
-        {
-            return MyBaseThing;
-        }
-        public cdeP GetProperty(string pName, bool DoCreate)
-        {
-            return MyBaseThing?.GetProperty(pName, DoCreate);
-        }
-        public cdeP SetProperty(string pName, object pValue)
+        public override cdeP SetProperty(string pName, object pValue)
         {
             if (MyBaseThing != null)
             {
@@ -78,36 +54,6 @@ namespace CDMyVisitorLog
             }
             return null;
         }
-        public void RegisterEvent(string pName, Action<ICDEThing, object> pCallBack)
-        {
-            MyBaseThing?.RegisterEvent(pName, pCallBack);
-        }
-        public void UnregisterEvent(string pName, Action<ICDEThing, object> pCallBack)
-        {
-            MyBaseThing?.UnregisterEvent(pName, pCallBack);
-        }
-        public void FireEvent(string pEventName, ICDEThing sender, object pPara, bool FireAsync)
-        {
-            MyBaseThing?.FireEvent(pEventName, sender, pPara, FireAsync);
-        }
-        public bool HasRegisteredEvents(string pEventName)
-        {
-            if (MyBaseThing != null)
-                return MyBaseThing.HasRegisteredEvents(pEventName);
-            return false;
-        }
-        protected TheThing MyBaseThing ;
-
-        protected bool mIsUXInitCalled;
-        protected bool mIsUXInitialized ;
-        protected bool mIsInitCalled;
-        protected bool mIsInitialized;
-        public bool IsUXInit()
-        { return mIsUXInitialized; }
-        public bool IsInit()
-        { return mIsInitialized; }
-
-        #endregion
 
         /// <summary>
         /// The Visitor Log of this node
@@ -133,7 +79,7 @@ namespace CDMyVisitorLog
             MyFootPrints.InitializeStore(false, false);
         }
 
-        public bool Init()
+        public override bool Init()
         {
             if (mIsInitCalled) return false;
             mIsInitCalled = true;
@@ -166,13 +112,6 @@ namespace CDMyVisitorLog
             MyBaseEngine.SetEngineReadiness(true, null);
             MyBaseEngine.SetStatusLevel(1);
             mIsInitialized = true;
-            return true;
-        }
-
-        public bool Delete()
-        {
-            mIsInitialized = false;
-            // TODO Properly implement delete
             return true;
         }
 
@@ -236,7 +175,7 @@ namespace CDMyVisitorLog
         }
 
         TheFieldInfo myGoogleMap = null;
-        public bool CreateUX()
+        public override bool CreateUX()
         {
             if (mIsUXInitCalled) return false;
             mIsUXInitCalled = true;
@@ -355,7 +294,7 @@ namespace CDMyVisitorLog
             }
         }
 
-        public void HandleMessage(ICDEThing sender, object pIncoming)
+        public override void HandleMessage(ICDEThing sender, object pIncoming)
         {
             TheProcessMessage pMsg = pIncoming as TheProcessMessage;
             if (pMsg == null) return;

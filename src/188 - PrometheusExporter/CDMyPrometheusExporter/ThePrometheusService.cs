@@ -50,7 +50,7 @@ namespace CDMyPrometheusExporter
             base.InitEngineAssets(pBase);
             MyBaseEngine.SetFriendlyName("Prometheus Exporter");      
             MyBaseEngine.SetEngineID(new Guid("{AF65D637-191B-40BA-8302-BDD254E11DFE}"));
-            MyBaseEngine.SetPluginInfo("This service allows to export Thing properties as metrics to Prometheus.", 0, null, "images/prometheus_logo_grey.png", "C-Labs and its licensors", "http://www.c-labs.com", new List<string>() { });
+            MyBaseEngine.SetPluginInfo("This service allows to export Thing properties as metrics to Prometheus.", 0, null, "images/prometheus_logo_grey.png", "C-Labs and its licensors", "http://www.c-labs.com", new List<string>() { "Service" });
             MyBaseEngine.AddManifestFiles(new List<string> {
 #if !CDE_STANDARD
                 //"NetStandard.dll", // CODE REVIEW: Better to leave it up to the host to carry this (only needed for <.Net 4.72)? Otherwise we'll end up with lots of collisions between plugins that rely on netstd for net461+.
