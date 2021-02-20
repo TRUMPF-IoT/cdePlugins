@@ -40,7 +40,8 @@ namespace NModbusExt.Config
         public float ScaleFactor { get; set; }
         public string SourceType { get; set; }
         public string PropertyName { get; set; }
-
+        public int PollCycle { get; set; }
+        public int CurCycle { get; set; }
         public object Value { get; set; }
 
         public bool AllowWrite { get; set; }

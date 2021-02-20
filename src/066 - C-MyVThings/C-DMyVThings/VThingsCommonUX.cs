@@ -14,7 +14,7 @@ namespace CDMyVThings
     public partial class TheVThings
     {
 
-        public virtual bool CreateUX()
+        public override bool CreateUX()
         {
             if (mIsUXInitCalled) return false;
             mIsUXInitCalled = true;

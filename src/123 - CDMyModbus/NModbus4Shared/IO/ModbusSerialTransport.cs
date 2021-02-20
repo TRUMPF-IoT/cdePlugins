@@ -30,7 +30,7 @@
 
         internal void DiscardInBuffer()
         {
-            StreamResource.DiscardInBuffer();
+            StreamResource?.DiscardInBuffer();
         }
 
         internal override void Write(IModbusMessage message)
@@ -39,7 +39,7 @@
 
             byte[] frame = BuildMessageFrame(message);
             //Debug.WriteLine($"TX: {string.Join(", ", frame)}");
-            StreamResource.Write(frame, 0, frame.Length);
+            StreamResource?.Write(frame, 0, frame.Length);
         }
 
         internal override IModbusMessage CreateResponse<T>(byte[] frame)

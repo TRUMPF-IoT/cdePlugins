@@ -349,6 +349,7 @@ namespace CDMyComputer
 
         private double LastStationWatts = 0;
         private readonly object GetHealthLock = new object();
+        private string OHMUrl = null;
         private void GetISMHealthData()
         {
             if (TheCommonUtils.cdeIsLocked(GetHealthLock) || !AreCounterInit) return;
@@ -449,6 +450,23 @@ namespace CDMyComputer
                 {
                     //if (MyHealthData != null && MyCDELoadCounter != null)
                     //    MyHealthData.cdeLoad = MyCDELoadCounter.NextValue().cdeTruncate(2);
+                    if (OHMUrl == null)
+                    {
+                        OHMUrl = TheBaseAssets.MySettings.GetSetting("OHMUrl");
+                        if (OHMUrl == null)
+                            OHMUrl = "";
+                    }
+                    if (!string.IsNullOrEmpty(OHMUrl))
+                    {
+                        TheREST.GetRESTAsync(TheCommonUtils.CUri($"{OHMUrl}/data.json", true), (res) => {
+                            string t = TheCommonUtils.CArray2UTF8String(res.ResponseBuffer);
+                            var p = t.IndexOf("CPU Total");
+                            var h = t.IndexOf("Value", p);
+                            var x = t.IndexOf("%", h + 9);
+                            var tRes = t.Substring(h + 9, x - (h + 10));
+                            MyHealthData.CPULoad = TheCommonUtils.CDbl(tRes);
+                        });
+                    }
                 }
                 catch (Exception e)
                 {

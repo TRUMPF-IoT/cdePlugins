@@ -21,6 +21,7 @@ namespace Modbus
     {
         public const string ModbusTCPDevice = "Modbus TCP Device";
         public const string ModbusRTUDevice = "Modbus RTU Device";
+        public const string ModbusXGWDevice = "xGATEWAY Modbus RTU Device";
     }
 
     class ModbusService : ThePluginBase
@@ -39,7 +40,8 @@ namespace Modbus
             MyBaseEngine.SetDeviceTypes(new List<TheDeviceTypeInfo>
             {
                 new TheDeviceTypeInfo { Capabilities = new eThingCaps[] { eThingCaps.SensorProvider, eThingCaps.ConfigManagement }, DeviceType = eModbusType.ModbusTCPDevice, Description = "Modbus TCP Device" },
-                new TheDeviceTypeInfo { Capabilities = new eThingCaps[] { eThingCaps.SensorProvider, eThingCaps.ConfigManagement }, DeviceType = eModbusType.ModbusRTUDevice, Description = "Modbus RTU Device" } //TODO: Did I do this right?
+                new TheDeviceTypeInfo { Capabilities = new eThingCaps[] { eThingCaps.SensorProvider, eThingCaps.ConfigManagement }, DeviceType = eModbusType.ModbusRTUDevice, Description = "Modbus RTU Device" },
+                new TheDeviceTypeInfo { Capabilities = new eThingCaps[] { eThingCaps.SensorProvider, eThingCaps.ConfigManagement }, DeviceType = eModbusType.ModbusXGWDevice, Description = "xGATEWAY Modbus RTU Device" } //TODO: Did I do this right?
             });
 
             MyBaseEngine.SetEngineID(new Guid("{7E749DF5-10CD-4671-AB58-05EF078C9125}")); 
@@ -203,6 +205,12 @@ namespace Modbus
                                     case eModbusType.ModbusRTUDevice:
                                         {
                                             var tS = new ModbusRTUDevice(tDev, this, null);
+                                            TheThingRegistry.RegisterThing(tS);
+                                        }
+                                        break;
+                                    case eModbusType.ModbusXGWDevice:
+                                        {
+                                            var tS = new ModbusXGWDevice(tDev, this, null);
                                             TheThingRegistry.RegisterThing(tS);
                                         }
                                         break;
