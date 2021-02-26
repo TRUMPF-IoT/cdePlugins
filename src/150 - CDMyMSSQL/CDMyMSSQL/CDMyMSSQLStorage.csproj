@@ -64,7 +64,7 @@
 
   <ItemGroup>
     <PackageReference Include="C-DEngine" />
-    <PackageReference Include="cdeSensorTemplateShared" Version="5.*" IncludeAssets="ContentFiles" GeneratePathProperty="true"/>
+    <PackageReference Include="cdeSensorTemplateShared" Version="5.*-*" IncludeAssets="ContentFiles" GeneratePathProperty="true"/>
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
