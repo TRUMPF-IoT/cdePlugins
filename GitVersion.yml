@@ -2,19 +2,18 @@
 # SPDX-License-Identifier: MPL-2.0
 mode: ContinuousDelivery
 assembly-informational-format: '{SemVer}+{env:cdeBuildDate ?? private}.{FullBuildMetaData}'
-branches: {}
 ignore:
   sha: []
 merge-message-formats: {}
 
 branches:
-  master:
+  main:
     mode: ContinuousDelivery
     tag: beta
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
-    regex: ^master$
+    regex: ^master$|^main$
     source-branches:
     - develop
     - release
@@ -32,7 +31,7 @@ branches:
     regex: ^(pull|pull\-requests|pr)[/-]
     source-branches:
     - develop
-    - master
+    - main
     - release
     - feature
     - support
@@ -50,7 +49,7 @@ branches:
     regex: ^.*$ # ^features?[/-]
     source-branches:
     - develop
-    - master
+    - main
     - release
     - feature
     - support

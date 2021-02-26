@@ -33,7 +33,6 @@ namespace CDMyNetwork.ViewModel
                 PingTimeOut = 50;
             MyBaseThing.DeclareSensorProperty(nameof(RoundTripTime), ePropertyTypes.TNumber, new cdeP.TheSensorMeta { RangeMin = 0, RangeMax = PingTimeOut, Units = "ms" })
                 .RegisterEvent(eThingEvents.PropertyChanged, onPingTimeoutChanged);
-            MyBaseThing.DeclareSensorProperty(nameof(MyBaseThing.Value), ePropertyTypes.TNumber, new cdeP.TheSensorMeta { RangeMin = 0, RangeMax = PingTimeOut, Units = "ms" });
             if (AutoConnect)
                 Connect();
 
@@ -44,7 +43,7 @@ namespace CDMyNetwork.ViewModel
         private void onPingTimeoutChanged(cdeP obj)
         {
             MyBaseThing.DeclareSensorProperty(nameof(RoundTripTime), ePropertyTypes.TNumber, new cdeP.TheSensorMeta { RangeMin = 0, RangeMax = PingTimeOut, Units = "ms" });
-            MyBaseThing.DeclareSensorProperty(nameof(MyBaseThing.Value), ePropertyTypes.TNumber, new cdeP.TheSensorMeta { RangeMin = 0, RangeMax = PingTimeOut, Units = "ms" });
+            //MyBaseThing.DeclareSensorProperty(nameof(MyBaseThing.Value), ePropertyTypes.TNumber, new cdeP.TheSensorMeta { RangeMin = 0, RangeMax = PingTimeOut, Units = "ms" });
         }
 
         public override void Connect()

@@ -39,7 +39,7 @@
   </Choose>
 
   <ItemGroup>
-    <PackageReference Include="C-DEngine" Version="5.*" />
+    <PackageReference Include="C-DEngine" Version="5.*-*" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
