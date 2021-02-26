@@ -100,16 +100,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDMyOPCUAClient", "078 - CD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDMyImages", "160 - CDMyImages\CDMyImages\CDMyImages.csproj", "{F0237369-3723-495A-96BF-5D0A1BB5B1EA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "C-DEngine", "..\..\C-DEngine\src\C-DEngine\C-DEngine.csproj", "{503CC78B-B3CD-481A-9633-BFF61515F53A}"
-EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "cdeNewtonsoft.JSON", "..\..\C-DEngine\src\Utilities\cdeNewtonsoft.JSON\cdeNewtonsoft.JSON.shproj", "{3EF53A99-B09D-43E3-8F75-E5600D2F47E2}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CDE", "CDE", "{695B6A43-170C-4EAD-A43C-BDBC0AB819CA}"
-EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		..\..\C-DEngine\src\Utilities\cdeNewtonsoft.JSON\cdeNewtonsoft.JSON.projitems*{3ef53a99-b09d-43e3-8f75-e5600d2f47e2}*SharedItemsImports = 13
-		..\..\C-DEngine\src\Utilities\cdeNewtonsoft.JSON\cdeNewtonsoft.JSON.projitems*{503cc78b-b3cd-481a-9633-bff61515f53a}*SharedItemsImports = 5
 		123 - CDMyModbus\NModbus4Shared\NModbus4Shared.projitems*{87d6ea89-f134-41b9-8015-5e5cf7b93da2}*SharedItemsImports = 13
 		123 - CDMyModbus\NModbus4Shared\NModbus4Shared.projitems*{f810d2d8-abb9-43c5-9053-827cb51ca6ba}*SharedItemsImports = 5
 	EndGlobalSection
@@ -194,10 +186,6 @@ Global
 		{F0237369-3723-495A-96BF-5D0A1BB5B1EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0237369-3723-495A-96BF-5D0A1BB5B1EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F0237369-3723-495A-96BF-5D0A1BB5B1EA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{503CC78B-B3CD-481A-9633-BFF61515F53A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{503CC78B-B3CD-481A-9633-BFF61515F53A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{503CC78B-B3CD-481A-9633-BFF61515F53A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{503CC78B-B3CD-481A-9633-BFF61515F53A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -208,8 +196,6 @@ Global
 		{CE4F65F7-9FFC-4499-A201-B0462C1F0D52} = {52B297F8-501B-4E8F-B7B4-E5040973F429}
 		{87D6EA89-F134-41B9-8015-5E5CF7B93DA2} = {E4BAAA74-B2C3-4398-924B-E9DB953B0B1C}
 		{F810D2D8-ABB9-43C5-9053-827CB51CA6BA} = {E4BAAA74-B2C3-4398-924B-E9DB953B0B1C}
-		{503CC78B-B3CD-481A-9633-BFF61515F53A} = {695B6A43-170C-4EAD-A43C-BDBC0AB819CA}
-		{3EF53A99-B09D-43E3-8F75-E5600D2F47E2} = {695B6A43-170C-4EAD-A43C-BDBC0AB819CA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {65B36CB7-1C08-480C-96F5-F480F39A709F}
