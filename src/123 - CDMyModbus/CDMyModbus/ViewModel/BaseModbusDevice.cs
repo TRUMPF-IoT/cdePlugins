@@ -38,6 +38,12 @@ namespace CDMyModbus.ViewModel
             return base.SetProperty(pName, pValue);
         }
 
+        public int Reconnects
+        {
+            get { return (int)TheThing.GetSafePropertyNumber(MyBaseThing, nameof(Reconnects)); }
+            set { TheThing.SetSafePropertyNumber(MyBaseThing, nameof(Reconnects), value); }
+        }
+
         [ConfigProperty]
         public int Baudrate
         {
@@ -225,6 +231,7 @@ namespace CDMyModbus.ViewModel
             try
             {
                 MyBaseThing.StatusLevel = 4; // ReaderThread will set statuslevel to 1
+                Reconnects = 0;
                 foreach (var field in MyModFieldStore.TheValues)
                 {
                     var p = MyBaseThing.GetProperty(field.PropertyName, true);
@@ -370,6 +377,7 @@ namespace CDMyModbus.ViewModel
                             {
                                 SetMessage($"{DateTime.Now} - Failure during read of modbus properties: {e.Message}; closing Modbus and retrying", 2, DateTimeOffset.Now, TSM.L(eDEBUG_LEVELS.OFF) ? 0 : 10482, eMsgLevel.l2_Warning);
                                 CloseModBus(); // Close the connection just in case there's an internal socket error that we didn't detect (yet)
+                                Reconnects++;
                             }
                         }
                     }
@@ -525,7 +533,8 @@ namespace CDMyModbus.ViewModel
                 catch (Exception e)
                 {
                     SetMessage($"Error reading property {field?.PropertyName}",-1,DateTimeOffset.Now,TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? 0 : 10481, eMsgLevel.l2_Warning);
-                    if (e is System.IO.IOException)
+                    if (e is System.IO.IOException ||
+                        e is System.NotImplementedException)
                     {
                         throw (e);
                     }
@@ -554,6 +563,9 @@ namespace CDMyModbus.ViewModel
 
             var tStatusBlock = TheNMIEngine.AddStatusBlock(MyBaseThing, MyModConnectForm, 10);
             tStatusBlock["Group"].SetParent(1);
+            tStatusBlock["Value"].TileWidth = 3;
+            tStatusBlock["NodeName"].FldOrder = 20;
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.Number, 18, 0, 0, "Reconnects", nameof(Reconnects), new nmiCtrlSingleEnded() { TileWidth = 3, ParentFld = 10 });
 
             var tConnectBlock = TheNMIEngine.AddConnectivityBlock(MyBaseThing, MyModConnectForm, 200, sinkConnect);
             tConnectBlock["Group"].SetParent(1);
