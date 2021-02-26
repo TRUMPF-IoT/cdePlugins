@@ -63,7 +63,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="C-DEngine" />
+    <PackageReference Include="C-DEngine" Version="5.*-*" />
     <PackageReference Include="cdeSensorTemplateShared" Version="5.*-*" IncludeAssets="ContentFiles" GeneratePathProperty="true"/>
   </ItemGroup>
 
