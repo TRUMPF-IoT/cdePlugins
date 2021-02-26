@@ -31,13 +31,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="C-DEngine" />
-	<PackageReference Include="cdeSenderBaseShared" Version="5.*" Label="Shared" IncludeAssets="ContentFiles" />
-	<PackageReference Include="cdeCommonMessageContractsShared" Version="5.*" IncludeAssets="ContentFiles" />
-	<PackageReference Include="cdeConnectionBaseShared" Version="5.*" IncludeAssets="ContentFiles" />
-	<PackageReference Include="cdeEventConvertersShared" Version="5.*" IncludeAssets="ContentFiles" />
-	<PackageReference Include="cdeOPCUAClientContractsShared" Version="5.*" IncludeAssets="ContentFiles" />
-	<PackageReference Include="cdeThingMatcherShared" Version="5.*" IncludeAssets="ContentFiles" />
+    <PackageReference Include="C-DEngine" Version="5.*-*" />
+	<PackageReference Include="cdeSenderBaseShared" Version="5.*-*" Label="Shared" IncludeAssets="ContentFiles" />
+	<PackageReference Include="cdeCommonMessageContractsShared" Version="5.*-*" IncludeAssets="ContentFiles" />
+	<PackageReference Include="cdeConnectionBaseShared" Version="5.*-*" IncludeAssets="ContentFiles" />
+	<PackageReference Include="cdeEventConvertersShared" Version="5.*-*" IncludeAssets="ContentFiles" />
+	<PackageReference Include="cdeOPCUAClientContractsShared" Version="5.*-*" IncludeAssets="ContentFiles" />
+	<PackageReference Include="cdeThingMatcherShared" Version="5.*-*" IncludeAssets="ContentFiles" />
 
 	<ProjectReference Include="..\GnatMQ\GnatMQ.Std.csproj">
 		<ReferenceOutputAssembly>true</ReferenceOutputAssembly>

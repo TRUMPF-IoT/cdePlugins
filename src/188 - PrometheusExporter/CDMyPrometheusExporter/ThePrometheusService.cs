@@ -55,7 +55,6 @@ namespace CDMyPrometheusExporter
 #if !CDE_STANDARD
                 //"NetStandard.dll", // CODE REVIEW: Better to leave it up to the host to carry this (only needed for <.Net 4.72)? Otherwise we'll end up with lots of collisions between plugins that rely on netstd for net461+.
 #endif
-                "protobuf-net.dll",
                 "Prometheus.NetStandard.dll", /*"ClientBin\\Scripts\\CreatePrometheusExporter.cdescript"*/
             });
         }

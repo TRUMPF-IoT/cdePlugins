@@ -201,17 +201,22 @@ namespace uPLibrary.Networking.M2Mqtt.Managers
         /// <returns>Subscription list</returns>
         public MqttSubscription GetSubscription(string topic, string clientId)
         {
-            var query = from ss in this.subscribers
-                        where (new Regex(ss.Key)).IsMatch(topic)    // check for topics based also on wildcard with regex
-                        from s in this.subscribers[ss.Key]
-                        where s.ClientId == clientId                // check for subscriber only with a specified Client Id
-                        select s;
+            try
+            {
+                var query = from ss in this.subscribers
+                            where (new Regex(ss.Key)).IsMatch(topic)    // check for topics based also on wildcard with regex
+                            from s in this.subscribers[ss.Key]
+                            where s.ClientId == clientId                // check for subscriber only with a specified Client Id
+                            select s;
 
-            // use comparer for multiple subscriptions that overlap (e.g. /test/# and  /test/+/foo)
-            // If a client is subscribed to multiple subscriptions with topics that overlap
-            // it has more entries into subscriptions list but broker sends only one message
-            this.comparer.Type = MqttSubscriptionComparer.MqttSubscriptionComparerType.OnClientId;
-            return query.Distinct(comparer).FirstOrDefault();
+                // use comparer for multiple subscriptions that overlap (e.g. /test/# and  /test/+/foo)
+                // If a client is subscribed to multiple subscriptions with topics that overlap
+                // it has more entries into subscriptions list but broker sends only one message
+                this.comparer.Type = MqttSubscriptionComparer.MqttSubscriptionComparerType.OnClientId;
+                return query.Distinct(comparer).FirstOrDefault();
+            }
+            catch { }
+            return null;
         }
 
         /// <summary>
