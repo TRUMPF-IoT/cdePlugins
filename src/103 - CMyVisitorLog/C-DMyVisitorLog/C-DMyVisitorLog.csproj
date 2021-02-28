@@ -45,7 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="C-DEngine" Version="5.*-*" />
+    <PackageReference Include="C-DEngine" Version="5.*" />
     <!--<ProjectReference Include="..\..\025 - C-DEngine\C-DEngine\C-DEngine.csproj" />-->
   </ItemGroup>
 
