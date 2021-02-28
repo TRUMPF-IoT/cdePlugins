@@ -18,15 +18,27 @@
 
   <ItemGroup Condition="'$(cdeUsePrereleasePackages)' == 'true'">
     <PackageReference Update="C-DEngine" Version="5.*-*" />
+    <PackageReference Update="cdeASPNet" Version="5.*-*" />
+    <PackageReference Update="cdeIIS" Version="5.*-*" />
+    <PackageReference Update="cdePackager" Version="5.*-*" />
+    <PackageReference Update="cdePackagerTask" Version="5.*-*" />
+    
+    <PackageReference Update="CDMyNMIHtml5RT" Version="5.*-*" />
+    
     <PackageReference Update="cdeThingMatcherShared" Version="5.*-*" />
     <PackageReference Update="cdeSensorTemplateShared" Version="5.*-*" />
     <PackageReference Update="cdeSenderBaseShared" Version="5.*-*" />
     <PackageReference Update="cdeReceiverBaseShared" Version="5.*-*" />
     <PackageReference Update="cdeOPCUAClientContractsShared" Version="5.*-*" />
+    <PackageReference Update="cdeOPCUAClientAPIShared" Version="5.*-*" />
     <PackageReference Update="cdeLicenseTool" Version="5.*-*" />
     <PackageReference Update="cdeEventConvertersShared" Version="5.*-*" />
     <PackageReference Update="cdeConnectionBaseShared" Version="5.*-*" />
     <PackageReference Update="cdeCommonMessageContractsShared" Version="5.*-*" />
+    <PackageReference Update="cdeCSVFileParserShared" Version="5.*-*" />
+    <PackageReference Update="cdeMeshManagerContractsShared" Version="5.*-*" />
+    <PackageReference Update="cdeOPCUAClientAPIShared" Version="5.*-*" />
+    <PackageReference Update="cdeTelnetShared" Version="5.*-*" />
   </ItemGroup>
 
   <!-- Package to  Project replacement: Based on https://github.com/dotnet/sdk/issues/1151#issuecomment-459275750 -->
