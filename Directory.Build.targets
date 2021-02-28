@@ -16,6 +16,19 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup Condition="'$(cdeUsePrereleasePackages)' == 'true'">
+    <PackageReference Update="C-DEngine" Version="5.*-*" />
+    <PackageReference Update="cdeThingMatcherShared" Version="5.*-*" />
+    <PackageReference Update="cdeSensorTemplateShared" Version="5.*-*" />
+    <PackageReference Update="cdeSenderBaseShared" Version="5.*-*" />
+    <PackageReference Update="cdeReceiverBaseShared" Version="5.*-*" />
+    <PackageReference Update="cdeOPCUAClientContractsShared" Version="5.*-*" />
+    <PackageReference Update="cdeLicenseTool" Version="5.*-*" />
+    <PackageReference Update="cdeEventConvertersShared" Version="5.*-*" />
+    <PackageReference Update="cdeConnectionBaseShared" Version="5.*-*" />
+    <PackageReference Update="cdeCommonMessageContractsShared" Version="5.*-*" />
+  </ItemGroup>
+
   <!-- Package to  Project replacement: Based on https://github.com/dotnet/sdk/issues/1151#issuecomment-459275750 -->
   <PropertyGroup>
     <ReplacePackageReferences Condition="'$(ReplacePackageReferences)' == ''">true</ReplacePackageReferences>
