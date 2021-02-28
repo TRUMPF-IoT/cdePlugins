@@ -15,6 +15,9 @@ jobs:
 
     runs-on: windows-latest
 
+    env: 
+      cdeUsePrereleasePackages : ${{contains(github.event.pull_request.labels.*.name, 'cdeUsePrereleasePackages')}}
+
     steps:
     - uses: actions/checkout@v2
 

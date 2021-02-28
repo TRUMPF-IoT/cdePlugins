@@ -579,25 +579,13 @@ namespace CDMyMeshSender.ViewModel
 
         public override bool CreateUX()
         {
+            UXNoPartitionKey = true;
+            UXNoMQTTTopicTemplate = true;
+            UXNoSendAsFile = true;
+            UXNoSendEntireTSM = true;
+
             CreateUXBase("Mesh Sender");
-
-            // Fine-tune TheSenderBase definitions for TSM record to hide fields not used by mesh sender.
-            if (tSenderTSMsForm != null)
-            {
-                tSenderTSMsForm.DeleteByOrder(30); //delete MQTT Topic TemplateField
-                tSenderTSMsForm.DeleteByOrder(35); //delete Send as FileField
-                tSenderTSMsForm.DeleteByOrder(40); //delete Send entire TSMField
-            }
-
-            // Fine-tune TheSenderBase definitions for thing record to hide fields not used by mesh sender.
-            if (tSenderThingsForm != null)
-            {
-                tSenderThingsForm.DeleteByOrder(14); // delete Change NaN to Null for double / flat (ChangeNaNToNull
-                tSenderThingsForm.DeleteByOrder(16); // delete Partition Key for EventHub (PartitionKey)
-                tSenderThingsForm.DeleteByOrder(20); // delete Drop old values on error (RetryLastValueOnly)
-
-            }
-
+           
             if (MyForm != null)
             {
                 // Group: Device Status
