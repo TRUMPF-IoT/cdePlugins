@@ -15,9 +15,6 @@ jobs:
 
     runs-on: windows-latest
 
-    env: 
-      cdeUsePrereleasePackages : ${{contains(github.event.pull_request.labels.*.name, 'cdeUsePrereleasePackages')}}
-
     steps:
     - uses: actions/checkout@v2
 
@@ -48,6 +45,15 @@ jobs:
     - name: Use GitVersion
       id: gitversion # step id used as reference for output values
       uses: gittools/actions/gitversion/execute@v0.9.9
+
+    - name: Determine pre-release
+      run: |
+        $versionSourceTag = (git tag -l --points-at ${{ steps.gitversion.outputs.versionSourceSha }})
+        $cdeUsePrereleasePackages = -not ($versionSourceTag -match "^[0-9\.]+$")
+        echo "$versionSourceTag $cdeUsePrereleasePackages"
+        $envUpdate = "cdeUsePrereleasePackages=$cdeUsePrereleasePackages"
+        echo $envUpdate
+        echo $envUpdate | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
     - name: Install code sign cert
       run: |
