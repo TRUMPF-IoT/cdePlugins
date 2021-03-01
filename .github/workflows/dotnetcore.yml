@@ -80,7 +80,7 @@ jobs:
       run: dotnet test './src/cdePlugins.sln' --configuration Release --no-build --no-restore --verbosity normal
 
     - name: Gather artifacts
-      run: (robocopy .\bin\ .\artifacts\ *.CDEX *.CDEP *.nupkg *.snupkg *.msi cdePackager* /s /np) ^& IF %ERRORLEVEL% LEQ 1 exit 0
+      run: (robocopy .\bin\ .\artifacts\ *.CDEX *.CDEP *.nupkg *.snupkg *.msi /s /np) ^& IF %ERRORLEVEL% LEQ 1 exit 0
       shell: cmd
 
     - name: Upload artifacts
