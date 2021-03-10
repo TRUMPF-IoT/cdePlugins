@@ -15,10 +15,9 @@ using nsCDEngine.ViewModels;
 
 namespace CDMyLogger.ViewModel
 {
-    class TheLoggerBase : ICDEThing, ICDELoggerEngine
+    class TheLoggerBase : TheThingBase, ICDELoggerEngine
     {
         // Base object references 
-        protected TheThing MyBaseThing;      // Base thing
         protected IBaseEngine MyBaseEngine;    // Base engine (service)
 
         // Initialization flags
@@ -73,55 +72,7 @@ namespace CDMyLogger.ViewModel
             MyBaseThing.SetIThingObject(this);
         }
 
-        #region ICDEThing - interface methods (rare to override)
-        public bool IsInit()
-        {
-            return mIsInitCompleted;
-        }
-        public bool IsUXInit()
-        {
-            return mIsUXInitCompleted;
-        }
-
-        public void SetBaseThing(TheThing pThing)
-        {
-            MyBaseThing = pThing;
-        }
-        public TheThing GetBaseThing()
-        {
-            return MyBaseThing;
-        }
-
-        public cdeP GetProperty(string pName, bool DoCreate)
-        {
-            return MyBaseThing?.GetProperty(pName, DoCreate);
-        }
-        public cdeP SetProperty(string pName, object pValue)
-        {
-            return MyBaseThing?.SetProperty(pName, pValue);
-        }
-
-        public void RegisterEvent(string pName, Action<ICDEThing, object> pCallBack)
-        {
-            MyBaseThing?.RegisterEvent(pName, pCallBack);
-        }
-        public void UnregisterEvent(string pName, Action<ICDEThing, object> pCallBack)
-        {
-            MyBaseThing?.UnregisterEvent(pName, pCallBack);
-        }
-        public void FireEvent(string pEventName, ICDEThing sender, object pPara, bool FireAsync)
-        {
-            MyBaseThing?.FireEvent(pEventName, sender, pPara, FireAsync);
-        }
-        public bool HasRegisteredEvents(string pEventName)
-        {
-            if (MyBaseThing != null)
-                return MyBaseThing.HasRegisteredEvents(pEventName);
-            return false;
-        }
-        #endregion
-
-        public bool Init()
+        public override bool Init()
         {
             if (!mIsInitStarted)
             {
@@ -149,7 +100,7 @@ namespace CDMyLogger.ViewModel
         }
 
 
-        public bool CreateUX()
+        public override bool CreateUX()
         {
             if (!mIsUXInitStarted)
             {
@@ -202,25 +153,7 @@ namespace CDMyLogger.ViewModel
         {
         }
 
-        public virtual bool Delete()
-        {
-            return true;
-        }
-
         #region Message Handling
-        public virtual void HandleMessage(ICDEThing sender, object pIncoming)
-        {
-            TheProcessMessage pMsg = pIncoming as TheProcessMessage;
-            if (pMsg == null) return;
-
-            string[] cmd = pMsg.Message.TXT.Split(':');
-            switch (cmd[0])
-            {
-                default:
-                    break;
-            }
-        }
-
         public virtual bool LogEvent(TheEventLogData pItem)
         {
             return false;
