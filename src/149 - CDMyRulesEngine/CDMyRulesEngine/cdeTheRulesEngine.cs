@@ -80,7 +80,7 @@ namespace CDMyRulesEngine
                         RegisterRule(tRule);
                     }
                 }
-            }
+            } 
 
             if (!FoundOne)
             {

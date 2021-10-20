@@ -331,10 +331,12 @@ namespace CDMyMqttSender.ViewModel
 
         public override bool CreateUX()
         {
+            UXNoAdvancedConfig = true;
             CreateUXBase(strMqttSender);
             if (MyForm != null)
             {
                 //NUI Definition for All clients
+                TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.CollapsibleGroup, 40, 2, 0xC0, "MQTT Configurations...", null, ThePropertyBag.Create(new nmiCtrlCollapsibleGroup() { ParentFld = 1, TileWidth = 6, DoClose = true, IsSmall = true }));//() { "TileWidth=6", "Format=Advanced Configurations", "Style=font-size:26px;text-align: left" });
 
                 TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.SingleEnded, 41, 2, 0xC0, "Mqtt Hostname", nameof(MqttHostName), new ThePropertyBag() { "ParentFld=40" });
                 TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.Number, 42, 2, 0xC0, "Mqtt Port", nameof(MqttPort), new ThePropertyBag() { "ParentFld=40", "TileWidth=3" });
@@ -342,7 +344,7 @@ namespace CDMyMqttSender.ViewModel
                 TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.SingleCheck, 45, 2, 0xC0, "Use SSL", nameof(MqttSecure), new nmiCtrlSingleCheck { ParentFld = 40, TileWidth = 3 });
                 TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.SingleEnded, 46, 2, 0xC0, "Mqtt Topic Template", nameof(MqttTopicTemplate), new ThePropertyBag() { "ParentFld=40" });
                 TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.SingleEnded, 47, 2, 0xC0, "Username", nameof(MqttUsername), new ThePropertyBag() { "ParentFld=40" });
-                TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.Password, 48, 3, 0xC0, "Password", nameof(MqttPassword), new ThePropertyBag() { "ParentFld=40" });
+                TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.Password, 48, 3, 0xC0, "Password", nameof(MqttPassword), new nmiCtrlPassword() { ParentFld=40, HideMTL=true });
                 TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.SingleEnded, 49, 2, 0xC0, "Mqtt Client Id", nameof(MqttClientId), new ThePropertyBag() { "ParentFld=40" });
                 TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.Number, 50, 2, 0xC0, "Mqtt Keep Alive (s)", nameof(MqttKeepAlivePeriodInSeconds), new ThePropertyBag() { "ParentFld=40", "TileWidth=3" });
                 TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.SingleCheck, 52, 2, 0xC0, "Mqtt Retain", nameof(MqttRetain), new nmiCtrlSingleCheck { ParentFld = 40, TileWidth = 3 });
@@ -366,6 +368,10 @@ namespace CDMyMqttSender.ViewModel
                 TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.SingleEnded, 211, 2, 0xC0, "KPI Property Name", nameof(KPIPublishPropertyName), new nmiCtrlSingleEnded { ParentFld = 202, TileHeight = 1, TileWidth = 6 });
                 TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.Number, 212, 2, 0xC0, "WatchDog Interval (minutes)", nameof(WatchDogIdleRecycleIntervalInMinutes), new nmiCtrlNumber { ParentFld = 202, TileHeight = 1, TileWidth = 3 });
                 TheNMIEngine.AddSmartControl(MyBaseThing, MyForm, eFieldType.SingleCheck, 213, 2, 0xC0, "Log Sent Payload Data", nameof(EnableLogSentPayloads), new nmiCtrlSingleCheck { ParentFld = 202, TileHeight = 1, TileWidth = 3 });
+
+                MyForm.DeleteByOrder(24); //Address field
+                tSenderThingsForm.DeleteByOrder(160); //EventHub Partition
+                tSenderThingsForm.DeleteByOrder(320); //Token LifeTime
 
                 mIsUXInitialized = true;
                 return true;
