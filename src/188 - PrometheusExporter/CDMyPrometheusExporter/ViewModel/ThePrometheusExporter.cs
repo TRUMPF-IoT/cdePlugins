@@ -25,8 +25,6 @@ using nsCDEngine.ViewModels;
 using nsTheEventConverters;
 using nsTheSenderBase;
 using Prometheus;
-using Prometheus.Advanced;
-using Prometheus.Advanced.DataContracts;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -100,7 +98,7 @@ namespace CDMyPrometheusExporter.ViewModel
             base.Init();
             if (_registry == null)
             {
-                _registry = DefaultCollectorRegistry.Instance;
+                _registry = Metrics.DefaultRegistry;
             }
             if (string.IsNullOrEmpty(MyBaseThing.Address))
             {
@@ -303,7 +301,7 @@ namespace CDMyPrometheusExporter.ViewModel
             return $"/{MyBaseThing.Address.Trim(new char[] { '/' })}";
         }
 
-        ICollectorRegistry _registry;
+        CollectorRegistry _registry;
 
         DateTimeOffset _lastPollTime = DateTimeOffset.MinValue;
         TimeSpan maxMetricSampleRate = new TimeSpan(0, 0, 5);
@@ -319,49 +317,47 @@ namespace CDMyPrometheusExporter.ViewModel
                     _lastPollTime = DateTimeOffset.Now;
                 }
 
-                IEnumerable<MetricFamily> metrics;
-                try
+                using (var outputStream = new MemoryStream())
                 {
-                    metrics = _registry.CollectAll();
-                }
-                catch (ScrapeFailedException ex)
-                {
-                    tRequest.StatusCode = 503;
-                    EventsSentErrorCountSinceStart++;
 
-                    if (!string.IsNullOrWhiteSpace(ex.Message))
+                    try
                     {
-                        tRequest.ResponseBuffer = Encoding.UTF8.GetBytes(ex.Message);
+                        _registry.CollectAndExportAsTextAsync(outputStream, TheBaseAssets.MasterSwitchCancelationToken).Wait();
+                    }
+                    catch (ScrapeFailedException ex)
+                    {
+                        tRequest.StatusCode = 503;
+                        EventsSentErrorCountSinceStart++;
+
+                        if (!string.IsNullOrWhiteSpace(ex.Message))
+                        {
+                            tRequest.ResponseBuffer = Encoding.UTF8.GetBytes(ex.Message);
+                        }
+
+                        return;
                     }
 
-                    return;
-                }
-
-                if (tRequest.Header.TryGetValue("Accept", out var acceptHeader))
-                {
-                    var acceptHeaders = acceptHeader?.Split(',');
-                    var contentType = ScrapeHandler.GetContentType(acceptHeaders);
-                    tRequest.ResponseMimeType = contentType;
-
-                    tRequest.StatusCode = 200;
-
-
-                    using (var outputStream = new MemoryStream())
+                    if (tRequest.Header.TryGetValue("Accept", out var acceptHeader))
                     {
-                        ScrapeHandler.ProcessScrapeRequest(metrics, contentType, outputStream);
+                        var acceptHeaders = acceptHeader?.Split(',');
+                        var contentType = "text/plain";
+                        tRequest.ResponseMimeType = contentType;
+
+                        tRequest.StatusCode = 200;
+
                         tRequest.ResponseBuffer = outputStream.ToArray();
+                        EventsSentSinceStart++;
+                        TheThing.SetSafePropertyNumber(MyBaseThing, "QValue", EventsSentSinceStart);
+                        LastSendTime = DateTimeOffset.Now;
+                        TheThing.SetSafePropertyString(MyBaseThing, "StateSensorUnit", TheCommonUtils.GetDateTimeString(LastSendTime, -1));
                     }
-                    EventsSentSinceStart++;
-                    TheThing.SetSafePropertyNumber(MyBaseThing, "QValue", EventsSentSinceStart);
-                    LastSendTime = DateTimeOffset.Now;
-                    TheThing.SetSafePropertyString(MyBaseThing, "StateSensorUnit", TheCommonUtils.GetDateTimeString(LastSendTime,-1));
-                }
-                else
-                {
-                    tRequest.StatusCode = 503;
-                    tRequest.ResponseBuffer = Encoding.UTF8.GetBytes("No accept header");
-                    EventsSentErrorCountSinceStart++;
-                    return;
+                    else
+                    {
+                        tRequest.StatusCode = 503;
+                        tRequest.ResponseBuffer = Encoding.UTF8.GetBytes("No accept header");
+                        EventsSentErrorCountSinceStart++;
+                        return;
+                    }
                 }
             }
             catch (Exception ex) when (!(ex is OperationCanceledException))
@@ -503,7 +499,7 @@ namespace CDMyPrometheusExporter.ViewModel
 
                             switch (senderThing.TargetType?.ToLowerInvariant())
                             {
-                                case nameof(Metric.counter):
+                                case "counter":
                                     {
                                         var counter = myCountersByMetricName.GetOrAdd(metricName,
                                         (s) =>
@@ -546,7 +542,7 @@ namespace CDMyPrometheusExporter.ViewModel
 
                                 case null:
                                 case "":
-                                case nameof(Metric.gauge):
+                                case "gauge":
                                     {
                                         var gauge = myGaugesByMetricName.GetOrAdd(metricName, (s) => Metrics.CreateGauge(s, "", GetMetricLabels(senderThing, propertyName, metricName)));
                                         if (gauge != null)
@@ -563,7 +559,7 @@ namespace CDMyPrometheusExporter.ViewModel
                                         }
                                     }
                                     break;
-                                case nameof(Metric.histogram):
+                                case "histogram":
                                     {
                                         var histogram = myHistogramsByMetricName.GetOrAdd(metricName, (s) => Metrics.CreateHistogram(s, "", GetHistogramBuckets(senderThing, propertyName, metricName, GetMetricLabels(senderThing, propertyName, metricName))));
                                         if (histogram != null)
@@ -580,7 +576,7 @@ namespace CDMyPrometheusExporter.ViewModel
                                         }
                                     }
                                     break;
-                                case nameof(Metric.summary):
+                                case "summary":
                                     {
                                         var summary = mySummariesByMetricName.GetOrAdd(metricName, (s) => Metrics.CreateSummary(s, "", GetMetricLabels(senderThing, propertyName, metricName)));
                                         if (summary != null)
@@ -627,10 +623,10 @@ namespace CDMyPrometheusExporter.ViewModel
             }
         }
 
-        private double[] GetHistogramBuckets(TheSenderThing senderThing, string propertyName, string metricName, string[] labelNames)
+        private HistogramConfiguration GetHistogramBuckets(TheSenderThing senderThing, string propertyName, string metricName, string[] labelNames)
         {
             // TODO Make these configurable (if we need them)
-            return new double[] { 0, 50, 100, 200, 400, 800, 1600, 3200, 6400, 12800, 30000};
+            return new HistogramConfiguration { Buckets = new double[] { 0, 50, 100, 200, 400, 800, 1600, 3200, 6400, 12800, 30000 } };
         }
 
         private string[] GetMetricLabels(TheSenderThing senderThing, string propertyName, string metricName)

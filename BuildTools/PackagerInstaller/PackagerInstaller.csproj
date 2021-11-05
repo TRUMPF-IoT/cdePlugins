@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="cdePackager" Version="5.105.0" PrivateAssets="All" />
+    <PackageReference Include="cdePackager" Version="5.*" PrivateAssets="All" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

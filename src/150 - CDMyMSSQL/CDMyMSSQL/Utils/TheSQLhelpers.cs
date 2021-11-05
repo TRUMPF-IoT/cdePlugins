@@ -44,7 +44,7 @@ namespace CDMyMSSQLStorage
                 MyConnectionString = "Connection Reset=true;Max Pool Size=10000;Connection Lifetime=10;Enlist=false;Application Name=C-DEngine;Trusted_Connection=False;Encrypt=True;Password=" + sqlpwd + ";User ID=" + pSQLUID + ";Server=" + pSQLAddress + ";Database=" + pDBName;
             }
             else
-                MyConnectionString = "Connection Reset=false;Max Pool Size=10000;Connection Lifetime=4;Enlist=false;Application Name=C-DEngine;Password=" + sqlpwd + ";User ID=" + pSQLUID + ";Server=" + pSQLAddress + ";Database=" + pDBName;   //Data Source=" + pSQLAddress + ";Initial Catalog=" + pDBName;
+                MyConnectionString = "Max Pool Size=10000;Application Name=C-DEngine;Password=" + sqlpwd + ";User ID=" + pSQLUID + ";Server=" + pSQLAddress + ";Database=" + pDBName;   //Data Source=" + pSQLAddress + ";Initial Catalog=" + pDBName;
             mRetrySeconds = TheBaseAssets.MyServiceHostInfo.TO.StoreRequestTimeout;
             if (RetrySeconds>0)
                 mRetrySeconds = RetrySeconds;
@@ -808,7 +808,9 @@ if (CInt(Application["DBG"])>0)	ResponseEmail(null,"SQL-DR: "+ pSQL,1);
                 while (MyInsertQueue.Count > 0 && TheBaseAssets.MasterSwitch)
                 {
                     Guid MyQItemKey =Guid.Empty;
+#pragma warning disable CS0618 // Type or member is obsolete
                     TheInsertQueueItem MyQItem = MyInsertQueue.GetFirstItem(out MyQItemKey);
+#pragma warning restore CS0618 // Type or member is obsolete
                     bool doRemoveItem = true;
                     if (MyQItem == null || MyQItemKey==Guid.Empty) break;
                     try

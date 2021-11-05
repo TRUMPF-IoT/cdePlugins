@@ -15,6 +15,7 @@
     <Version>5.100.0-beta</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -25,7 +26,7 @@
     <DefineConstants>TRACE;RELEASE;NETSTANDARD2_0;CDE_SYSLOG</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
+  <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
@@ -38,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="C-DEngine" Version="5.*"/>
+    <PackageReference Include="C-DEngine" Version="5.*" />
     <PackageReference Include="System.IO.Ports" Version="5.0.0" />
   </ItemGroup>
 

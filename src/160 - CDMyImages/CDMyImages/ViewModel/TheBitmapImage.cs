@@ -51,7 +51,7 @@ namespace CDMyImages.ViewModel
             if (!string.IsNullOrEmpty(tIm) && tIm!=pMsg.Message.TXT)
                 File.Delete(TheCommonUtils.cdeFixupFileName(tIm));
             TheThing.SetSafePropertyString(MyBaseThing, "CurrentImage", pMsg.Message.TXT);
-            TheCommCore.PublishToOriginator(pMsg.Message, new TSM(eEngineName.NMIService, "NMI_TOAST", string.Format("###Update to Image-File ({0}) received!###", pMsg.Message.TXT)));
+            TheCommCore.PublishToOriginator(pMsg.Message, new TSM(eEngineName.NMIService, "NMI_TOAST", string.Format("Update to Image-File ({0}) received!", pMsg.Message.TXT)));
         }
 
         public override bool CreateUX()

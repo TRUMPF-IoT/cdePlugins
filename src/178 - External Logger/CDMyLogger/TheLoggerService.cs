@@ -5,8 +5,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-// TODO: Add reference for C-DEngine.dll
-// TODO: Make sure plugin file name starts with either CDMy or C-DMy
 using nsCDEngine.BaseClasses;
 using nsCDEngine.Engines;
 using nsCDEngine.Engines.NMIService;
@@ -26,12 +24,8 @@ namespace CDMyLogger
         public const string RSSLogger = "RSS Logger";
     }
 
-    class LoggerService : ICDEPlugin, ICDEThing, ICDELoggerEngine
+    class LoggerService : ThePluginBase, ICDELoggerEngine
     {
-        // Base object references 
-        protected TheThing MyBaseThing;      // Base thing
-        private IBaseEngine MyBaseEngine;    // Base engine (service)
-
         // Initialization flags
         protected bool mIsInitStarted = false;
         protected bool mIsInitCompleted = false;
@@ -41,31 +35,11 @@ namespace CDMyLogger
         Guid guidEngineID = new Guid("{F389DF53-8424-4806-A8CD-B63F81436B2C}"); // TODO: Set GUID value for InitEngineAssets (in the next block)
         String strFriendlyName = "Logging Service";               // TODO: Set plugin friendly name for InitEngineAssets (optional)
 
-        #region ICDEPlugin - interface methods for service (engine)
-        public IBaseEngine GetBaseEngine()
+        public override void InitEngineAssets(IBaseEngine pBase)
         {
-            return MyBaseEngine;
-        }
-
-        /// <summary>
-        /// InitEngineAssets - The C-DEngine calls this initialization
-        /// function as part of registering this service (engine)
-        /// </summary>
-        /// <param name="pBase">The C-DEngine creates a base engine object.
-        /// This parameter is a reference to that base engine object.
-        /// We keep a copy because it will be very useful to us.
-        /// </param>
-        public void InitEngineAssets(IBaseEngine pBase)
-        {
-            MyBaseEngine = pBase;
-
+            base.InitEngineAssets(pBase);
             MyBaseEngine.SetEngineID(guidEngineID);
             MyBaseEngine.SetFriendlyName(strFriendlyName);
-
-            MyBaseEngine.SetEngineName(GetType().FullName);  // Can be any arbitrary name - recommended is the class name
-            MyBaseEngine.SetEngineType(GetType());           // Has to be the type of this class
-            MyBaseEngine.SetEngineService(true);             // Keep True if this class is a service
-
             MyBaseEngine.SetPluginInfo("This service will push C-DEngine logs to differnet loggin services",       // Describe plugin for Plugin Store
                                        0,                       // pPrice - retail price (default = 0)
                                        null,                    // Custom home page - default = /ServiceID
@@ -77,57 +51,8 @@ namespace CDMyLogger
             MyBaseEngine.AddCapability(eThingCaps.LoggerEngine);
             MyBaseEngine.AddCapability(eThingCaps.ConfigManagement);
         }
-        #endregion
 
-        #region ICDEThing - interface methods (rare to override)
-        public bool IsInit()
-        {
-            return mIsInitCompleted;
-        }
-        public bool IsUXInit()
-        {
-            return mIsUXInitCompleted;
-        }
-
-        public void SetBaseThing(TheThing pThing)
-        {
-            MyBaseThing = pThing;
-        }
-        public TheThing GetBaseThing()
-        {
-            return MyBaseThing;
-        }
-
-        public cdeP GetProperty(string pName, bool DoCreate)
-        {
-            return MyBaseThing?.GetProperty(pName, DoCreate);
-        }
-        public cdeP SetProperty(string pName, object pValue)
-        {
-            return MyBaseThing?.SetProperty(pName, pValue);
-        }
-
-        public void RegisterEvent(string pName, Action<ICDEThing, object> pCallBack)
-        {
-            MyBaseThing?.RegisterEvent(pName, pCallBack);
-        }
-        public void UnregisterEvent(string pName, Action<ICDEThing, object> pCallBack)
-        {
-            MyBaseThing?.UnregisterEvent(pName, pCallBack);
-        }
-        public void FireEvent(string pEventName, ICDEThing sender, object pPara, bool FireAsync)
-        {
-            MyBaseThing?.FireEvent(pEventName, sender, pPara, FireAsync);
-        }
-        public bool HasRegisteredEvents(string pEventName)
-        {
-            if (MyBaseThing != null)
-                return MyBaseThing.HasRegisteredEvents(pEventName);
-            return false;
-        }
-        #endregion
-
-        public bool Init()
+        public override bool Init()
         {
             if (!mIsInitStarted)
             {
@@ -192,7 +117,7 @@ namespace CDMyLogger
             TheBaseAssets.MyServiceHostInfo.UseGELFLoggingFormat = TheCommonUtils.CBool(p);
         }
 
-        public bool CreateUX()
+        public override bool CreateUX()
         {
             if (!mIsUXInitStarted)
             {
@@ -215,10 +140,6 @@ namespace CDMyLogger
                 TheNMIEngine.RegisterEngine(MyBaseEngine);      //Registers this engine and its "SmartPage" with the System
                 mIsUXInitCompleted = true;
             }
-            return true;
-        }
-        public bool Delete()
-        {
             return true;
         }
 
@@ -302,10 +223,7 @@ namespace CDMyLogger
             }
         }
 
-        //TODO: Step 4: Write your Business Logic
-
-        #region Message Handling
-        public void HandleMessage(ICDEThing sender, object pIncoming)
+        public override void HandleMessage(ICDEThing sender, object pIncoming)
         {
             TheProcessMessage pMsg = pIncoming as TheProcessMessage;
             if (pMsg == null) return;
@@ -322,7 +240,6 @@ namespace CDMyLogger
                     break;
             }
         }
-        #endregion
 
         public bool LogEvent(TheEventLogData pItem)
         {

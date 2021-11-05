@@ -229,3 +229,4 @@ project.assets.json
 /BuildTools/real.sign
 /BuildTools/cdePackager
 /BuildTools/signtool.exe
+/src/gitversion.json

@@ -31,13 +31,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="C-DEngine" />
+    <PackageReference Include="C-DEngine" Version="5.*" />
 	<PackageReference Include="cdeSenderBaseShared" Version="5.*" Label="Shared" IncludeAssets="ContentFiles" />
 	<PackageReference Include="cdeCommonMessageContractsShared" Version="5.*" IncludeAssets="ContentFiles" />
 	<PackageReference Include="cdeConnectionBaseShared" Version="5.*" IncludeAssets="ContentFiles" />
 	<PackageReference Include="cdeEventConvertersShared" Version="5.*" IncludeAssets="ContentFiles" />
 	<PackageReference Include="cdeOPCUAClientContractsShared" Version="5.*" IncludeAssets="ContentFiles" />
 	<PackageReference Include="cdeThingMatcherShared" Version="5.*" IncludeAssets="ContentFiles" />
+	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 
 	<ProjectReference Include="..\GnatMQ\GnatMQ.Std.csproj">
 		<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
@@ -52,7 +53,7 @@
   <!-- From https://dev.to/wabbbit/include-both-nuget-package-references-and-project-reference-dll-using-dotnet-pack-2d8p -->
 	<Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
     <ItemGroup>
-      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))"/>
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
      </ItemGroup>
    </Target>
 

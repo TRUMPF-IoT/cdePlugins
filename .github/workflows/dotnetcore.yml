@@ -5,10 +5,10 @@ name: .NET Core
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     tags: [ '[1-9]+.[0-9]+.[0-9]+*' ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -26,7 +26,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.201
+        dotnet-version: 5.0.x
         source-url: https://api.nuget.org/v3/index.json
         config-file: .\nuget.config
         owner: ${{secrets.NUGETORG_APIKEY_OWNER}}
@@ -38,15 +38,22 @@ jobs:
       run: git fetch --prune --tags --unshallow
 
     - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v0.9.6
+      uses: gittools/actions/gitversion/setup@v0.9.9
       with:
-          versionSpec: '5.3.2'
+          versionSpec: '5.6.6'
 
     - name: Use GitVersion
       id: gitversion # step id used as reference for output values
-      uses: gittools/actions/gitversion/execute@v0.9.6
-      env: 
-        ACTIONS_ALLOW_UNSECURE_COMMANDS: true # workaround for https://github.blog/changelog/2020-10-01-github-actions-deprecating-set-env-and-add-path-commands/ until the execute action is updated
+      uses: gittools/actions/gitversion/execute@v0.9.9
+
+    - name: Determine pre-release
+      run: |
+        $versionSourceTag = (git tag -l --points-at ${{ steps.gitversion.outputs.versionSourceSha }})
+        $cdeUsePrereleasePackages = -not ($versionSourceTag -match "^[0-9\.]+$")
+        echo "$versionSourceTag $cdeUsePrereleasePackages"
+        $envUpdate = "cdeUsePrereleasePackages=$cdeUsePrereleasePackages"
+        echo $envUpdate
+        echo $envUpdate | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
     - name: Install code sign cert
       run: |
@@ -67,13 +74,13 @@ jobs:
       run: dotnet build './BuildTools/PackagerInstaller\PackagerInstaller.csproj' --framework net45 --configuration Release --no-restore --disable-parallel
 
     - name: Build
-      run: dotnet build './src/cdePlugins.sln' --configuration Release --no-restore --disable-parallel
+      run: dotnet build './src/cdePlugins.sln' --configuration Release --no-restore --disable-parallel /nowarn:nu5105
 
     - name: Test
       run: dotnet test './src/cdePlugins.sln' --configuration Release --no-build --no-restore --verbosity normal
 
     - name: Gather artifacts
-      run: (robocopy .\bin\ .\artifacts\ *.CDEX *.CDEP *.nupkg *.snupkg *.msi cdePackager* /s /np) ^& IF %ERRORLEVEL% LEQ 1 exit 0
+      run: (robocopy .\bin\ .\artifacts\ *.CDEX *.CDEP *.nupkg *.snupkg *.msi /s /np) ^& IF %ERRORLEVEL% LEQ 1 exit 0
       shell: cmd
 
     - name: Upload artifacts
@@ -84,8 +91,9 @@ jobs:
 
     - name: REUSE Compliance Check
       run: |
-    #    pip3 install --user reuse
-    #    reuse lint
+        pip3 install --user python-debian==0.1.38 # newer versions fail on Windows as of January 2021
+        pip3 install --user reuse
+        reuse lint
 
     - name: Push NuGet Packages
       # Only publish if the commit was tagged

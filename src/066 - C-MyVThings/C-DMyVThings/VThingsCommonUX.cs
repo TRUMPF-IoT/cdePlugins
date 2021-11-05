@@ -69,18 +69,18 @@ namespace CDMyVThings
                 });
             var tMyForm2 = flds["Form"] as TheFormInfo;
 
-            var tFlds = TheNMIEngine.AddNewWizardPage(MyBaseThing, tMyForm2, 1, 1, 0, "Sensor Selector");
-            TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.SingleEnded, 1, 1, 2, 0, "Dashboard Name", "ClientName", new TheNMIBaseControl { Explainer = "1. Enter name for the new Modbus connection.", });
-            var tf =TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.ThingPicker, 1, 2, 2, 0, "Select Sensor Thing", "SelectedSensor", new nmiCtrlThingPicker() { IncludeEngines=true, Explainer = "1. Select a thing to show in Dashboard" });
-            TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.PropertyPicker, 1, 3, 2, 0, "Select Property", "SelectedProp", new nmiCtrlPropertyPicker() { ThingFld=tf.FldOrder, Explainer = "1. Select a property of the Thing" });
+            var tFlds = TheNMIEngine.AddNewWizardPage(MyBaseThing, tMyForm2, 0, 1, 0, "Sensor Selector");
+            TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.SingleEnded, 1, 1, 2, 0, "Dashboard Name", "ClientName", new TheNMIBaseControl { Explainer = "1. Enter name for the new Dashboard.", });
+            var tf =TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.ThingPicker, 1, 2, 2, 0, "Select Sensor Thing", "SelectedSensor", new nmiCtrlThingPicker() { IncludeEngines=true, Explainer = "2. Select a thing to show in Dashboard" });
+            TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.PropertyPicker, 1, 3, 2, 0, "Select Property", "SelectedProp", new nmiCtrlPropertyPicker() { ThingFld=tf.FldOrder, Explainer = "3. Select a property of the Thing" });
 
-            TheNMIEngine.AddWizardFinishPage(MyBaseThing, tMyForm2, 3);
-            mResultInfo = TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.SmartLabel, 3, 1, 0, 0, null, "Error", new nmiCtrlSmartLabel { FontSize = 24, NoTE = true, TileWidth = 7 });
-            TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.SmartLabel, 3, 2, 0, 0, null, null, new nmiCtrlSmartLabel { NoTE = true, TileWidth = 7, Text = "What do you want to do next?", TileHeight = 2 });
-            TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.TileGroup, 3, 3, 0, 0, null, null, new nmiCtrlTileGroup { TileWidth = 1, TileHeight = 2, TileFactorX = 2 });
-            TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.TileButton, 3, 4, 2, 0, "Run another Wizard", null, new nmiCtrlTileButton { NoTE = true, TileHeight = 1, TileWidth = 3, OnClick = $"TTS:{MyDashboard.cdeMID}", ClassName = "cdeTransitButton" });
-            TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.TileGroup, 3, 5, 0, 0, null, null, new nmiCtrlTileGroup { TileWidth = 1, TileHeight = 2 });
-            mInstanceButton = TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.TileButton, 3, 6, 2, 0, "Go to Sensor Dashboard", null, new nmiCtrlTileButton { NoTE = true, TileHeight = 1, TileWidth = 3, ClassName = "cdeTransitButton" });
+            TheNMIEngine.AddWizardFinishPage(MyBaseThing, tMyForm2, 2);
+            mResultInfo = TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.SmartLabel, 2, 1, 0, 0, null, "Error", new nmiCtrlSmartLabel { FontSize = 24, NoTE = true, TileWidth = 7 });
+            TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.SmartLabel, 2, 2, 0, 0, null, null, new nmiCtrlSmartLabel { NoTE = true, TileWidth = 7, Text = "What do you want to do next?", TileHeight = 2 });
+            TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.TileGroup, 2, 3, 0, 0, null, null, new nmiCtrlTileGroup { TileWidth = 1, TileHeight = 2, TileFactorX = 2 });
+            TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.TileButton, 2, 4, 2, 0, "Run another Wizard", null, new nmiCtrlTileButton { NoTE = true, TileHeight = 1, TileWidth = 3, OnClick = $"TTS:{MyDashboard.cdeMID}", ClassName = "cdeTransitButton" });
+            TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.TileGroup, 2, 5, 0, 0, null, null, new nmiCtrlTileGroup { TileWidth = 1, TileHeight = 2 });
+            mInstanceButton = TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.TileButton, 2, 6, 2, 0, "Go to Sensor Dashboard", null, new nmiCtrlTileButton { NoTE = true, TileHeight = 1, TileWidth = 3, ClassName = "cdeTransitButton" });
         }
     }
     public class TheVSensWiz : TheDataBase
