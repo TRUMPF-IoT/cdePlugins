@@ -44,7 +44,7 @@ namespace CDMyMSSQLStorage
                 MyConnectionString = "Connection Reset=true;Max Pool Size=10000;Connection Lifetime=10;Enlist=false;Application Name=C-DEngine;Trusted_Connection=False;Encrypt=True;Password=" + sqlpwd + ";User ID=" + pSQLUID + ";Server=" + pSQLAddress + ";Database=" + pDBName;
             }
             else
-                MyConnectionString = "Connection Reset=false;Max Pool Size=10000;Connection Lifetime=4;Enlist=false;Application Name=C-DEngine;Password=" + sqlpwd + ";User ID=" + pSQLUID + ";Server=" + pSQLAddress + ";Database=" + pDBName;   //Data Source=" + pSQLAddress + ";Initial Catalog=" + pDBName;
+                MyConnectionString = "Max Pool Size=10000;Application Name=C-DEngine;Password=" + sqlpwd + ";User ID=" + pSQLUID + ";Server=" + pSQLAddress + ";Database=" + pDBName;   //Data Source=" + pSQLAddress + ";Initial Catalog=" + pDBName;
             mRetrySeconds = TheBaseAssets.MyServiceHostInfo.TO.StoreRequestTimeout;
             if (RetrySeconds>0)
                 mRetrySeconds = RetrySeconds;

@@ -35,8 +35,9 @@ namespace CDMyMSSQLStorage
 
         public bool InitEdgeStore()
         {
+            bool DoOverride= TheCommonUtils.CBool(TheBaseAssets.MySettings.GetSetting("ResetSQLSettings"));
             string temp = TheBaseAssets.MySettings.GetSetting("150-SQLCredentialToken", MyBaseEngine.GetEngineID()); 
-            if (!string.IsNullOrEmpty(temp))
+            if (!DoOverride && !string.IsNullOrEmpty(temp))
             {
                 TheBaseAssets.MySettings.SetSetting("150-SQLCredentialToken", temp, true,MyBaseEngine.GetEngineID());//in case the token comes from old AppParameter of Provisioning Service. Take it and own it
                 string[] tSec = TheCommonUtils.cdeSplit(temp, ";:;", false, false);
@@ -49,6 +50,9 @@ namespace CDMyMSSQLStorage
             }
             else
             {
+                if (DoOverride)
+                    TheBaseAssets.MySYSLOG.WriteToLog(442, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseEngine.GetEngineName(), "SQL Server Credential Override active", eMsgLevel.l3_ImportantMessage));
+
                 temp = TheCommonUtils.CStr(TheBaseAssets.MySettings.GetSetting("SQLServerName"));
                 if (!string.IsNullOrEmpty(temp))
                     MySQLDefinitions.ServerName = temp;
@@ -840,7 +844,7 @@ namespace CDMyMSSQLStorage
                 Guid tConnKey = Guid.Empty;
                 if (!MySQLDefinitions.ServerName.Equals("AZURE"))
                 {
-                    TheBaseAssets.MySYSLOG.WriteToLog(8888, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null: new TSM(MyBaseEngine.GetEngineName(), "Trying to locate SQL Server...", eMsgLevel.l3_ImportantMessage));
+                    TheBaseAssets.MySYSLOG.WriteToLog(8888, TSM.L(eDEBUG_LEVELS.OFF) ? null: new TSM(MyBaseEngine.GetEngineName(), $"Trying to locate SQL Server...{MySQLDefinitions.DatabaseName}@{MySQLDefinitions.ServerName}", eMsgLevel.l3_ImportantMessage));
                     retVal = MySqlHelperClass.cdeRunNonQuery($"USE [{MySQLDefinitions.DatabaseName}]", false, false, ref tConnKey);
                     if (!retVal)
                     {
