@@ -496,6 +496,7 @@ namespace CDMyPrometheusExporter.ViewModel
                             var valueToReport = GetMetricValue(tMetric.Value);
                             if (senderThing.ChangeNaNToNull && valueToReport == 0) //CM: closest reuse of disable sending of null/0
                                 continue;
+                            var labels = GetMetricLabels(senderThing, propertyName, metricName);
 
                             switch (senderThing.TargetType?.ToLowerInvariant())
                             {
@@ -507,7 +508,7 @@ namespace CDMyPrometheusExporter.ViewModel
                                             Prometheus.Counter cs;
                                             try
                                             {
-                                                cs = Metrics.CreateCounter(s, "", GetMetricLabels(senderThing, propertyName, metricName));
+                                                cs = Metrics.CreateCounter(s, "", labels);
                                                 return cs;
                                             }
                                             catch (Exception e)
@@ -544,7 +545,7 @@ namespace CDMyPrometheusExporter.ViewModel
                                 case "":
                                 case "gauge":
                                     {
-                                        var gauge = myGaugesByMetricName.GetOrAdd(metricName, (s) => Metrics.CreateGauge(s, "", GetMetricLabels(senderThing, propertyName, metricName)));
+                                        var gauge = myGaugesByMetricName.GetOrAdd(metricName, (s) => Metrics.CreateGauge(s, "", labels));
                                         if (gauge != null)
                                         {
                                             if (gauge.LabelNames.Length > 0)
@@ -561,7 +562,7 @@ namespace CDMyPrometheusExporter.ViewModel
                                     break;
                                 case "histogram":
                                     {
-                                        var histogram = myHistogramsByMetricName.GetOrAdd(metricName, (s) => Metrics.CreateHistogram(s, "", GetHistogramBuckets(senderThing, propertyName, metricName, GetMetricLabels(senderThing, propertyName, metricName))));
+                                        var histogram = myHistogramsByMetricName.GetOrAdd(metricName, (s) => Metrics.CreateHistogram(s, "", GetHistogramBuckets(senderThing, propertyName, metricName, labels)));
                                         if (histogram != null)
                                         {
                                             if (histogram.LabelNames.Length > 0)
@@ -578,7 +579,7 @@ namespace CDMyPrometheusExporter.ViewModel
                                     break;
                                 case "summary":
                                     {
-                                        var summary = mySummariesByMetricName.GetOrAdd(metricName, (s) => Metrics.CreateSummary(s, "", GetMetricLabels(senderThing, propertyName, metricName)));
+                                        var summary = mySummariesByMetricName.GetOrAdd(metricName, (s) => Metrics.CreateSummary(s, "", labels));
                                         if (summary != null)
                                         {
                                             if (summary.LabelNames.Length > 0)
