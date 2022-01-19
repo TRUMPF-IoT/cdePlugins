@@ -4,75 +4,75 @@ Upstream-Contact:  <>
 Source: https://github.com/TRUMPF-IoT/CDEPlugins
 
 Files:  src/066 - C-MyVThings/C-DMyVThings/bundleconfig.json
-Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+Copyright: 2009-2022 TRUMPF Laser GmbH, authors: C-Labs
 License: MPL-2.0
 
 Files:  src/066 - C-MyVThings/C-DMyVThings/*.resx
-Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+Copyright: 2009-2022 TRUMPF Laser GmbH, authors: C-Labs
 License: MPL-2.0
 
 Files:  src/066 - C-MyVThings/C-DMyVThings/MultilingualResources/*
-Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+Copyright: 2009-2022 TRUMPF Laser GmbH, authors: C-Labs
 License: MPL-2.0
 
 Files:  src/066 - C-MyVThings/C-DMyVThings/ClientBin/P066/images/*.png
-Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+Copyright: 2009-2022 TRUMPF Laser GmbH, authors: C-Labs
 License: MPL-2.0
 
 Files:  README.md
-Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+Copyright: 2009-2022 TRUMPF Laser GmbH, authors: C-Labs
 License: MPL-2.0
 
 Files:  src/079 - CDMyMessages/readme.md
-Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+Copyright: 2009-2022 TRUMPF Laser GmbH, authors: C-Labs
 License: MPL-2.0
 
 Files:  src/150 - CDMyMSSQL/readme.md
-Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+Copyright: 2009-2022 TRUMPF Laser GmbH, authors: C-Labs
 License: MPL-2.0
 
 Files:  src/151 - CDMyWebRelay/readme.md
-Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+Copyright: 2009-2022 TRUMPF Laser GmbH, authors: C-Labs
 License: MPL-2.0
 
 Files:  src/093 - CDMyNetwork/readme.md
-Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+Copyright: 2009-2022 TRUMPF Laser GmbH, authors: C-Labs
 License: MPL-2.0
 
 Files:  src/149 - CDMyRulesEngine/readme.md
-Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+Copyright: 2009-2022 TRUMPF Laser GmbH, authors: C-Labs
 License: MPL-2.0
 
 Files:  src/readme.md
-Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+Copyright: 2009-2022 TRUMPF Laser GmbH, authors: C-Labs
 License: MPL-2.0
 
 #Files:  src/040 - C-MyComputer/readme.md
-#Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+#Copyright: 2009-2022 TRUMPF Laser GmbH, authors: C-Labs
 #License: MPL-2.0
 
 Files:  src/103 - CMyVisitorLog/readme.md
-Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+Copyright: 2009-2022 TRUMPF Laser GmbH, authors: C-Labs
 License: MPL-2.0
 
 Files:  src/178 - External Logger/readme.md
-Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+Copyright: 2009-2022 TRUMPF Laser GmbH, authors: C-Labs
 License: MPL-2.0
 
 Files:  src/179 - Mesh Sender/readme.md
-Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+Copyright: 2009-2022 TRUMPF Laser GmbH, authors: C-Labs
 License: MPL-2.0
 
 Files:  src/180 - Mesh Receiver/readme.md
-Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+Copyright: 2009-2022 TRUMPF Laser GmbH, authors: C-Labs
 License: MPL-2.0
 
 Files:  src/cdePlugins.sln
-Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+Copyright: 2009-2022 TRUMPF Laser GmbH, authors: C-Labs
 License: MPL-2.0
 
 Files:  src/040 - C-MyComputer/C-DMyComputer (PC)/ClientBin/images/*.png
-Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+Copyright: 2009-2022 TRUMPF Laser GmbH, authors: C-Labs
 License: MPL-2.0
 
 Files:  src/188 - PrometheusExporter/CDMyPrometheusExporter/clientbin/images/prometheus_logo_grey.png
@@ -80,7 +80,7 @@ Copyright: Copyright 2013 The Prometheus Authors
 License: Apache-2.0
 
 Files: src/HTML5/cdeTS/cde/cdeWorker.js
-Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+Copyright: 2009-2022 TRUMPF Laser GmbH, authors: C-Labs
 License: MPL-2.0
 
 Files:  src/182 - MQTT Sender/GnatMQ/*
@@ -124,9 +124,9 @@ Copyright: Copyright (c) 2006 Scott Alexander, 2015 Dmitry Turin
 License: MIT
 
 Files: src/123 - CDMyModbus/CDMyModbus/ClientBin/*
-Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+Copyright: 2009-2022 TRUMPF Laser GmbH, authors: C-Labs
 License: MPL-2.0
 
 Files: src/078 - CDMyOPCUAClient/CDMyOPCUAClient/clientbin
-Copyright: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+Copyright: 2009-2022 TRUMPF Laser GmbH, authors: C-Labs
 License: MPL-2.0
