@@ -270,7 +270,7 @@ namespace CDMyMSSQLStorage
                                         UniqueIDs.Add(tDefinition.UID);
                                         if (StoreID == 0)
                                         {
-                                            if (!MySqlHelperClass.cdeRunNonQuery($"INSERT INTO cdeStorageMap (StoreDescription, UniqueID, DeviceName, ScopeToken, NodeID, AppID) VALUES ('{tDefinition.DES}', '{tDefinition.UID}', '{tDefinition.NAM}',{TheScopeManager.GetTokenFromScrambledScopeID(tScrambledScopeID)},'{tDefinition.DID}','{TheBaseAssets.MyServiceHostInfo.ApplicationName}');", TheBaseAssets.MyServiceHostInfo.TO.StoreRequestTimeout, true, true, ref tConnKey))
+                                            if (!MySqlHelperClass.cdeRunNonQuery($"INSERT INTO cdeStorageMap (StoreDescription, UniqueID, DeviceName, ScopeToken, NodeID, AppID) VALUES ('{tDefinition.DES}', '{tDefinition.UID}', '{tDefinition.NAM}','{TheScopeManager.GetTokenFromScrambledScopeID(tScrambledScopeID)}','{tDefinition.DID}','{TheBaseAssets.MyServiceHostInfo.ApplicationName}');", TheBaseAssets.MyServiceHostInfo.TO.StoreRequestTimeout, true, true, ref tConnKey))
                                             {
                                                 ProcessingResult = "Store (INSERT) Could not be created: " + tDefinition.NAM;
                                                 TheBaseAssets.MySYSLOG.WriteToLog(444, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseEngine.GetEngineName(), ProcessingResult, eMsgLevel.l1_Error), true);
