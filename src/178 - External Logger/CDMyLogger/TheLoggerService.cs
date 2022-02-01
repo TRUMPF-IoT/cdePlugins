@@ -12,6 +12,7 @@ using nsCDEngine.Engines.ThingService;
 using nsCDEngine.ViewModels;
 using CDMyLogger.ViewModel;
 using nsCDEngine.Communication;
+using nsCDEngine.Engines.StorageService;
 
 namespace CDMyLogger
 {
@@ -22,6 +23,7 @@ namespace CDMyLogger
         public const string TextLogger = "Text Logger";
         public const string IISLogger = "IIS Logger";
         public const string RSSLogger = "RSS Logger";
+        public const string InternalLogger = "Internal Logger";
     }
 
     class LoggerService : ThePluginBase, ICDELoggerEngine
@@ -34,6 +36,13 @@ namespace CDMyLogger
 
         Guid guidEngineID = new Guid("{F389DF53-8424-4806-A8CD-B63F81436B2C}"); // TODO: Set GUID value for InitEngineAssets (in the next block)
         String strFriendlyName = "Logging Service";               // TODO: Set plugin friendly name for InitEngineAssets (optional)
+
+        [ConfigProperty(Required = true, Generalize = true)]
+        public bool PublishEvents
+        {
+            get { return TheThing.MemberGetSafePropertyBool(MyBaseThing); }
+            set { TheThing.MemberSetSafePropertyBool(MyBaseThing, value); }
+        }
 
         public override void InitEngineAssets(IBaseEngine pBase)
         {
@@ -97,6 +106,8 @@ namespace CDMyLogger
             return false;
         }
 
+
+
         void sinkTimer(long timer)
         {
             if ((timer%5)==0)
@@ -136,6 +147,7 @@ namespace CDMyLogger
                 TheNMIEngine.AddSmartControl(MyBaseThing, tMyUserSettingsForm, eFieldType.SingleCheck, 10, 2, 0x80, "Disable CDE-Log to Console", "DisableStandardLog", new nmiCtrlSingleCheck() { ParentFld = 1, TileWidth=3 });
                 TheNMIEngine.AddSmartControl(MyBaseThing, tMyUserSettingsForm, eFieldType.SingleCheck, 20, 2, 0x80, "Use GELF to Console", "UseGELF", new nmiCtrlSingleCheck() { ParentFld = 1, TileWidth=3 });
                 TheNMIEngine.AddSmartControl(MyBaseThing, tMyUserSettingsForm, eFieldType.SingleCheck, 40, 2, 0, "Log KPIs", "LogKPIs", new nmiCtrlSingleCheck() { ParentFld = 1, TileWidth = 3 });
+                TheNMIEngine.AddSmartControl(MyBaseThing, tMyUserSettingsForm, eFieldType.SingleCheck, 50, 2, 0, "Publish Events", nameof(PublishEvents), new nmiCtrlSingleCheck() { ParentFld = 1, TileWidth = 3 });
 
                 TheNMIEngine.RegisterEngine(MyBaseEngine);      //Registers this engine and its "SmartPage" with the System
                 mIsUXInitCompleted = true;
@@ -169,6 +181,9 @@ namespace CDMyLogger
                             break;
                         case eTheLoggerServiceTypes.RSSLogger:
                             CreateOrUpdateService<TheRSSFeed>(tDev, true);
+                            break;
+                        case eTheLoggerServiceTypes.InternalLogger:
+                            CreateOrUpdateService<TheInternalLogger>(tDev, true);
                             break;
                     }
                 }
@@ -243,6 +258,8 @@ namespace CDMyLogger
 
         public bool LogEvent(TheEventLogData pItem)
         {
+            if (pItem == null)
+                return false;
             bool bRet = false;
             List<TheThing> tDevList = TheThingRegistry.GetThingsOfEngine(MyBaseThing.EngineName);
             if (tDevList?.Count > 0)
@@ -255,6 +272,8 @@ namespace CDMyLogger
                         bRet = true;
                 }
             }
+            if (PublishEvents) //This allows to have a logger on a different node
+                TheCommCore.PublishCentral(new TSM(eEngineName.ContentService,eEngineEvents.NewEventLogEntry,pItem.EventLevel,TheCommonUtils.SerializeObjectToJSONString(pItem)), true);
             return bRet;
         }
 

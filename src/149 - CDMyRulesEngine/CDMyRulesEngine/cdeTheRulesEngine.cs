@@ -17,6 +17,18 @@ namespace CDMyRulesEngine
 
     internal class TheRulesEngine : ThePluginBase, ICDERulesEngine
     {
+        #region Retired Interface - remove once ICDERulesEngine has removed these
+        public bool LogEvent(string pEventName, string tTrigger, string tAction)
+        {
+            TheLoggerFactory.LogEvent(eLoggerCategory.RuleEvent, pEventName,eMsgLevel.l4_Message, null, tTrigger, tAction);
+            return false;
+        }
+        public bool LogEvent(TheEventLogData pData)
+        {
+            TheLoggerFactory.LogEvent(pData);
+            return false;
+        }
+        #endregion
         #region ICDEPlugin Methods
         /// <summary>
         /// 
@@ -56,8 +68,8 @@ namespace CDMyRulesEngine
             }
             MyBaseThing.RegisterEvent(eEngineEvents.IncomingMessage, HandleMessage);
             mIsInitialized = true; // CODE REVIEW Markus: Is the rules engine really ready for consumption at this stage, or should we wait until storage is ready?
-            //CM: The rules engine is ready but the Event Log might not be fully ready as of this time.
-            TheBaseEngine.WaitForStorageReadiness(sinkStorageStationIsReadyFired, true);
+                                   //CM: The rules engine is ready but the Event Log might not be fully ready as of this time.
+            ActivateRules();
             MyBaseEngine.ProcessInitialized();
             return true;
         }
@@ -200,19 +212,6 @@ namespace CDMyRulesEngine
             });
 
             TheNMIEngine.AddAboutButton4(MyBaseThing, MyDash, null, true,false,"REFRESH_DASH");
-
-
-
-            tFormGuid = new TheFormInfo() { cdeMID = new Guid("{4EA67262-4F66-4EFF-B7AD-51B98DAF376C}"), FormTitle = "Event Log", defDataSource = "EventLog", IsReadOnly = true, IsNotAutoLoading = true }; 
-            TheNMIEngine.AddFormToThingUX(MyDash, MyBaseThing, tFormGuid, "CMyTable", "Event Log", 6, 3, 128, TheNMIEngine.GetNodeForCategory(), null, new ThePropertyBag { "Thumbnail=FA5:f073" }); //;:;50;:;True
-            //TheNMIEngine.AddForm(tFormGuid);
-            TheNMIEngine.AddFields(tFormGuid, new List<TheFieldInfo> {
-                {  new TheFieldInfo() { FldOrder=1,DataItem="EventTime",Flags=0,Type=eFieldType.DateTime,Header="Event Time",FldWidth=2 }},
-                {  new TheFieldInfo() { FldOrder=2,DataItem="EventName",Flags=0,Type=eFieldType.SingleEnded,Header="Event Name",FldWidth=3 }},
-                {  new TheFieldInfo() { FldOrder=3,DataItem="StationName",Flags=0,Type=eFieldType.SingleEnded,Header="Node Name",FldWidth=2 }},
-                {  new TheFieldInfo() { FldOrder=4,DataItem="EventTrigger",Flags=0,Type=eFieldType.ThingPicker,Header="Trigger Object",FldWidth=2,  PropertyBag=new nmiCtrlThingPicker() { IncludeEngines=true } }},
-                {  new TheFieldInfo() { FldOrder=5,DataItem="ActionObject",Flags=0,Type=eFieldType.PropertyPicker,Header="Action Object",FldWidth=2,  PropertyBag=new nmiCtrlPropertyPicker() { ThingFld=4 } }},
-                });
 
             AddRulesWizard();
 
@@ -501,51 +500,7 @@ namespace CDMyRulesEngine
 
 
 
-        public bool LogEvent(string pEventName, string tTrigger,string tAction)
-        {
-            if (!MyRuleEventLog.IsReady) return false;
-            TheEventLogData tSec = new TheEventLogData
-            {
-                EventTime = DateTimeOffset.Now,
-                StationName = TheBaseAssets.MyServiceHostInfo.GetPrimaryStationURL(false),
-                EventName = pEventName,
-                EventTrigger = tTrigger,
-                ActionObject = tAction
-            };
-            MyRuleEventLog.AddAnItem(tSec);
-            return true;
-        }
-        public bool LogEvent(TheEventLogData pData)
-        {
-            if (!MyRuleEventLog.IsReady) return false;
-            MyRuleEventLog.AddAnItem(pData);
-            return true;
-        }
 
-        private void sinkStorageStationIsReadyFired(ICDEThing sender, object pReady)
-        {
-            if (pReady != null)
-            {
-                if (MyRuleEventLog == null)
-                {
-                    MyRuleEventLog = new TheStorageMirror<TheEventLogData>(TheCDEngines.MyIStorageService);
-                    MyRuleEventLog.CacheTableName = "EventLog";                 
-                    MyRuleEventLog.UseSafeSave = true;
-                    MyRuleEventLog.SetRecordExpiration(604800, null);
-                    MyRuleEventLog.CacheStoreInterval = 15;
-                    MyRuleEventLog.IsStoreIntervalInSeconds = true;
-                    MyRuleEventLog.AppendOnly = true;
-
-                    if (!MyRuleEventLog.IsRAMStore)
-                        MyRuleEventLog.CreateStore("The Event Log", "History of events fired by the RulesEngine", null, true, TheBaseAssets.MyServiceHostInfo.IsNewDevice);
-                    else
-                        MyRuleEventLog.InitializeStore(true, TheBaseAssets.MyServiceHostInfo.IsNewDevice);
-                    LogEvent("Event Log Started", MyBaseThing.cdeMID.ToString(), "");
-                    ActivateRules();
-                }
-            }
-        }
-        internal TheStorageMirror<TheEventLogData> MyRuleEventLog;   //The Storage Container for data to store
 
 
 
