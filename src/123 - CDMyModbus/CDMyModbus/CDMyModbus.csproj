@@ -31,10 +31,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="ClientBin\Images\Modbus-Logo.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="ClientBin\Images\Modbus-Logo.png" />
   </ItemGroup>
 

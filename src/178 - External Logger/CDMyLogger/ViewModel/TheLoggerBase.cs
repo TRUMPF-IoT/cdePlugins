@@ -106,7 +106,7 @@ namespace CDMyLogger.ViewModel
             {
                 mIsUXInitStarted = true;
 
-                var tHead = TheNMIEngine.AddStandardForm(MyBaseThing, MyBaseThing.FriendlyName);
+                var tHead = TheNMIEngine.AddStandardForm(MyBaseThing, MyBaseThing.FriendlyName,12, null,null,0,$"..Event Logs on {TheCommonUtils.GetMyNodeName()}");
                 MyStatusForm = tHead["Form"] as TheFormInfo; // TheNMIEngine.AddForm(new TheFormInfo(MyBaseThing) { FormTitle = MyBaseThing.DeviceType, DefaultView = eDefaultView.Form, PropertyBag = new ThePropertyBag { "MaxTileWidth=6" } });
                 MyStatusFormDashPanel = tHead["DashIcon"] as TheDashPanelInfo;
                 var tBlock = TheNMIEngine.AddStatusBlock(MyBaseThing, MyStatusForm, 2);

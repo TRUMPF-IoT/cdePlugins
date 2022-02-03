@@ -124,7 +124,7 @@ namespace Modbus
 
             mMyDashboard = TheNMIEngine.AddDashboard(MyBaseThing, new TheDashboardInfo(MyBaseEngine, "Modbus Devices")
             {
-                PropertyBag = new nmiDashboardTile { Thumbnail = "images/Modbus-Logo.png;0.5;cdeLargeIcon", Category = " Connectivity", TileWidth = 3, TileHeight = 4, ClassName = "cdeLiveTile cdeLargeTile" }
+                PropertyBag = new nmiDashboardTile { Thumbnail = "/Images/Modbus-Logo.png;0.5;cdeLargeIcon", Category = " Connectivity", TileWidth = 3, TileHeight = 4, ClassName = "cdeLiveTile cdeLargeTile" }
             });
 
             var tFlds=TheNMIEngine.CreateEngineForms(MyBaseThing, TheThing.GetSafeThingGuid(MyBaseThing, "MYNAME"), "Modbus Devices", null, 20, 0x0F, 0xF0, TheNMIEngine.GetNodeForCategory(), "REFFRESHME", true, new eModbusType(), eModbusType.ModbusTCPDevice);

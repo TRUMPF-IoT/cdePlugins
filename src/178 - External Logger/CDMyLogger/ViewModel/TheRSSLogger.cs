@@ -226,7 +226,7 @@ namespace CDMyLogger.ViewModel
                             TheBaseAssets.MyServiceHostInfo.SiteName + "/" + TheBaseAssets.MyServiceHostInfo.PortalPage, //"url to the item page",
                             string.Format("{0} occured at {1} on stations {2}. {3}", tEntry.EventName, tEntry.EventTime, tEntry.StationName, tEntry.EventString), //  "the description of the item",
                             tEntry.StationName, // "the author",
-                            TheThing.GetSafePropertyString(TheThingRegistry.GetThingByMID("*", TheCommonUtils.CGuid(tEntry.EventTrigger)), "FriendlyName"), // "the category",
+                            tEntry.EventTrigger, // "the category",
                             "", //"comments",
                             tEntry.cdeMID.ToString(), //"the guid",
                             tEntry.EventTime, //    DateTimeOffset.Now,

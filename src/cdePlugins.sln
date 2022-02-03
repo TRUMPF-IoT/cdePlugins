@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29905.134
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32113.165
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDMyMeshSender", "179 - Mesh Sender\CDMyMeshSender\CDMyMeshSender.csproj", "{38CC1070-FD41-40B0-99A0-27BC7C1929B7}"
 	ProjectSection(ProjectDependencies) = postProject

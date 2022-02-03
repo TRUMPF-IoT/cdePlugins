@@ -5,9 +5,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net45;net40;net35</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <AssemblyName>CDMyLogger</AssemblyName>
     <RootNamespace>CDMyLogger</RootNamespace>
+	  <LangVersion>latest</LangVersion>
     <PackageId>CDMyLogger</PackageId>
     <Version>5.100.0-beta</Version>
     <Authors>Chris Muench</Authors>
@@ -16,16 +17,16 @@
     <Copyright>Copyright © 2015-2020 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="C-DEngine" Version="5.*" />
-    <PackageReference Include="jnm2.ReferenceAssemblies.net35" Version="1.0.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <!--<ProjectReference Include="..\..\025 - C-DEngine\C-DEngine\C-DEngine.csproj" />-->
+    <PackageReference Include="Discord.Net.Webhook">
+		  <Version>3.2.1</Version>
+	  </PackageReference>
   </ItemGroup>
+
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="call &quot;$(ProjectDir)..\..\..\BuildTools\signandpackage.cmd&quot; &quot;$(ProjectDir)&quot; &quot;$(TargetDir)&quot; &quot;$(TargetFileName)&quot;" />
