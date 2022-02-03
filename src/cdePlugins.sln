@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29905.134
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32113.165
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDMyMeshSender", "179 - Mesh Sender\CDMyMeshSender\CDMyMeshSender.csproj", "{38CC1070-FD41-40B0-99A0-27BC7C1929B7}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -102,7 +102,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDMyImages", "160 - CDMyIma
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\..\cdeSDK\src\Libraries\152 - TheSensorTemplate\TheSensorTemplate\TheSensorTemplate.projitems*{11bfe5f8-3102-4868-8393-8d9c2bcf9369}*SharedItemsImports = 5
 		123 - CDMyModbus\NModbus4Shared\NModbus4Shared.projitems*{87d6ea89-f134-41b9-8015-5e5cf7b93da2}*SharedItemsImports = 13
+		..\..\cdeSDK\src\Libraries\152 - TheSensorTemplate\TheSensorTemplate\TheSensorTemplate.projitems*{ae86fb00-191c-40a5-929d-3e0f62b62d1d}*SharedItemsImports = 5
 		123 - CDMyModbus\NModbus4Shared\NModbus4Shared.projitems*{f810d2d8-abb9-43c5-9053-827cb51ca6ba}*SharedItemsImports = 5
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
