@@ -49,7 +49,7 @@
     <PackageReference Include="cdeEventConvertersShared" Version="5.*" IncludeAssets="ContentFiles" />
     <PackageReference Include="cdeMeshManagerContractsShared" Version="5.*" IncludeAssets="ContentFiles" />
     <PackageReference Include="cdeOPCUAClientContractsShared" Version="5.*" IncludeAssets="ContentFiles" />
-    <!--<PackageReference Include="cdeSensorTemplateShared" Version="5.*" IncludeAssets="ContentFiles" GeneratePathProperty="true" />-->
+    <PackageReference Include="cdeSensorTemplateShared" Version="5.*" IncludeAssets="ContentFiles" GeneratePathProperty="true" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
