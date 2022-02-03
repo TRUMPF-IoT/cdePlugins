@@ -48,7 +48,7 @@ namespace CDMyLogger.ViewModel
 
             TheCommonUtils.cdeRunTaskAsync("webHook", async (_) =>
             {
-                using (var client = new DiscordWebhookClient(MyBaseThing.Address))  // "https://discord.com/api/webhooks/933135055998570498/MmprmoQjg4Vh2tPfDoTHp2Km7yHaoGurux8dtVYmtQ_xGy6yFRpAazJGdOG_mclUBIQ4"
+                using (var client = new DiscordWebhookClient(MyBaseThing.Address))  
                 {
                     Discord.Color tCol = Discord.Color.Default;
                     switch (pData.EventLevel)
