@@ -33,10 +33,10 @@
     <EmbeddedResource Include="ClientBin\P066\pages\VSFaceA.html" />
 
     <!-- dotnet nuget doesn't properly apply embedded resources from referenced packages: add them explicitly -->
-    <!--<EmbeddedResource Include="$(PkgCDESensorTemplateShared)\contentFiles\any\$(TargetFramework)\ClientBin\SENSORS\CSS\SensorsDark.min.css" Link="ClientBin\SENSORS\CSS\SensorsDark.min.css" />
+    <EmbeddedResource Include="$(PkgCDESensorTemplateShared)\contentFiles\any\$(TargetFramework)\ClientBin\SENSORS\CSS\SensorsDark.min.css" Link="ClientBin\SENSORS\CSS\SensorsDark.min.css" />
     <EmbeddedResource Include="$(PkgCDESensorTemplateShared)\contentFiles\any\$(TargetFramework)\ClientBin\SENSORS\CSS\SensorsLite.min.css" Link="ClientBin\SENSORS\CSS\SensorsLite.min.css" />
     <EmbeddedResource Include="$(PkgCDESensorTemplateShared)\contentFiles\any\$(TargetFramework)\ClientBin\SENSORS\CSS\SensorStyles.min.css" Link="ClientBin\SENSORS\CSS\SensorStyles.min.css" />
-    <EmbeddedResource Include="$(PkgCDESensorTemplateShared)\contentFiles\any\$(TargetFramework)\ClientBin\SENSORS\Images\SensorLogo_156x78.png" Link="ClientBin\SENSORS\Images\SensorLogo_156x78.png" />-->
+    <EmbeddedResource Include="$(PkgCDESensorTemplateShared)\contentFiles\any\$(TargetFramework)\ClientBin\SENSORS\Images\SensorLogo_156x78.png" Link="ClientBin\SENSORS\Images\SensorLogo_156x78.png" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='net40'">
@@ -55,6 +55,4 @@
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="call &quot;$(ProjectDir)..\..\..\BuildTools\signandpackage.cmd&quot; &quot;$(ProjectDir)&quot; &quot;$(TargetDir)&quot; &quot;$(TargetFileName)&quot;&#xD;&#xA;" />
   </Target>
-
-  <Import Project="..\..\..\..\cdeSDK\src\Libraries\152 - TheSensorTemplate\TheSensorTemplate\TheSensorTemplate.projitems" Label="Shared" />
 </Project>
