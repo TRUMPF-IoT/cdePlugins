@@ -11,6 +11,7 @@
     <Product>C-DMyComputer</Product>
     <Description>Computer Vitals for the C-DEngine</Description>
     <Copyright>Copyright © 2017-2021 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
     <DefineConstants>TRACE;CDE_SYSLOG;$(DefineConstants)</DefineConstants>
