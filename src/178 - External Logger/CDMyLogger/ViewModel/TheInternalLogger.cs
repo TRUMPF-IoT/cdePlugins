@@ -28,17 +28,17 @@ namespace CDMyLogger.ViewModel
             {
                 mIsUXInitStarted = true;
 
-                var tFormGuid = new TheFormInfo(MyBaseThing) { FormTitle = "Event Log", defDataSource = "EventLog", IsReadOnly = true, IsNotAutoLoading = true, PropertyBag=new nmiCtrlTableView { ShowFilterField=true } };
-                TheNMIEngine.AddFormToThingUX(MyBaseThing, tFormGuid, "CMyTable", "Event Log", 6, 3, 128, TheNMIEngine.GetNodeForCategory(), null, new ThePropertyBag { "Thumbnail=FA5:f073" }); //;:;50;:;True
-                                                                                                                                                                                                 //TheNMIEngine.AddForm(tFormGuid);
+                var tFormGuid = new TheFormInfo(MyBaseThing) { FormTitle = "Event Log", defDataSource = "EventLog", IsReadOnly = true, IsNotAutoLoading = true, PropertyBag = new nmiCtrlTableView { ShowFilterField = true } };
+                TheNMIEngine.AddFormToThingUX(MyBaseThing, tFormGuid, "CMyTable", "Event Log", 6, 3, 128, $"..Event Logs on {TheCommonUtils.GetMyNodeName()}", null, new ThePropertyBag { "Thumbnail=FA5:f073" }); //;:;50;:;True
+                                                                                                                                                                                                                   //TheNMIEngine.AddForm(tFormGuid);
                 TheNMIEngine.AddFields(tFormGuid, new List<TheFieldInfo> {
                 {  new TheFieldInfo() { FldOrder=5,DataItem="EventCategory",Flags=0,Type=eFieldType.DateTime,Header="Category",FldWidth=2 }},
                 {  new TheFieldInfo() { FldOrder=10,DataItem="EventTime",Flags=0,Type=eFieldType.DateTime,Header="Event Time",FldWidth=2 }},
                 {  new TheFieldInfo() { FldOrder=20,DataItem="StationName",Flags=0,Type=eFieldType.SingleEnded,Header="Node Name",FldWidth=2 }},
                 {  new TheFieldInfo() { FldOrder=30,DataItem="EventName",Flags=0,Type=eFieldType.SingleEnded,Header="Event Name",FldWidth=2 }},
                 {  new TheFieldInfo() { FldOrder=40,DataItem="EventString",Flags=0,Type=eFieldType.SingleEnded,Header="Event",FldWidth=4 }},
-                {  new TheFieldInfo() { FldOrder=50,DataItem="EventTrigger",Flags=0,Type=eFieldType.ThingPicker,Header="Trigger Object",FldWidth=2,  PropertyBag=new nmiCtrlThingPicker() { IncludeEngines=true, FldWidth=2 } }},
-                {  new TheFieldInfo() { FldOrder=60,DataItem="ActionObject",Flags=0,Type=eFieldType.PropertyPicker,Header="Action Object",FldWidth=2,  PropertyBag=new nmiCtrlPropertyPicker() { ThingFld=50 } }},
+                {  new TheFieldInfo() { FldOrder=50,DataItem="EventTrigger",Flags=0,Type=eFieldType.SingleEnded,Header="Trigger Object",FldWidth=2 }},
+                {  new TheFieldInfo() { FldOrder=60,DataItem="ActionObject",Flags=0,Type=eFieldType.SingleEnded,Header="Action Object",FldWidth=2 }},
                 });
                 mIsUXInitCompleted = true;
             }

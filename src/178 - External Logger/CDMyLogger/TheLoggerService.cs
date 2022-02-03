@@ -24,6 +24,7 @@ namespace CDMyLogger
         public const string IISLogger = "IIS Logger";
         public const string RSSLogger = "RSS Logger";
         public const string InternalLogger = "Internal Logger";
+        public const string DiscordLogger = "Discord Logger";
     }
 
     class LoggerService : ThePluginBase, ICDELoggerEngine
@@ -56,7 +57,7 @@ namespace CDMyLogger
                                        "C-Labs",                // pDeveloper - name of the plugin developer.
                                        "http://www.c-labs.com", // pDeveloperUrl - URL to developer home page.
                                        new List<string>() { }); // pCategories - Search categories for service.
-
+            MyBaseEngine.AddManifestFiles(new List<string> { "Discord.Net.Core.dll", "Discord.Net.Rest.dll", "Discord.Net.Webhook.dll", "Newtonsoft.Json.dll" });
             MyBaseEngine.AddCapability(eThingCaps.LoggerEngine);
             MyBaseEngine.AddCapability(eThingCaps.ConfigManagement);
         }
@@ -184,6 +185,9 @@ namespace CDMyLogger
                             break;
                         case eTheLoggerServiceTypes.InternalLogger:
                             CreateOrUpdateService<TheInternalLogger>(tDev, true);
+                            break;
+                        case eTheLoggerServiceTypes.DiscordLogger:
+                            CreateOrUpdateService<TheDiscordLogger>(tDev, true);
                             break;
                     }
                 }

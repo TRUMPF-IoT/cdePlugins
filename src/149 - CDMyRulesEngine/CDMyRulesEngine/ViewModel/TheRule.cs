@@ -348,7 +348,7 @@ namespace CDMyRulesEngine.ViewModel
             {
                 tSec.EventName = tSec.EventName.Replace("%OldValue%", TriggerOldValue);
             }
-            tSec.EventTrigger = TriggerObject;
+            tSec.EventTrigger = TheThingRegistry.GetThingByMID(TheCommonUtils.CGuid(TriggerObject))?.FriendlyName;
             tSec.ActionObject = ActionText;
             var tEng=MyBaseEngine.GetBaseThing().GetObject() as TheRulesEngine;
             tEng?.LogEvent(tSec);
