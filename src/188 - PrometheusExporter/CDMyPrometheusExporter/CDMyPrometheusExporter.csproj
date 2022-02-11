@@ -14,7 +14,8 @@
     <Company>C-Labs</Company>
     <Product>CDMyPrometheusExporter for $(TargetFramework)</Product>
     <Copyright>Copyright © 2015-2021 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
-    <!-- Workaround for placing each DLL into a separate directory when using msbuild's GenerateProjectSpecificOutputFolder -->
+	  <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
+	  <!-- Workaround for placing each DLL into a separate directory when using msbuild's GenerateProjectSpecificOutputFolder -->
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
