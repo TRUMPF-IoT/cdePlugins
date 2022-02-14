@@ -338,10 +338,6 @@ namespace CDMyMSSQLStorage
         internal TheStorageCaps MyStorageCaps = new TheStorageCaps();
         internal TheStorageMirror<TheTimedCallback> MyTimedCallbacks;
 
-        private readonly object InitializeLock = new object();
-        private bool IsInitialized;
-
-
         public override bool Init()
         {
             if (mIsInitCalled) return false; 
@@ -355,7 +351,7 @@ namespace CDMyMSSQLStorage
             }
             MyBaseThing.RegisterEvent(eEngineEvents.IncomingMessage, HandleMessage);
             TheBaseEngine.WaitForStorageReadiness(sinkStorageStationIsReadyFired, true);
-            IsInitialized = true;
+            mIsInitialized = true;
             MyBaseEngine.SetInitialized(null);
             return true;
         }
@@ -366,7 +362,7 @@ namespace CDMyMSSQLStorage
 
             TheProcessMessage pMsg = pIncoming as TheProcessMessage;
             if (pMsg == null) return;
-            if (!IsInitialized)
+            if (!mIsInitialized)
             {
                 //InitializeStores(); //V4.106: we dont allow this anymore during runtime - the store is either initialized during startup or never available
                 return;

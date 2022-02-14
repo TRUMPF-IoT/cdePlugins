@@ -326,7 +326,7 @@ namespace CDMyPrometheusExporter.ViewModel
                     }
                     catch (ScrapeFailedException ex)
                     {
-                        tRequest.StatusCode = 503;
+                        tRequest.StatusCode = 500;
                         EventsSentErrorCountSinceStart++;
 
                         if (!string.IsNullOrWhiteSpace(ex.Message))
@@ -353,7 +353,7 @@ namespace CDMyPrometheusExporter.ViewModel
                     }
                     else
                     {
-                        tRequest.StatusCode = 503;
+                        tRequest.StatusCode = 406;
                         tRequest.ResponseBuffer = Encoding.UTF8.GetBytes("No accept header");
                         EventsSentErrorCountSinceStart++;
                         return;
@@ -530,7 +530,7 @@ namespace CDMyPrometheusExporter.ViewModel
                                                 }
                                                 else if (valueInc < 0)
                                                 {
-                                                    TheBaseAssets.MySYSLOG.WriteToLog(95307, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(strPrometheusExporter, $"Error reporting metric {metricName} in server: {this.MyBaseThing?.Address}. Counter value {valueToReport} smaller than reported {labelCounter.Value}", eMsgLevel.l1_Error));
+                                                    TheBaseAssets.MySYSLOG.WriteToLog(95307, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(strPrometheusExporter, $"Error reporting metric {metricName} in '{this.MyBaseThing?.Address} {this.MyBaseThing}'. Counter value {valueToReport} smaller than reported {labelCounter.Value}", eMsgLevel.l1_Error));
                                                 }
                                             }
                                             else

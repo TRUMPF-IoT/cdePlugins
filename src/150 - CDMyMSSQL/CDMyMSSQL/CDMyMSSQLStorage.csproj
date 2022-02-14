@@ -64,6 +64,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\readme.md" Link="readme.md" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="C-DEngine" Version="5.*" />
     <PackageReference Include="cdeSensorTemplateShared" Version="5.*" IncludeAssets="ContentFiles" GeneratePathProperty="true"/>
   </ItemGroup>
