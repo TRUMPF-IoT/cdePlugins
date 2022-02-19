@@ -24,9 +24,9 @@ namespace CDMyLogger.ViewModel
         }
         public override bool CreateUX()
         {
-            if (!mIsUXInitStarted)
+            if (!mIsUXInitCalled)
             {
-                mIsUXInitStarted = true;
+                mIsUXInitCalled = true;
 
                 var tFormGuid = new TheFormInfo(MyBaseThing) { FormTitle = "Event Log", defDataSource = "EventLog", IsReadOnly = true, IsNotAutoLoading = true, PropertyBag = new nmiCtrlTableView { ShowFilterField = true } };
                 TheNMIEngine.AddFormToThingUX(MyBaseThing, tFormGuid, "CMyTable", "Event Log", 6, 3, 128, $"..Event Logs on {TheCommonUtils.GetMyNodeName()}", null, new ThePropertyBag { "Thumbnail=FA5:f073" }); //;:;50;:;True
@@ -40,7 +40,7 @@ namespace CDMyLogger.ViewModel
                 {  new TheFieldInfo() { FldOrder=50,DataItem="EventTrigger",Flags=0,Type=eFieldType.SingleEnded,Header="Trigger Object",FldWidth=2 }},
                 {  new TheFieldInfo() { FldOrder=60,DataItem="ActionObject",Flags=0,Type=eFieldType.SingleEnded,Header="Action Object",FldWidth=2 }},
                 });
-                mIsUXInitCompleted = true;
+                mIsUXInitialized = true;
             }
             return true;
         }
