@@ -20,12 +20,6 @@ namespace CDMyLogger.ViewModel
         // Base object references 
         protected IBaseEngine MyBaseEngine;    // Base engine (service)
 
-        // Initialization flags
-        protected bool mIsInitStarted = false;
-        protected bool mIsInitCompleted = false;
-        protected bool mIsUXInitStarted = false;
-        protected bool mIsUXInitCompleted = false;
-
         // User-interface defintion
         protected TheFormInfo MyStatusForm;
         protected TheDashPanelInfo MyStatusFormDashPanel;
@@ -74,9 +68,9 @@ namespace CDMyLogger.ViewModel
 
         public override bool Init()
         {
-            if (!mIsInitStarted)
+            if (!mIsInitCalled)
             {
-                mIsInitStarted = true;
+                mIsInitCalled = true;
                 IsConnected = false;
                 MyBaseEngine.RegisterEvent(eEngineEvents.ShutdownEvent, DoEndMe);
                 MyBaseThing.LastMessage = "Logger Ready";
@@ -84,7 +78,7 @@ namespace CDMyLogger.ViewModel
                 DoInit();
                 if (AutoConnect)
                     Connect(null);
-                mIsInitCompleted = true;
+                mIsInitialized = true;
             }
             return true;
         }
@@ -102,9 +96,9 @@ namespace CDMyLogger.ViewModel
 
         public override bool CreateUX()
         {
-            if (!mIsUXInitStarted)
+            if (!mIsUXInitCalled)
             {
-                mIsUXInitStarted = true;
+                mIsUXInitCalled = true;
 
                 var tHead = TheNMIEngine.AddStandardForm(MyBaseThing, MyBaseThing.FriendlyName,12, null,null,0,$"..Event Logs on {TheCommonUtils.GetMyNodeName()}");
                 MyStatusForm = tHead["Form"] as TheFormInfo; // TheNMIEngine.AddForm(new TheFormInfo(MyBaseThing) { FormTitle = MyBaseThing.DeviceType, DefaultView = eDefaultView.Form, PropertyBag = new ThePropertyBag { "MaxTileWidth=6" } });
@@ -115,7 +109,7 @@ namespace CDMyLogger.ViewModel
                 tBlock = TheNMIEngine.AddConnectivityBlock(MyBaseThing, MyStatusForm, 120, sinkConnect);
                 tBlock["Group"].SetParent(1);
                 DoCreateUX(tHead["Form"] as TheFormInfo);
-                mIsUXInitCompleted = true;
+                mIsUXInitialized = true;
             }
             return true;
         }
