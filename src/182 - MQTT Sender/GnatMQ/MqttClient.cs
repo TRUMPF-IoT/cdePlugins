@@ -1707,6 +1707,7 @@ namespace uPLibrary.Networking.M2Mqtt
                         {
                             // wake up thread that will notify connection is closing
                             this.OnConnectionClosing();
+                            break; // MH 3/8/2022: Fix https://github.com/eclipse/paho.mqtt.m2mqtt/issues/13
                         }
                     }
                 }

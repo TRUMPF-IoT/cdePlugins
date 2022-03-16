@@ -44,21 +44,28 @@ using MyProduct.Ipc.PubSub.Cde;
 
 namespace CDMyMeshReceiver.ViewModel
 {
+    [DeviceType(
+        Capabilities = new[] { eThingCaps.ConfigManagement },
+        DeviceType = MeshDeviceTypes.MeshReceiver,
+        Description = "Mesh Receiver")]
     public class TheMeshReceiver : TheReceiverBase<TheConnectionThing<TheConnectionThingParam>, TheConnectionThingParam>
     {
 
-#region ThingProperties
+        #region ThingProperties
 
+        [ConfigProperty(DefaultValue = "")]
         public string ReceiverEventConverter
         {
             get { return TheThing.GetSafePropertyString(MyBaseThing, nameof(ReceiverEventConverter)); }
             set { TheThing.SetSafePropertyString(MyBaseThing, nameof(ReceiverEventConverter), value); }
         }
+        [ConfigProperty(DefaultValue = "")]
         public string TimeDriftPropertyName
         {
             get { return TheThing.GetSafePropertyString(MyBaseThing, nameof(TimeDriftPropertyName)); }
             set { TheThing.SetSafePropertyString(MyBaseThing, nameof(TimeDriftPropertyName), value); }
         }
+        [ConfigProperty(DefaultValue = "")]
         public string SenderTimePropertyName
         {
             get { return TheThing.GetSafePropertyString(MyBaseThing, nameof(SenderTimePropertyName)); }
@@ -71,7 +78,8 @@ namespace CDMyMeshReceiver.ViewModel
             set { TheThing.SetSafePropertyNumber(MyBaseThing, "PingCounter", value); }
         }
 
-        #if CDEPUBSUB
+#if CDEPUBSUB
+        [ConfigProperty(DefaultValue = "")]
         public string PubSubTopic
         {
             get { return TheThing.GetSafePropertyString(MyBaseThing, nameof(PubSubTopic)); }
