@@ -139,7 +139,7 @@ namespace CDMyMeshSender.ViewModel
                                             AckLatencyMax = newLatencyEntry.Latency;
                                             bUpdateMin = false;
                                         }
-                                        if (newLatencyEntry.Latency < AckLatencyMin)
+                                        if (newLatencyEntry.Latency < AckLatencyMin || AckLatencyMin == TimeSpan.Zero)
                                         {
                                             AckLatencyMin = newLatencyEntry.Latency;
                                             bUpdateMin = false;
