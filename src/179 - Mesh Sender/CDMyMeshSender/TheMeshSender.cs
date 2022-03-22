@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-﻿/*********************************************************************
+/*********************************************************************
 *
 * Project Name" 179-CDMyMeshSender
 *
@@ -16,25 +16,20 @@
 *               "FldOrder" for UX 10 to
 *********************************************************************/
 //#define TESTDIRECTUPDATES
-using System;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
-using System.Linq;
-using System.Text;
-
-using System.Threading.Tasks;
-using System.Threading;
-
-using nsCDEngine.Engines;
 using nsCDEngine.BaseClasses;
-using nsCDEngine.ViewModels;
+using nsCDEngine.Communication;
+using nsCDEngine.Engines;
 using nsCDEngine.Engines.NMIService;
 using nsCDEngine.Engines.ThingService;
-using nsCDEngine.Communication;
-
-using nsTheSenderBase;
+using nsCDEngine.ViewModels;
 using nsTheEventConverters;
+using nsTheSenderBase;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 #if CDEPUBSUB && !NET35
 using MyProduct.Ipc.Cde;
@@ -44,13 +39,13 @@ using MyProduct.Ipc.PubSub.Cde;
 namespace CDMyMeshSender.ViewModel
 {
     [DeviceType(
-        Capabilities = new [] { eThingCaps.SensorConsumer, eThingCaps.ConfigManagement },
+        Capabilities = new[] { eThingCaps.SensorConsumer, eThingCaps.ConfigManagement },
         DeviceType = MeshDeviceTypes.MeshSender,
-        Description="Mesh Sender")]
+        Description = "Mesh Sender")]
     public class TheMeshSender : TheSenderBase
     {
 
-#region ThingProperties
+        #region ThingProperties
 
         [ConfigProperty(DefaultValue = "")]
         public string MeshTargetEngine
@@ -209,7 +204,7 @@ namespace CDMyMeshSender.ViewModel
             set { TheThing.SetSafePropertyNumber(MyBaseThing, nameof(SendRepublishSuccess), value); }
         }
 
-#endregion
+        #endregion
 
         public override void HandleMessage(ICDEThing sender, object pIncoming)
         {
@@ -218,6 +213,9 @@ namespace CDMyMeshSender.ViewModel
             var cmd = pMsg.Message.TXT.Split(':');
             switch (cmd[0])
             {
+                case "MESHSENDER_RESET_KPIS":
+                    ResetMeshSenderKPIs();
+                    break;
                 case "MESHSENDER_DATA_ACK":
                     if (cmd.Length >= 3)
                     {
@@ -585,7 +583,7 @@ namespace CDMyMeshSender.ViewModel
             UXNoSendEntireTSM = true;
 
             CreateUXBase("Mesh Sender");
-           
+
             if (MyForm != null)
             {
                 // Group: Device Status
@@ -1073,7 +1071,8 @@ namespace CDMyMeshSender.ViewModel
                     {
                         meshAckCS = _pendingAcks.AddOrUpdate(correlationId,
                             new TaskCompletionSource<bool>(DateTimeOffset.Now),
-                            (g, cs) => {
+                            (g, cs) =>
+                            {
                                 if (!cs.Task.IsCanceled && !cs.Task.IsFaulted)
                                 {
                                     return cs;
