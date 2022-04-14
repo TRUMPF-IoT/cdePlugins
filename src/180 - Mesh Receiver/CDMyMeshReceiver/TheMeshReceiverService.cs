@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-﻿/*********************************************************************
+/*********************************************************************
 *
 * Project Name: 180-CDMyMeshReceiver
 *
@@ -13,23 +13,16 @@
 * Author: Markus Horstmann
 *
 *********************************************************************/
+using CDMyMeshReceiver.ViewModel;
+using nsCDEngine.BaseClasses;
+using nsCDEngine.Engines;
+using nsCDEngine.Engines.NMIService;
+using nsCDEngine.Engines.ThingService;
+using nsCDEngine.ViewModels;
+using nsTheConnectionBase;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
-using nsCDEngine.Engines;
-using nsCDEngine.BaseClasses;
-using nsCDEngine.Communication;
-using nsCDEngine.ViewModels;
-using nsCDEngine.Engines.StorageService;
-using nsCDEngine.Engines.NMIService;
-using nsCDEngine.Engines.ThingService;
-
-using CDMyMeshReceiver.ViewModel;
-using nsCDEngine.Security;
-
-using nsTheConnectionBase;
 
 namespace CDMyMeshReceiver
 {
@@ -40,16 +33,16 @@ namespace CDMyMeshReceiver
         public static string GetValues()
         {
             var result = typeof(MeshDeviceTypes).GetFields()
-                .Aggregate("", (agg, field) => 
-                    agg += field.GetValue(null)+";")
+                .Aggregate("", (agg, field) =>
+                    agg += field.GetValue(null) + ";")
                 .TrimEnd(';');
 
             return result;
         }
     }
 
-    
-    class MeshReceiverService : ICDEPlugin, ICDEThing
+
+    public class MeshReceiverService : ICDEPlugin, ICDEThing
     {
         #region ICDEPlugin
         private IBaseEngine MyBaseEngine;
@@ -74,8 +67,8 @@ namespace CDMyMeshReceiver
 
             MyBaseEngine.SetCDEMinVersion(4.011);
             MyBaseEngine.AddManifestFiles(new List<string>
-                {
-                });
+            {
+            });
         }
         #endregion
 
@@ -215,7 +208,7 @@ namespace CDMyMeshReceiver
             TheNMIEngine.AddFormToThingUX(MyBaseThing, tAllCloudConnections, "CMyTable", "Mesh Receivers", 1, 0x0D, 0xC0, TheNMIEngine.GetNodeForCategory(), null, new ThePropertyBag() { "Thumbnail=MicrosoftAzure.png;0.5" });
             TheNMIEngine.AddCommonTableColumns(MyBaseThing, tAllCloudConnections, MeshDeviceTypes.GetValues(), MeshDeviceTypes.MeshReceiver, false, true);
 
-            TheNMIEngine.AddField(tAllCloudConnections, new TheFieldInfo() { FldOrder = 5, cdeA = 0xC0, Flags = 6, Type = eFieldType.SingleCheck, FldWidth=1, Header = "Auto-Connect", DataItem = "MyPropertyBag.AutoConnect.Value" });
+            TheNMIEngine.AddField(tAllCloudConnections, new TheFieldInfo() { FldOrder = 5, cdeA = 0xC0, Flags = 6, Type = eFieldType.SingleCheck, FldWidth = 1, Header = "Auto-Connect", DataItem = "MyPropertyBag.AutoConnect.Value" });
             TheNMIEngine.AddField(tAllCloudConnections, new TheFieldInfo() { FldOrder = 6, cdeA = 0xC0, Flags = 0, Type = eFieldType.SingleCheck, FldWidth = 1, Header = "Is Connected", DataItem = "MyPropertyBag.IsConnected.Value", PropertyBag = new nmiCtrlSingleCheck { AreYouSure = "Are you sure you want to connect/disconnect?" } });
             TheNMIEngine.AddField(tAllCloudConnections, new TheFieldInfo() { FldOrder = 7, cdeA = 0xC0, Flags = 0, Type = eFieldType.SingleCheck, FldWidth = 1, Header = "Connecting", DataItem = "MyPropertyBag.Connecting.Value" });
             TheNMIEngine.AddField(tAllCloudConnections, new TheFieldInfo() { FldOrder = 8, cdeA = 0xC0, Flags = 0, Type = eFieldType.SingleCheck, FldWidth = 1, Header = "Disconnecting", DataItem = "MyPropertyBag.Disconnecting.Value" });
@@ -232,7 +225,7 @@ namespace CDMyMeshReceiver
 
         void InitServers()
         {
-            List<TheThing> tDevList = TheThingRegistry.GetThingsOfEngine(this.MyBaseEngine.GetEngineName()); 
+            List<TheThing> tDevList = TheThingRegistry.GetThingsOfEngine(this.MyBaseEngine.GetEngineName());
             if (tDevList.Count > 0)
             {
                 foreach (TheThing tDev in tDevList)
@@ -274,7 +267,7 @@ namespace CDMyMeshReceiver
         }
 
 
-#region Message Handling
+        #region Message Handling
         /// <summary>
         /// Handles Messages sent from a host sub-engine to its clients
         /// </summary>

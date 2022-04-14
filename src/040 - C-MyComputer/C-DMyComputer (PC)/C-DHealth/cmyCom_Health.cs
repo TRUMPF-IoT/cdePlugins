@@ -261,7 +261,7 @@ namespace CDMyComputer
             }
             MyCounter = new List<ThePerfCounter>();
             UseNicState = true;
-            
+
             //try
             //{
             //    var readBytesSec = new PerformanceCounter("Process", "IO Read Bytes/sec", Process.GetCurrentProcess().ProcessName);
@@ -277,7 +277,14 @@ namespace CDMyComputer
             //    TheBaseAssets.MySYSLOG.WriteToLog(8006, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM("jcHealth", "Cannot Create Net Counter - fallback to NIC state", eMsgLevel.l1_Error, e.ToString()));
             //}
 
-            wmiObjectWin32 = new ManagementObjectSearcher("select * from Win32_OperatingSystem");
+            try
+            {
+                wmiObjectWin32 = new ManagementObjectSearcher("select * from Win32_OperatingSystem");
+            }
+            catch(Exception)
+            {
+
+            }
             StartProcessCPUMeasure();
 
             AreCounterInit = true;
@@ -648,74 +655,81 @@ namespace CDMyComputer
             MyCPUInfoData.HostAddress = System.Environment.MachineName;
             MyCPUInfoData.DiskSizeTotal = GetDiskInfo().TotalSize;
             MyCPUInfoData.LastUpdate = DateTimeOffset.Now;
-            using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("select Name,Description,Version,Manufacturer,Revision,AddressWidth,MaxClockSpeed,L2CacheSize,NumberOfCores from Win32_Processor"))
+            try
             {
-                try
+                using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("select Name,Description,Version,Manufacturer,Revision,AddressWidth,MaxClockSpeed,L2CacheSize,NumberOfCores from Win32_Processor"))
                 {
-                    foreach (ManagementObject share in searcher.Get())
+                    try
                     {
-                        foreach (PropertyData PC in share.Properties)
+                        foreach (ManagementObject share in searcher.Get())
                         {
-                            string objName = PC.Name;
-                            string objValue = "";
-                            if (PC.Value != null && PC.Value.ToString() != "")
+                            foreach (PropertyData PC in share.Properties)
                             {
-                                switch (PC.Value.GetType().ToString())
+                                string objName = PC.Name;
+                                string objValue = "";
+                                if (PC.Value != null && PC.Value.ToString() != "")
                                 {
-                                    case "System.String[]":
-                                        string[] str = (string[])PC.Value;
-                                        foreach (string st in str)
-                                            objValue += st + " ";
+                                    switch (PC.Value.GetType().ToString())
+                                    {
+                                        case "System.String[]":
+                                            string[] str = (string[])PC.Value;
+                                            foreach (string st in str)
+                                                objValue += st + " ";
+                                            break;
+                                        case "System.UInt16[]":
+                                            ushort[] shortData = (ushort[])PC.Value;
+                                            foreach (ushort st in shortData)
+                                                objValue += st.ToString() + " ";
+                                            break;
+                                        default:
+                                            objValue = PC.Value.ToString();
+                                            break;
+                                    }
+                                }
+                                switch (objName)
+                                {
+                                    case "Name":
+                                        MyCPUInfoData.FriendlyName = objValue;
                                         break;
-                                    case "System.UInt16[]":
-                                        ushort[] shortData = (ushort[])PC.Value;
-                                        foreach (ushort st in shortData)
-                                            objValue += st.ToString() + " ";
+                                    case "Description":
+                                        MyCPUInfoData.Description = objValue;
                                         break;
-                                    default:
-                                        objValue = PC.Value.ToString();
+                                    case "Version":
+                                        MyCPUInfoData.Version = objValue;
+                                        break;
+                                    case "Manufacturer":
+                                        MyCPUInfoData.Manufacturer = objValue;
+                                        break;
+                                    case "Revision":
+                                        MyCPUInfoData.Revision = TheCommonUtils.CInt(objValue);
+                                        break;
+                                    case "AddressWidth":
+                                        MyCPUInfoData.AddressWidth = TheCommonUtils.CInt(objValue);
+                                        break;
+                                    case "MaxClockSpeed":
+                                        MyCPUInfoData.MaxClockSpeed = TheCommonUtils.CInt(objValue);
+                                        break;
+                                    case "L2CacheSize":
+                                        MyCPUInfoData.L2CacheSize = TheCommonUtils.CInt(objValue);
+                                        break;
+                                    case "NumberOfCores":
+                                        MyCPUInfoData.NumberOfCores = TheCommonUtils.CInt(objValue);
                                         break;
                                 }
                             }
-                            switch (objName)
-                            {
-                                case "Name":
-                                    MyCPUInfoData.FriendlyName = objValue;
-                                    break;
-                                case "Description":
-                                    MyCPUInfoData.Description = objValue;
-                                    break;
-                                case "Version":
-                                    MyCPUInfoData.Version = objValue;
-                                    break;
-                                case "Manufacturer":
-                                    MyCPUInfoData.Manufacturer = objValue;
-                                    break;
-                                case "Revision":
-                                    MyCPUInfoData.Revision = TheCommonUtils.CInt(objValue);
-                                    break;
-                                case "AddressWidth":
-                                    MyCPUInfoData.AddressWidth = TheCommonUtils.CInt(objValue);
-                                    break;
-                                case "MaxClockSpeed":
-                                    MyCPUInfoData.MaxClockSpeed = TheCommonUtils.CInt(objValue);
-                                    break;
-                                case "L2CacheSize":
-                                    MyCPUInfoData.L2CacheSize = TheCommonUtils.CInt(objValue);
-                                    break;
-                                case "NumberOfCores":
-                                    MyCPUInfoData.NumberOfCores = TheCommonUtils.CInt(objValue);
-                                    break;
-                            }
+                            break;
                         }
-                        break;
-                    }
 
+                    }
+                    catch (Exception exp)
+                    {
+                        TheBaseAssets.MySYSLOG.WriteToLog(8009, new TSM("jcHealth", "CPUInfoGather-Warning", eMsgLevel.l2_Warning, exp.ToString()));
+                    }
                 }
-                catch (Exception exp)
-                {
-                    TheBaseAssets.MySYSLOG.WriteToLog(8009, new TSM("jcHealth", "CPUInfoGather-Warning", eMsgLevel.l2_Warning, exp.ToString()));
-                }
+            }
+            catch (Exception e)
+            {
+                MyCPUInfoData.Description = "MOS not supported";
             }
             MyCoreTemps = new double[MyCPUInfoData.NumberOfCores];
             MyCoreSpeeds = new uint[MyCPUInfoData.NumberOfCores];

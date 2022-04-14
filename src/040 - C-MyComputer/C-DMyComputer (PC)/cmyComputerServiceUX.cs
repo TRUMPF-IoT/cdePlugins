@@ -32,49 +32,52 @@ namespace CDMyComputer
             TheNMIEngine.AddSmartControl(MyBaseThing, tMyConfForm, eFieldType.Number, 13, 2, 0xC0, "Chart Values", "ChartValues", new nmiCtrlNumber { MinValue = 10 });
             TheNMIEngine.AddSmartControl(MyBaseThing, tMyConfForm, eFieldType.Number, 14, 2, 0xC0, "Default Chart TileWidth", "ChartSize", new nmiCtrlNumber { MinValue = 6, MaxValue = 30 });
 
+            if (!TheCommonUtils.IsHostADevice())
+            {
+                TheFormInfo tMyForm = new TheFormInfo() { cdeMID = new Guid("{A3765D29-8EFF-4F09-B5BC-E5CE4C7DEA6F}"), FormTitle = "CPU Details", defDataSource = "TheThing;:;0;:;True;:;DeviceType=CPUInfo" };
+                TheNMIEngine.AddFormToThingUX(MyBaseThing, tMyForm, "CMyTable", "CPUs", 2, 3, 0, "Live Tables", null, null);
 
-            TheFormInfo tMyForm = new TheFormInfo() { cdeMID = new Guid("{A3765D29-8EFF-4F09-B5BC-E5CE4C7DEA6F}"), FormTitle = "CPU Details", defDataSource = "TheThing;:;0;:;True;:;DeviceType=CPUInfo" };
-            TheNMIEngine.AddFormToThingUX(MyBaseThing, tMyForm, "CMyTable", "CPUs", 2, 3, 0, "Live Tables", null, null);
+                TheNMIEngine.AddField(tMyForm, new TheFieldInfo() { FldOrder = 5, FldWidth = 4, Flags = 2, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "Friendly Name", DataItem = "MyPropertyBag.FriendlyName.Value" });
+                TheNMIEngine.AddField(tMyForm, new TheFieldInfo() { FldOrder = 6, FldWidth = 2, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "HostURL", DataItem = "MyPropertyBag.HostUrl.Value" });
 
-            TheNMIEngine.AddField(tMyForm, new TheFieldInfo() { FldOrder = 5, FldWidth=4, Flags = 2, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "Friendly Name", DataItem = "MyPropertyBag.FriendlyName.Value" });
-            TheNMIEngine.AddField(tMyForm, new TheFieldInfo() { FldOrder = 6, FldWidth=2, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "HostURL", DataItem = "MyPropertyBag.HostUrl.Value" });
+                TheNMIEngine.AddField(tMyForm, new TheFieldInfo() { FldOrder = 11, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "Speed", DataItem = "MyPropertyBag.MaxClockSpeed.Value" });
+                TheNMIEngine.AddField(tMyForm, new TheFieldInfo() { FldOrder = 12, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "Cores", DataItem = "MyPropertyBag.NumberOfCores.Value" });
+                TheNMIEngine.AddField(tMyForm, new TheFieldInfo() { FldOrder = 13, FldWidth = 2, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "Manufacturer", DataItem = "MyPropertyBag.Manufacturer.Value" });
+                TheNMIEngine.AddField(tMyForm, new TheFieldInfo() { FldOrder = 14, Flags = 0, cdeA = 0xC0, Type = eFieldType.SingleEnded, Header = "Architecture", DataItem = "MyPropertyBag.AddressWidth.Value" });
+                TheNMIEngine.AddField(tMyForm, new TheFieldInfo() { FldOrder = 15, Flags = 0, cdeA = 0xC0, Type = eFieldType.SingleEnded, Header = "Rev", DataItem = "MyPropertyBag.Revision.Value" });
+                TheNMIEngine.AddField(tMyForm, new TheFieldInfo() { FldOrder = 16, Flags = 0, cdeA = 0xC0, Type = eFieldType.SingleEnded, Header = "L2 Cache", DataItem = "MyPropertyBag.L2CacheSize.Value" });
+                TheNMIEngine.AddField(tMyForm, new TheFieldInfo() { FldOrder = 17, Flags = 0, cdeA = 0xC0, Type = eFieldType.SingleEnded, Header = "Version", DataItem = "MyPropertyBag.Version.Value" });
 
-            TheNMIEngine.AddField(tMyForm, new TheFieldInfo() { FldOrder = 11, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "Speed", DataItem = "MyPropertyBag.MaxClockSpeed.Value" });
-            TheNMIEngine.AddField(tMyForm, new TheFieldInfo() { FldOrder = 12, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "Cores", DataItem = "MyPropertyBag.NumberOfCores.Value" });
-            TheNMIEngine.AddField(tMyForm, new TheFieldInfo() { FldOrder = 13,FldWidth=2, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "Manufacturer", DataItem = "MyPropertyBag.Manufacturer.Value" });
-            TheNMIEngine.AddField(tMyForm, new TheFieldInfo() { FldOrder = 14, Flags = 0, cdeA = 0xC0, Type = eFieldType.SingleEnded, Header = "Architecture", DataItem = "MyPropertyBag.AddressWidth.Value" });
-            TheNMIEngine.AddField(tMyForm, new TheFieldInfo() { FldOrder = 15, Flags = 0, cdeA = 0xC0, Type = eFieldType.SingleEnded, Header = "Rev", DataItem = "MyPropertyBag.Revision.Value" });
-            TheNMIEngine.AddField(tMyForm, new TheFieldInfo() { FldOrder = 16, Flags = 0, cdeA = 0xC0, Type = eFieldType.SingleEnded, Header = "L2 Cache", DataItem = "MyPropertyBag.L2CacheSize.Value" });
-            TheNMIEngine.AddField(tMyForm, new TheFieldInfo() { FldOrder = 17, Flags = 0, cdeA = 0xC0, Type = eFieldType.SingleEnded, Header = "Version", DataItem = "MyPropertyBag.Version.Value" });
-
-            TheNMIEngine.AddField(tMyForm, new TheFieldInfo() { FldOrder = 80, FldWidth=2, cdeA = 0xFF, Type = eFieldType.DateTime, Header = "Last Update", DataItem = "MyPropertyBag.LastUpdate.Value" });
+                TheNMIEngine.AddField(tMyForm, new TheFieldInfo() { FldOrder = 80, FldWidth = 2, cdeA = 0xFF, Type = eFieldType.DateTime, Header = "Last Update", DataItem = "MyPropertyBag.LastUpdate.Value" });
 
 
-            TheFormInfo tMyHForm = new TheFormInfo() { cdeMID = new Guid("{33170B1F-CA19-4DC6-A18F-15B5F7669E0A}"), FormTitle = "PC Health Details", defDataSource = "TheThing;:;0;:;True;:;DeviceType=PC-Health" };
-            TheNMIEngine.AddFormToThingUX(MyBaseThing, tMyHForm, "CMyTable", "PC Health", 3, 3, 0, "Live Tables", null, null);
+                TheFormInfo tMyHForm = new TheFormInfo() { cdeMID = new Guid("{33170B1F-CA19-4DC6-A18F-15B5F7669E0A}"), FormTitle = "PC Health Details", defDataSource = "TheThing;:;0;:;True;:;DeviceType=PC-Health" };
+                TheNMIEngine.AddFormToThingUX(MyBaseThing, tMyHForm, "CMyTable", "PC Health", 3, 3, 0, "Live Tables", null, null);
 
-            TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 5,FldWidth=3, Flags = 2, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "Friendly Name", DataItem = "MyPropertyBag.FriendlyName.Value" });
-            TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 6,FldWidth=2, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "HostAddress", DataItem = "MyPropertyBag.HostAddress.Value" });
-            TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 7,FldWidth=3, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "Host Version", DataItem = "MyPropertyBag.HostVersion.Value" });
-            //TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 8, Flags = 0, cdeA = 0xC0, Type = eFieldType.SingleEnded, Header = "Station Roles", DataItem = "MyPropertyBag.StationRoles.Value" });
+                TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 5, FldWidth = 3, Flags = 2, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "Friendly Name", DataItem = "MyPropertyBag.FriendlyName.Value" });
+                TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 6, FldWidth = 2, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "HostAddress", DataItem = "MyPropertyBag.HostAddress.Value" });
+                TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 7, FldWidth = 3, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "Host Version", DataItem = "MyPropertyBag.HostVersion.Value" });
+                //TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 8, Flags = 0, cdeA = 0xC0, Type = eFieldType.SingleEnded, Header = "Station Roles", DataItem = "MyPropertyBag.StationRoles.Value" });
 
-            TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 11, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "CPU Load", DataItem = "MyPropertyBag.CPULoad.Value" });
-            TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 13, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "CPU Temp", DataItem = "MyPropertyBag.CPUTemp.Value" });
-            //TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 14, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "Core Temps", DataItem = "MyPropertyBag.CoreTemps.Value" });
+                TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 11, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "CPU Load", DataItem = "MyPropertyBag.CPULoad.Value" });
+                TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 13, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "CPU Temp", DataItem = "MyPropertyBag.CPUTemp.Value" });
+                //TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 14, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "Core Temps", DataItem = "MyPropertyBag.CoreTemps.Value" });
 
-            TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 21,FldWidth=2, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "RAM Available", DataItem = "MyPropertyBag.RAMAvailable.Value" });
-            TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 22,FldWidth=2, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "PC Uptime", DataItem = "MyPropertyBag.PCUptime.Value" });
-            TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 23, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "Watts", DataItem = "MyPropertyBag.StationWatts.Value" });
+                TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 21, FldWidth = 2, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "RAM Available", DataItem = "MyPropertyBag.RAMAvailable.Value" });
+                TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 22, FldWidth = 2, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "PC Uptime", DataItem = "MyPropertyBag.PCUptime.Value" });
+                TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 23, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "Watts", DataItem = "MyPropertyBag.StationWatts.Value" });
 
-            TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 31, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "cdeUptime", DataItem = "MyPropertyBag.cdeUptime.Value" });
-            TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 32, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "cdeHandles", DataItem = "MyPropertyBag.cdeHandles.Value" });
-            TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 33, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "cdeWorkingSetSize", DataItem = "MyPropertyBag.cdeWorkingSetSize.Value" });
-            TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 34, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "cdeThreadCount", DataItem = "MyPropertyBag.cdeThreadCount.Value" });
-            TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 35, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "EventTimeOuts", DataItem = "MyPropertyBag.TotalEventTimeouts.Value" });
-            TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 36, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "QSenders", DataItem = "MyPropertyBag.QSenders.Value" });
+                TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 31, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "cdeUptime", DataItem = "MyPropertyBag.cdeUptime.Value" });
+                TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 32, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "cdeHandles", DataItem = "MyPropertyBag.cdeHandles.Value" });
+                TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 33, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "cdeWorkingSetSize", DataItem = "MyPropertyBag.cdeWorkingSetSize.Value" });
+                TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 34, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "cdeThreadCount", DataItem = "MyPropertyBag.cdeThreadCount.Value" });
+                TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 35, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "EventTimeOuts", DataItem = "MyPropertyBag.TotalEventTimeouts.Value" });
+                TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 36, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "QSenders", DataItem = "MyPropertyBag.QSenders.Value" });
+                TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 37, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "TSM Inserts", DataItem = "MyPropertyBag.QSInserted.Value" });
+                TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 38, Flags = 0, cdeA = 0x0, Type = eFieldType.SingleEnded, Header = "TSM Sents", DataItem = "MyPropertyBag.QSSent.Value" });
 
-            TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 80,FldWidth=2, cdeA = 0xFF, Type = eFieldType.DateTime, Header = "Last Update", DataItem = "MyPropertyBag.LastUpdate.Value" });
-
+                TheNMIEngine.AddField(tMyHForm, new TheFieldInfo() { FldOrder = 80, FldWidth = 2, cdeA = 0xFF, Type = eFieldType.DateTime, Header = "Last Update", DataItem = "MyPropertyBag.LastUpdate.Value" });
+            }
 
             if (!TheBaseAssets.MyServiceHostInfo.IsCloudService)
             {
