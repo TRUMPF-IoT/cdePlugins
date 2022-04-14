@@ -218,7 +218,7 @@ namespace CDMyMeshReceiver.ViewModel
                         {
                             string correlationToken = cmd[1];
                             string sourceORG = cmd[2];
-                            bool bIsTargeted = TheCommonUtils.CBool(cmd[3]);
+                            bool bIsTargeted = TheCommonUtils.CBool(cmd[cmd.Length-1]);
                             _nodeOwnerManager.RegisterOwnerCandidate(correlationToken, sourceORG, pMsg.Message.ORG, bIsTargeted);
                         }
                         break;
