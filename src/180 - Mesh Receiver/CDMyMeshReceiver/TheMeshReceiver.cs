@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-﻿/*********************************************************************
+/*********************************************************************
 *
 * Project Name" 180-CDMyMeshReceiver
 *
@@ -205,7 +205,7 @@ namespace CDMyMeshReceiver.ViewModel
 
                             if (!bIsTargeted)
                             {
-                                var notification = new TSM(MyBaseEngine.GetEngineName(), $"MESHRECEIVER_ACK_NOTIFY:{correlationToken}:{pMsg.Message.ORG}:{bIsTargeted}");
+                                var notification = new TSM(MyBaseEngine.GetEngineName(), $"MESHRECEIVER_ACK_NOTIFY:;:{correlationToken}:;:{pMsg.Message.ORG}:;:{bIsTargeted}");
                                 TheCommCore.PublishCentral(notification, false);
                             }
                         }
@@ -214,11 +214,12 @@ namespace CDMyMeshReceiver.ViewModel
                     break;
                 case "MESHRECEIVER_ACK_NOTIFY":
                     {
-                        if (cmd.Length >= 4)
+                        var ackNotifyParts = TheCommonUtils.cdeSplit(pMsg.Message.TXT, ":;:", false, false);
+                        if (ackNotifyParts.Length >= 4)
                         {
-                            string correlationToken = cmd[1];
-                            string sourceORG = cmd[2];
-                            bool bIsTargeted = TheCommonUtils.CBool(cmd[cmd.Length-1]);
+                            string correlationToken = ackNotifyParts[1];
+                            string sourceORG = ackNotifyParts[2];
+                            bool bIsTargeted = TheCommonUtils.CBool(ackNotifyParts[3]);
                             _nodeOwnerManager.RegisterOwnerCandidate(correlationToken, sourceORG, pMsg.Message.ORG, bIsTargeted);
                         }
                         break;
@@ -257,7 +258,7 @@ namespace CDMyMeshReceiver.ViewModel
             {
                 if (_nodeOwnerManager.RegisterOwnerCandidate(correlationToken, originator, TheBaseAssets.MyServiceHostInfo.MyDeviceInfo.DeviceID.ToString(), true))
                 {
-                    var notification = new TSM(MyBaseEngine.GetEngineName(), $"MESHRECEIVER_ACK_NOTIFY:{correlationToken}:{bIsTargetedMessage}");
+                    var notification = new TSM(MyBaseEngine.GetEngineName(), $"MESHRECEIVER_ACK_NOTIFY:;:{correlationToken}:;:{originator}:;:{bIsTargetedMessage}");
                     TheCommCore.PublishCentral(notification, false);
                 }
             }
