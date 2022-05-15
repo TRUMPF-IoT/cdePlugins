@@ -5,13 +5,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net45;net40</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
       <!-- Does NOT work on net4 due to missing Sync Lib -->
     <Authors>Chris Muench</Authors>
     <Company>C-Labs</Company>
     <Description>Visitor Log for ($(TargetFramework))</Description>
-    <Copyright>Copyright © 2017-2021 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
-    <Version>5.100.0-beta</Version>
+    <Copyright>Copyright © 2017-2022 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <Version>5.145.0</Version>
     <AssemblyName>C-DMyVisitorLog</AssemblyName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <!-- Workaround for placing each DLL into a separate directory when using msbuild's GenerateProjectSpecificOutputFolder -->
@@ -27,16 +27,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="obj\**" />
-    <EmbeddedResource Remove="obj\**" />
-    <None Remove="obj\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="ClientBin\Scripts\CreateFootprints.cdescript" />
   </ItemGroup>
 
@@ -47,10 +37,6 @@
   <ItemGroup>
     <PackageReference Include="C-DEngine" Version="5.*" />
     <!--<ProjectReference Include="..\..\025 - C-DEngine\C-DEngine\C-DEngine.csproj" />-->
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
