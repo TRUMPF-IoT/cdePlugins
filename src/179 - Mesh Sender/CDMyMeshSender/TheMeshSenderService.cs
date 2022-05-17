@@ -60,10 +60,7 @@ namespace CDMyMeshSender
         CDEMinVersion = 4.2050,
         ManifestFiles = new string[] { },
         Platforms = new[] {
-            cdePlatform.X64_V3, cdePlatform.X32_V4
-#if CDE_STANDARD
-            , cdePlatform.NETSTD_V20
-#endif
+            cdePlatform.X64_V3, cdePlatform.X32_V4, cdePlatform.NETSTD_V20
         })
     ]
     class MeshSenderService : ThePluginBase

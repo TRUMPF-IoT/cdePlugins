@@ -31,9 +31,7 @@ namespace CDMyMSSQLStorage
             MyBaseEngine.AddCapability(eThingCaps.MustBePresent);
             MyBaseEngine.GetEngineState().IsAllowedUnscopedProcessing = true;
             MyBaseEngine.SetPluginInfo("Distributed Storage Service for MS-SQL", 0, null, "toplogo-150.png", "C-Labs", "http://www.c-labs.com", new List<string>() { "IStorageService" });
-#if NETSTANDARD2_0
             MyBaseEngine.AddManifestFiles(new List<string> { "System.Data.SqlClient.dll" });
-#endif
         }
         #endregion
 
@@ -401,11 +399,7 @@ namespace CDMyMSSQLStorage
                 if (tStorageMirror != null)
                 {
                     Type magicType = tStorageMirror.GetType();
-#if CDE_STANDARD
                     MethodInfo magicMethod = magicType.GetTypeInfo().GetDeclaredMethod("sinkProcessServiceMessages");
-#else
-                    MethodInfo magicMethod = magicType.GetMethod("sinkProcessServiceMessages");
-#endif
                     if (magicMethod != null)
                         magicMethod.Invoke(tStorageMirror, new object[] { pMsg.Message }); //object magicValue = 
                 }

@@ -43,15 +43,7 @@ namespace CDMyOPCUAClient
         },
         Platforms = new cdePlatform[]
         {
-#if CDE_STANDARD
             cdePlatform.X64_V3, cdePlatform.X32_V4, cdePlatform.NETSTD_V20,
-#elif NET4
-            cdePlatform.NETV4_32, cdePlatform.NETV4_64,
-#elif NET35
-            // cdePlatform.X32_V3,
-#else
-            cdePlatform.X64_V3, cdePlatform.X32_V4,
-#endif
         }
         )]
     partial class cdeOPCUaClient : ThePluginBase

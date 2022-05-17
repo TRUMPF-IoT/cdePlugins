@@ -2909,10 +2909,7 @@ namespace CDMyOPCUAClient.ViewModel
 
                 //m_configuration.TransportQuotas.MaxByteStringLength = 2097152;
 
-                m_configuration.Validate(ApplicationType.Client)
-#if CDE_STANDARD
-                    .Wait()
-#endif
+                m_configuration.Validate(ApplicationType.Client).Wait()
                     ;
                 m_configuration.CertificateValidator.CertificateValidation += m_CertificateValidation;
 
@@ -2922,10 +2919,7 @@ namespace CDMyOPCUAClient.ViewModel
                 application.ApplicationConfiguration = m_configuration;
                 if (!DisableSecurity)
                 { 
-                    application.CheckApplicationInstanceCertificate(true, 0)
-#if CDE_STANDARD
-                        .Wait()
-#endif
+                    application.CheckApplicationInstanceCertificate(true, 0).Wait()
                         ;
                 }
 
@@ -2963,12 +2957,7 @@ namespace CDMyOPCUAClient.ViewModel
                     (String.IsNullOrEmpty(SessionName)) ? m_configuration.ApplicationName : SessionName,
                     (uint)SessionTimeout, //10000,
                     tIDent != null ? tIDent : UserIdentity,
-                    preferredLocales)
-#if !NETSTANDARD2_0
-                    ;
-#else
-                    .Result;
-#endif
+                    preferredLocales).Result;
                 //TheBaseAssets.MySYSLOG.WriteToLog(78101, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseThing.EngineName, String.Format("[{0}] Created session", GetLogAddress()), eMsgLevel.l4_Message, ""));
 
                 if (m_session.SessionTimeout / 2  < KeepAliveInterval)

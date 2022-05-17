@@ -15,14 +15,6 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
-      <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-        <DefineConstants>CDE_STANDARD;NET_STANDARD;NETSTANDARD2_0;</DefineConstants>
-      </PropertyGroup>
-
-      <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-        <DefineConstants>CDE_STANDARD;NET_STANDARD;NETSTANDARD2_0;</DefineConstants>
-      </PropertyGroup>
-
 	<ItemGroup>
     <None Include="..\readme.md" Link="readme.md" />
   </ItemGroup>
