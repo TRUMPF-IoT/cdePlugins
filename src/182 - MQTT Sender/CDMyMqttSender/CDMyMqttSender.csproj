@@ -5,7 +5,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <AssemblyName>CDMyMqttSender</AssemblyName>
     <RootNamespace>CDMyMqttSender</RootNamespace>
     <PackageId>CDMyMqttSender</PackageId>
@@ -13,7 +13,7 @@
     <Authors>Markus Horstmann</Authors>
     <Company>C-Labs</Company>
     <Product>CDMyMqttSender for $(TargetFramework)</Product>
-    <Copyright>Copyright © 2015-2020 C-Labs Corporation and its licensors. All rights reserved.</Copyright>
+    <Copyright>Copyright © 2015-2022 C-Labs Corporation and its licensors. All rights reserved.</Copyright>
 	<PackageLicenseExpression>MPL-2.0 AND EPL-1.0</PackageLicenseExpression>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>

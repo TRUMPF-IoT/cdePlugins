@@ -10,11 +10,11 @@
     <RootNamespace>CDMyLogger</RootNamespace>
 	  <LangVersion>latest</LangVersion>
     <PackageId>CDMyLogger</PackageId>
-    <Version>5.100.0-beta</Version>
+    <Version>5.145.0</Version>
     <Authors>Chris Muench</Authors>
     <Company>C-Labs</Company>
     <Product>CDMyLogger</Product>
-    <Copyright>Copyright © 2015-2020 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <Copyright>Copyright © 2015-2022 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>

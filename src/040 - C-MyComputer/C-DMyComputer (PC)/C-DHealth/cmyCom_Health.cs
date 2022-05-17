@@ -727,7 +727,7 @@ namespace CDMyComputer
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 MyCPUInfoData.Description = "MOS not supported";
             }
