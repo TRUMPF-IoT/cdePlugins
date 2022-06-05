@@ -75,6 +75,7 @@ namespace CDMyThingProvisioning
                 MyBaseThing.SetStatus(4, "Waiting for other services before running scripts");
                 TheBaseEngine.WaitForEnginesStarted(OnEnginesStarted);
                 SetupStorageMirror();
+                mIsInitialized = true;
             }
             return true;
         }

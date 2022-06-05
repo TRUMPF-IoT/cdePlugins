@@ -76,7 +76,6 @@ namespace CDMyLogger.ViewModel
             TheCommonUtils.CreateDirectories(MyCurLog);
             TheCDEngines.MyContentEngine.RegisterEvent(eEngineEvents.NewEventLogEntry, sinkNewEvent);
 
-#if !CDE_NET4 && !CDE_NET35
             if (TheBaseAssets.MyCmdArgs?.ContainsKey("CreateEventLog") != true)
             {
                 // CODE REVIEW: What is the purpose of this export?
@@ -91,7 +90,6 @@ namespace CDMyLogger.ViewModel
                     }
                 }
             }
-#endif
         }
 
         void sinkNewEvent(ICDEThing sender, object pLogEntry)

@@ -651,24 +651,11 @@ namespace CDMyMSSQLStorage
                             }
                             TheBaseAssets.MySYSLOG.WriteToLog(454, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseEngine.GetEngineName(), string.Format("Sending Blob {0}  to {1} - FileDate: {2}", fileToReturn, SenderGUID, fd), eMsgLevel.l6_Debug), true);
                             Stream fileStream = new FileStream(fileToReturn, FileMode.Open, FileAccess.Read);
-#if !CDE_NET35
                             using (MemoryStream ms = new MemoryStream())
                             {
                                 fileStream.CopyTo(ms);
                                 tBlobBuffer = ms.ToArray();
                             }
-#else
-                    byte[] buffer = new byte[64000];
-                    using (MemoryStream ms = new MemoryStream())
-                    {
-                        int read;
-                        while ((read = fileStream.Read(buffer, 0, buffer.Length)) > 0)
-                        {
-                            ms.Write(buffer, 0, read);
-                        }
-                        tBlobBuffer=ms.ToArray();
-                    }
-#endif
                             ProcessingResult = string.Format("Sending Blob {0} Bytes={1}", fileToReturn, tBlobBuffer.Length);
                             TheBaseAssets.MySYSLOG.WriteToLog(454, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(MyBaseEngine.GetEngineName(), ProcessingResult, eMsgLevel.l6_Debug), true);
                             fileStream.Close();
