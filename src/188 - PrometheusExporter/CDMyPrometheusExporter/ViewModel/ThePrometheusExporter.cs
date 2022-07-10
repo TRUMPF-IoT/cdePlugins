@@ -247,6 +247,7 @@ namespace CDMyPrometheusExporter.ViewModel
 
                     new TheFieldInfo() { FldOrder=40,DataItem="TargetType",Flags=2, cdeA = 0xC0, Type=eFieldType.ComboBox,Header="Metric Type",  PropertyBag=new nmiCtrlComboBox() { DefaultValue="Gauge", Options="Gauge;Counter;Histogram;Summary", FldWidth=1 } },
                     new TheFieldInfo() { FldOrder=41,DataItem="PropertiesIncluded",Flags=2, cdeA = 0xC0, Type=eFieldType.PropertyPicker,Header="Properties to Export", PropertyBag=new nmiCtrlPropertyPicker() { DefaultValue="Value", Separator=",", AllowMultiSelect=true, ThingFld=20,FldWidth=4 } },
+                    new TheFieldInfo() { FldOrder=42,DataItem="ForceAllProperties",Flags=2, cdeA = 0xC0, Type=eFieldType.SingleCheck,Header="All Properties", PropertyBag=new nmiCtrlSingleCheck() { FldWidth=1 } },
                     //new TheFieldInfo() { FldOrder=42,DataItem="PropertiesExcluded",Flags=2, cdeA = 0xC0, Type=eFieldType.PropertyPicker,Header="Properties to Exclude",  PropertyBag=new nmiCtrlPropertyPicker() { Separator=",", AllowMultiSelect=true, ThingFld=20, FldWidth=4 } },
                     new TheFieldInfo() { FldOrder=43,DataItem="PartitionKey",Flags=2, cdeA = 0xC0, Type=eFieldType.PropertyPicker,Header="Properties for labels", PropertyBag=new nmiCtrlPropertyPicker() { FldWidth = 4, AllowMultiSelect=true, ThingFld=20, DefaultValue="NodeId,FriendlyName", Separator=",", SystemProperties=true } },
                 });
@@ -419,11 +420,12 @@ namespace CDMyPrometheusExporter.ViewModel
                     continue;
                 }
                 //if (string.IsNullOrEmpty(senderThing.PropertiesIncluded)) senderThing.PropertiesIncluded = "Value"; //Make sure we have at least one included
-                var propsIncludedConf = string.IsNullOrEmpty(senderThing.PropertiesIncluded) ? null : TheCommonUtils.cdeSplit(senderThing.PropertiesIncluded, ',', false, false);
+                var propsIncludedConf = (string.IsNullOrEmpty(senderThing.PropertiesIncluded)||senderThing.ForceAllProperties==true) ? null : TheCommonUtils.cdeSplit(senderThing.PropertiesIncluded, ',', false, false);
                 var propsExcluded = string.IsNullOrEmpty(senderThing.PropertiesExcluded) ? null : TheCommonUtils.cdeSplit(senderThing.PropertiesExcluded, ',', false, false);
                 var propsIncludedSplit = propsIncludedConf?.Select(p => TheCommonUtils.cdeSplit(p, ';', false, false));
                 var propsIncluded = propsIncludedSplit?.Select(p => p[0]);
 
+                
                 foreach (var tThing in thingsToSend)
                 {
 
@@ -483,14 +485,19 @@ namespace CDMyPrometheusExporter.ViewModel
                         try
                         {
                             var propertyName = tMetric.Key;
-                            var metricInfo = propsIncludedSplit.FirstOrDefault(ps => ps[0] == propertyName);
-                            if (metricInfo != null && metricInfo.Length > 1)
-                            {
-                                metricName = metricInfo[1];
-                            }
+                            if (propsIncludedSplit == null)
+                                metricName = GetValidLabelName(tMetric.Key);
                             else
                             {
-                                metricName = GetValidLabelName(tMetric.Key);
+                                var metricInfo = propsIncludedSplit.FirstOrDefault(ps => ps[0] == propertyName);
+                                if (metricInfo != null && metricInfo.Length > 1)
+                                {
+                                    metricName = metricInfo[1];
+                                }
+                                else
+                                {
+                                    metricName = GetValidLabelName(tMetric.Key);
+                                }
                             }
 
                             var valueToReport = GetMetricValue(tMetric.Value);
