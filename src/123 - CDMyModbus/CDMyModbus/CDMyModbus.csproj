@@ -10,7 +10,7 @@
     <Company>C-Labs</Company>
     <Product>CDMyModbus</Product>
     <Description>Modbus support for ($(TargetFramework))</Description>
-    <Copyright>Copyright © 2017-2021 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <Copyright>Copyright © 2017-2022 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Version>5.100.0-beta</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

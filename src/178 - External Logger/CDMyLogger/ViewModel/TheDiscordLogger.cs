@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CDMyLogger.ViewModel
 {
@@ -85,15 +86,22 @@ namespace CDMyLogger.ViewModel
                         tOrg = pData.StationName;
                     // Webhooks are able to send multiple embeds per message
                     // As such, your embeds must be passed as a collection.
-                    if (pData.EventData?.Length > 0)
+                    try
                     {
-                        using (var ms = new MemoryStream(pData.EventData))
+                        if (pData.EventData?.Length > 0)
                         {
-                            await client.SendFileAsync(stream: ms,filename: "Image.jpg",text: $"Node \"{pData.StationName}\" had Event-Log entry for: {tOrg}",embeds: new[] { embed.Build() });
+                            using (var ms = new MemoryStream(pData.EventData))
+                            {
+                                await client.SendFileAsync(stream: ms, filename: "Image.jpg", text: $"Node \"{pData.StationName}\" had Event-Log entry for: {tOrg}", embeds: new[] { embed.Build() });
+                            }
                         }
+                        else
+                            await client.SendMessageAsync(text: $"Event Log Entry for: {tOrg}", embeds: new[] { embed.Build() });
                     }
-                    else
-                        await client.SendMessageAsync(text: $"Event Log Entry for: {tOrg}", embeds: new[] { embed.Build() });
+                    catch (Exception e)
+                    {
+                        SetMessage($"Error: {e}", DateTimeOffset.Now, 178001, eMsgLevel.l1_Error);
+                    }
                 }
             });
         }

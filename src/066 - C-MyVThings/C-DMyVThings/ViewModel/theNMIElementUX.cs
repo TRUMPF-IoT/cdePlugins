@@ -46,13 +46,18 @@ namespace CDMyVThings.ViewModel
         protected TheFieldInfo CountBar;
         protected TheFieldInfo TimestampField;
         protected TheFieldInfo ChangeTimestampField;
+        protected TheFieldInfo LiveScreenField;
         public override bool DoCreateUX()
         {
             MyBaseThing.RegisterProperty("ClickState");
             var tFlds = TheNMIEngine.AddStandardForm(MyBaseThing, null, 24, null, "Value");
             MyStatusForm = tFlds["Form"] as TheFormInfo;
             //MyStatusForm.PropertyBag = new ThePropertyBag { "TileWidth=6" };
-            MyStatusForm.RegisterEvent2(eUXEvents.OnShow, (pmse,sen) => { UpdateUx(); });
+            MyStatusForm.RegisterEvent2(eUXEvents.OnShow, (pmse,sen) => 
+            { 
+                UpdateUx();
+                LiveScreenField?.SetUXProperty(Guid.Empty, TheCommonUtils.GenerateFinalStr("Options=%GetLiveScreens%"));
+            });
             SummaryForm = tFlds["DashIcon"] as TheDashPanelInfo;
             SummaryForm.PropertyBag = new nmiDashboardTile() { Format = $"{MyBaseThing.FriendlyName}<br>{{0}}", Caption = MyBaseThing.FriendlyName };
 
@@ -70,7 +75,7 @@ namespace CDMyVThings.ViewModel
 
             TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.CollapsibleGroup, 1000, 2, 0x80, "NMI Settings...", null, ThePropertyBag.Create(new nmiCtrlCollapsibleGroup() { ParentFld=800, DoClose = true, IsSmall = true, TileWidth = 6 }));
             TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.CollapsibleGroup, 3000, 2, 0x80, "Advanced NMI Settings...", null, ThePropertyBag.Create(new nmiCtrlCollapsibleGroup() { ParentFld = 1000, DoClose = true, IsSmall = true, TileWidth = 6 }));
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.ComboOption, 3010, 2, 0x80, "NMI Screen", "FormName", new ThePropertyBag() { "Options=%GetLiveScreens%", "TileWidth=6", "TileHeight=1", "ParentFld=3000" });
+            LiveScreenField= TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.ComboBox, 3010, 2, 0x80, "NMI Screen", "FormName", new nmiCtrlComboBox() { Options="%GetLiveScreens%", ParentFld=3000 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.CheckField, 3020, 2, 0x80, "Flags", "Flags", new ThePropertyBag() { "Bits=6", "TileHeight=6","TileFactorY=2", 
                       "ImageList=<span class='fa-stack'><i class='fa fa-stack-1x'>&#xf21b;</i><i class='fa fa-stack-2x'>&#x2003;</i></span>,"+
                                 "<span class='fa-stack'><i class='fa fa-stack-1x'>&#xf044;</i><i class='fa fa-stack-2x'>&#x2003;</i></span>,"+

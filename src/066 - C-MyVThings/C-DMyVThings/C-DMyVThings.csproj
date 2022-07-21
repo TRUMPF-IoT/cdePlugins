@@ -4,13 +4,13 @@
  -->
 <Project Sdk="Microsoft.NET.Sdk"> 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net45;net40</TargetFrameworks>
-    <Version>5.100.0-beta</Version>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <Version>5.145.0</Version>
     <Authors>Chris Muench</Authors>
     <Company>C-Labs</Company>
     <Product>C-DMyVThings</Product>
     <Description>Virtual Things for the C-DEngine</Description>
-    <Copyright>Copyright © 2017-2021 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <Copyright>Copyright © 2017-2022 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
     <DefineConstants>CDE_SYSLOG;TRACE;$(DefineConstants)</DefineConstants>
@@ -37,10 +37,6 @@
     <EmbeddedResource Include="$(PkgCDESensorTemplateShared)\contentFiles\any\$(TargetFramework)\ClientBin\SENSORS\CSS\SensorsLite.min.css" Link="ClientBin\SENSORS\CSS\SensorsLite.min.css" />
     <EmbeddedResource Include="$(PkgCDESensorTemplateShared)\contentFiles\any\$(TargetFramework)\ClientBin\SENSORS\CSS\SensorStyles.min.css" Link="ClientBin\SENSORS\CSS\SensorStyles.min.css" />
     <EmbeddedResource Include="$(PkgCDESensorTemplateShared)\contentFiles\any\$(TargetFramework)\ClientBin\SENSORS\Images\SensorLogo_156x78.png" Link="ClientBin\SENSORS\Images\SensorLogo_156x78.png" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)'=='net40'">
-    <PackageReference Include="AsyncBridge" Version="0.3.1" />
   </ItemGroup>
 
   <ItemGroup>

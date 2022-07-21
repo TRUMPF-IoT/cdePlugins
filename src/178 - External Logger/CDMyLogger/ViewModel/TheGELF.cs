@@ -43,11 +43,7 @@ namespace CDMyLogger.ViewModel
                 version = "1.1",
                 host = TheBaseAssets.MyServiceHostInfo.GetPrimaryStationURL(false),
                 level = (int)tEntry.Message?.LVL,
-#if CDE_NET45 || CDE_NET4 || CDE_NET35
-                timestamp = TheCommonUtils.CDbl($"{(tEntry.Message.TIM.Subtract(new DateTime(1970, 1, 1))).TotalSeconds}.{tEntry.Message.TIM.Millisecond}"),
-#else
                 timestamp = TheCommonUtils.CDbl($"{tEntry.Message.TIM.ToUnixTimeSeconds()}.{tEntry.Message.TIM.Millisecond}"),
-#endif
                 full_message = tEntry.Message?.PLS,
                 short_message = tEntry.Message?.TXT,
                 _log_id = tEntry.EventID,

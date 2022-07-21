@@ -49,80 +49,18 @@ namespace CDMyMqttSender
             }
         )
     ]
-    class MqttSenderService : ICDEPlugin, ICDEThing
+    class MqttSenderService : ThePluginBase
     {
-        #region ICDEPlugin
-        private IBaseEngine MyBaseEngine;
-        public IBaseEngine GetBaseEngine()
-        {
-            return MyBaseEngine;
-        }
         /// <summary>
         /// This constructor is called by The C-DEngine during initialization in order to register this service
         /// </summary>
         /// <param name="pBase">The C-DEngine is creating a Host for this engine and hands it to the Plugin Service</param>
-        public void InitEngineAssets(IBaseEngine pBase)
+        public override void InitEngineAssets(IBaseEngine pBase)
         {
             MyBaseEngine = pBase;
         }
-        #endregion
 
-        #region - Rare to Override
-        public void SetBaseThing(TheThing pThing)
-        {
-            MyBaseThing = pThing;
-        }
-        public TheThing GetBaseThing()
-        {
-            return MyBaseThing;
-        }
-        public cdeP GetProperty(string pName, bool DoCreate)
-        {
-            if (MyBaseThing != null)
-                return MyBaseThing.GetProperty(pName, DoCreate);
-            return null;
-        }
-        public cdeP SetProperty(string pName, object pValue)
-        {
-            if (MyBaseThing != null)
-                return MyBaseThing.SetProperty(pName, pValue);
-            return null;
-        }
-        public void RegisterEvent(string pName, Action<ICDEThing, object> pCallBack)
-        {
-            if (MyBaseThing != null)
-                MyBaseThing.RegisterEvent(pName, pCallBack);
-        }
-        public void UnregisterEvent(string pName, Action<ICDEThing, object> pCallBack)
-        {
-            if (MyBaseThing != null)
-                MyBaseThing.UnregisterEvent(pName, pCallBack);
-        }
-        public void FireEvent(string pEventName, ICDEThing sender, object pPara, bool FireAsync)
-        {
-            if (MyBaseThing != null)
-                MyBaseThing.FireEvent(pEventName, sender, pPara, FireAsync);
-        }
-        public bool HasRegisteredEvents(string pEventName)
-        {
-            if (MyBaseThing != null)
-                return MyBaseThing.HasRegisteredEvents(pEventName);
-            return false;
-        }
-        protected TheThing MyBaseThing = null;
-
-        protected bool mIsUXInitCalled = false;
-        protected bool mIsUXInitialized = false;
-        protected bool mIsInitCalled = false;
-        protected bool mIsInitialized = false;
-        public bool IsUXInit()
-        { return mIsUXInitialized; }
-        public bool IsInit()
-        { return mIsInitialized; }
-
-        #endregion
-
-        public bool Init()
+        public override bool Init()
         {
             if (mIsInitCalled) return false;
             mIsInitCalled = true;
@@ -158,12 +96,6 @@ namespace CDMyMqttSender
 
             return false;
         }
-        public bool Delete()
-        {
-            mIsInitialized = false;
-            // TODO Properly implement delete
-            return true;
-        }
 
         void OnDeletedThing(ICDEThing pThing, object pPara)
         {
@@ -190,7 +122,7 @@ namespace CDMyMqttSender
         }
 
         TheDashboardInfo mMyDashboard;
-        public bool CreateUX()
+        public override bool CreateUX()
         {
             if (mIsUXInitCalled) return false;
             mIsUXInitCalled = true;
@@ -272,7 +204,7 @@ namespace CDMyMqttSender
         /// </summary>
         /// <param name="Command"></param>
         /// <param name="pMessage"></param>
-        public void HandleMessage(ICDEThing sender, object pIncoming)
+        public override void HandleMessage(ICDEThing sender, object pIncoming)
         {
             TheProcessMessage pMsg = pIncoming as TheProcessMessage;
             if (pMsg == null) return;

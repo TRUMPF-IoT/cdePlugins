@@ -19,11 +19,8 @@ using System.Text.RegularExpressions;
 
 namespace CDMyThingProvisioning
 {
-    class cdeThingProvisioning : ICDEPlugin, ICDEThing
+    class cdeThingProvisioning : ThePluginBase
     {
-        // Base object references 
-        protected TheThing MyBaseThing;      // Base thing
-        private IBaseEngine MyBaseEngine;    // Base engine (service)
 
         // Initialization flags
         protected bool mIsInitStarted = false;
@@ -34,12 +31,6 @@ namespace CDMyThingProvisioning
         Guid guidEngineID = new Guid("{C0A23C9C-86A8-4A82-8C95-829E1D149583}");
         private readonly string strFriendlyName = "Thing Provisioning Service";
 
-        #region ICDEPlugin - interface methods for service (engine)
-        public IBaseEngine GetBaseEngine()
-        {
-            return MyBaseEngine;
-        }
-
         /// <summary>
         /// InitEngineAssets - The C-DEngine calls this initialization
         /// function as part of registering this service (engine)
@@ -48,7 +39,7 @@ namespace CDMyThingProvisioning
         /// This parameter is a reference to that base engine object.
         /// We keep a copy because it will be very useful to us.
         /// </param>
-        public void InitEngineAssets(IBaseEngine pBase)
+        public override void InitEngineAssets(IBaseEngine pBase)
         {
             MyBaseEngine = pBase;
 
@@ -69,60 +60,11 @@ namespace CDMyThingProvisioning
                                        "http://www.c-labs.com", // pDeveloperUrl - URL to developer home page.
                                        new List<string>() { }); // pCategories - Search categories for service.
         }
-        #endregion
-
-        #region ICDEThing - interface methods (rare to override)
-        public bool IsInit()
-        {
-            return mIsInitCompleted;
-        }
-        public bool IsUXInit()
-        {
-            return mIsUXInitCompleted;
-        }
-
-        public TheThing GetBaseThing()
-        {
-            return MyBaseThing;
-        }
-        public void SetBaseThing(TheThing pThing)
-        {
-            MyBaseThing = pThing;
-        }
-
-        public cdeP GetProperty(string pName, bool DoCreate)
-        {
-            return MyBaseThing?.GetProperty(pName, DoCreate);
-        }
-        public cdeP SetProperty(string pName, object pValue)
-        {
-            return MyBaseThing?.SetProperty(pName, pValue);
-        }
-
-        public void RegisterEvent(string pName, Action<ICDEThing, object> pCallBack)
-        {
-            MyBaseThing?.RegisterEvent(pName, pCallBack);
-        }
-        public void UnregisterEvent(string pName, Action<ICDEThing, object> pCallBack)
-        {
-            MyBaseThing?.UnregisterEvent(pName, pCallBack);
-        }
-        public void FireEvent(string pEventName, ICDEThing sender, object pPara, bool FireAsync)
-        {
-            MyBaseThing?.FireEvent(pEventName, sender, pPara, FireAsync);
-        }
-        public bool HasRegisteredEvents(string pEventName)
-        {
-            if (MyBaseThing != null)
-                return MyBaseThing.HasRegisteredEvents(pEventName);
-            return false;
-        }
-        #endregion
 
         TheStorageMirror<ScriptSnapshot> MyScriptTableStorage;
         //List<ScriptSnapshot> MyScriptTableList;
         //Dictionary<string, Guid> SnapShotGuids;
-        public bool Init()
+        public override bool Init()
         {
             if (!mIsInitStarted)
             {
@@ -133,6 +75,7 @@ namespace CDMyThingProvisioning
                 MyBaseThing.SetStatus(4, "Waiting for other services before running scripts");
                 TheBaseEngine.WaitForEnginesStarted(OnEnginesStarted);
                 SetupStorageMirror();
+                mIsInitialized = true;
             }
             return true;
         }
@@ -601,7 +544,7 @@ namespace CDMyThingProvisioning
         }
 
         protected TheFormInfo MyScriptTable = null;
-        public bool CreateUX()
+        public override bool CreateUX()
         {
             if (!mIsUXInitStarted)
             {
@@ -683,11 +626,6 @@ namespace CDMyThingProvisioning
             public DateTimeOffset LastUpdate { get; set; }
         }
 
-        public bool Delete()
-        {
-            return true;
-        }
-
         //Helper Function
         private void SetupStorageMirror()
         {
@@ -716,7 +654,7 @@ namespace CDMyThingProvisioning
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="pIncoming"></param>
-        public void HandleMessage(ICDEThing sender, object pIncoming)
+        public override void HandleMessage(ICDEThing sender, object pIncoming)
         {
             if (!(pIncoming is TheProcessMessage pMsg)) return;
 

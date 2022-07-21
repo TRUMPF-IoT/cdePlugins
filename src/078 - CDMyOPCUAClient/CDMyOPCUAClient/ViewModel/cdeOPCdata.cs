@@ -1179,11 +1179,7 @@ namespace CDMyOPCUAClient.ViewModel
 
                     // This does all we need, jsut doesn't expose the validator
                     //var dataDictionary = MyOPCServer.m_session.FindDataDictionary(typeOrValueNodeId);
-#if !NETSTANDARD2_0
-                    dataDictionary = m_session.FindDataDictionary((NodeId) description.NodeId);
-#else
                     dataDictionary = m_session.FindDataDictionary((NodeId)description.NodeId).Result;
-#endif
                 }
                 catch
                 {
