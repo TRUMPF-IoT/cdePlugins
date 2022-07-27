@@ -32,7 +32,7 @@ namespace CDMyComputer
             {
                 TheCommonUtils.cdeRunAsync("InitHealthService", true, o => 
                 { 
-                    MyServiceHealth = new TheHealthMonitor(HealthCollectionCycle, this, IsHealthCollectionOff);
+                    MyServiceHealth = new TheHealthMonitor(HealthCollectionCycle, this, IsHealthCollectionOff, DisableHistorian);
                     MyServiceHealth.eventNewHealthData += sinkNewData;
                 });
                 if (TheCommCore.MyHttpService != null)
