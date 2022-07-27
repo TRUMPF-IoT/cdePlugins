@@ -39,6 +39,11 @@ namespace CDMyComputer
             get { return TheCommonUtils.CInt(TheThing.GetSafePropertyString(MyBaseThing, "HealthCollectionCycle")); }
             set { TheThing.SetSafePropertyNumber(MyBaseThing, "HealthCollectionCycle", value); }
         }
+        public bool DisableHistorian
+        {
+            get { return TheThing.MemberGetSafePropertyBool(MyBaseThing); }
+            set { TheThing.MemberSetSafePropertyBool(MyBaseThing, value); }
+        }
 
         public bool IsHealthCollectionOff
         {
@@ -66,6 +71,9 @@ namespace CDMyComputer
             TheBaseAssets.MyCmdArgs.TryGetValue("IsHealthCollectionOff", out temp);
             if (!string.IsNullOrEmpty(temp))
                 IsHealthCollectionOff = TheCommonUtils.CBool(temp);
+            TheBaseAssets.MyCmdArgs.TryGetValue("DisableHealthHistory", out temp);
+            if (!string.IsNullOrEmpty(temp))
+                DisableHistorian = TheCommonUtils.CBool(temp);
             if (HealthCollectionCycle == 0)
             {
                 TheBaseAssets.MyCmdArgs.TryGetValue("HealthCollectionCycle", out temp);

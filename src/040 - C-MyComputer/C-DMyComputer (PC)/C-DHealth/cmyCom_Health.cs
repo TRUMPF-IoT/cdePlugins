@@ -67,7 +67,7 @@ namespace CDMyComputer
 
     public class TheHealthMonitor
     {
-        public TheHealthMonitor(int pHealthCycle, TheCDMyComputerEngine pEngineName, bool DisableCollection)
+        public TheHealthMonitor(int pHealthCycle, TheCDMyComputerEngine pEngineName, bool DisableCollection, bool DisableHistorian)
         {
             if (pEngineName != null)
             {
@@ -79,6 +79,7 @@ namespace CDMyComputer
                 HealthUpdateCycle = pHealthCycle;
 
             mDisableCollection = DisableCollection;
+            mDisableHistorian = DisableHistorian;
             TheBaseEngine.WaitForStorageReadiness(StorageHasStarted, true);
             InitHealthCollection();
             TheQueuedSenderRegistry.RegisterHealthTimer(CheckOnHealthTimer);
@@ -87,6 +88,7 @@ namespace CDMyComputer
         public Action<TheServiceHealthData> eventNewHealthData;
 
         private readonly bool mDisableCollection;
+        private readonly bool mDisableHistorian;
         private TheCPUInfo MyCPUInfoData = null;
         private TheServiceHealthData MyHealthData = null;
         private readonly TheCDMyComputerEngine MyBaseEngine = null;
@@ -108,7 +110,7 @@ namespace CDMyComputer
         {
             if (pReady!=null)
             {
-                if (MyServiceHealthDataStore == null)
+                if (MyServiceHealthDataStore == null && !mDisableHistorian)
                 {
                     MyServiceHealthDataStore = new TheStorageMirror<TheThingStore>(TheCDEngines.MyIStorageService)
                     {
