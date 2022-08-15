@@ -31,17 +31,23 @@ namespace CDMyLogger.ViewModel
             MyStatusFormDashPanel.PropertyBag = new nmiDashboardTile { Thumbnail = "FA5Bf392" };
         }
 
+
         void sinkLogMe(ICDEThing sender, object para)
         {
-            var pData = para as TheEventLogData;
-            if (string.IsNullOrEmpty(MyBaseThing.Address) || pData==null || !IsConnected)
-                return;
-            switch (pData.EventCategory)
+            if (!TheCommonUtils.IsLocalhost(sender.GetBaseThing().cdeN))
+                LogEvent(para as TheEventLogData);
+        }
+
+        public override bool LogEvent(TheEventLogData pItem)
+        {
+            if (string.IsNullOrEmpty(MyBaseThing.Address) || pItem==null || !IsConnected)
+                return false;
+            switch (pItem.EventCategory)
             {
                 default:
                 case eLoggerCategory.NMIAudit:
                 case eLoggerCategory.NodeConnect:
-                    return;
+                    return false;
                 case eLoggerCategory.UserEvent:
                 case eLoggerCategory.ThingEvent:
                     break;
@@ -52,7 +58,7 @@ namespace CDMyLogger.ViewModel
                 using (var client = new DiscordWebhookClient(MyBaseThing.Address))  
                 {
                     Discord.Color tCol = Discord.Color.Default;
-                    switch (pData.EventLevel)
+                    switch (pItem.EventLevel)
                     {
                         case eMsgLevel.l4_Message:
                             tCol = Discord.Color.DarkGreen;
@@ -75,24 +81,24 @@ namespace CDMyLogger.ViewModel
                     }
                     var embed = new EmbedBuilder
                     {
-                        Description = pData.EventName,
-                        Title = pData.EventString,
+                        Description = pItem.EventName,
+                        Title = pItem.EventString,
                         Color = tCol,
-                        Timestamp = pData.EventTime,
+                        Timestamp = pItem.EventTime,
                     };
 
-                    string tOrg = pData.EventTrigger;
+                    string tOrg = pItem.EventTrigger;
                     if (string.IsNullOrEmpty(tOrg))
-                        tOrg = pData.StationName;
+                        tOrg = pItem.StationName;
                     // Webhooks are able to send multiple embeds per message
                     // As such, your embeds must be passed as a collection.
                     try
                     {
-                        if (pData.EventData?.Length > 0)
+                        if (pItem.EventData?.Length > 0)
                         {
-                            using (var ms = new MemoryStream(pData.EventData))
+                            using (var ms = new MemoryStream(pItem.EventData))
                             {
-                                await client.SendFileAsync(stream: ms, filename: "Image.jpg", text: $"Node \"{pData.StationName}\" had Event-Log entry for: {tOrg}", embeds: new[] { embed.Build() });
+                                await client.SendFileAsync(stream: ms, filename: "Image.jpg", text: $"Node \"{pItem.StationName}\" had Event-Log entry for: {tOrg}", embeds: new[] { embed.Build() });
                             }
                         }
                         else
@@ -104,6 +110,7 @@ namespace CDMyLogger.ViewModel
                     }
                 }
             });
+            return true;
         }
     }
 }
