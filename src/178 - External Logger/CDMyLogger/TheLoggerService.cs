@@ -93,6 +93,9 @@ namespace CDMyLogger
                 bool DoLogKPIs =TheCommonUtils.CBool(TheBaseAssets.MySettings.GetSetting("LogKPIs"));
                 if (DoLogKPIs)
                     TheThing.SetSafePropertyBool(MyBaseThing, "LogKPIs", true);
+                bool DoPublish = TheCommonUtils.CBool(TheBaseAssets.MySettings.GetSetting("PublishEvents"));
+                if (DoPublish)
+                    PublishEvents = DoPublish;
 
                 TheQueuedSenderRegistry.RegisterHealthTimer(sinkTimer);
                 // If not lengthy initialized you can remove cdeRunasync and call this synchronously
