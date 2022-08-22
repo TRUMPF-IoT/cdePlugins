@@ -34,7 +34,7 @@ namespace CDMyLogger.ViewModel
             TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleCheck, 140, 2, 0x80, "Write to Console", "WriteToConsole", new nmiCtrlSingleCheck { ParentFld = 120, TileWidth = 3 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleCheck, 141, 2, 0x80, "Each Category in separate file", "EachCategoryInOwnFile", new nmiCtrlSingleCheck { ParentFld = 120, TileWidth = 3 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleCheck, 142, 2, 0x80, "Each day in a separate file", "EachDayInOwnFile", new nmiCtrlSingleCheck { ParentFld = 120, TileWidth = 3 });
-            //TODO: add log Details (LogFileLocation, MaxLength, MaxFiles, EachCategoryInOwnFile)
+            // add log Details (LogFileLocation, MaxLength, MaxFiles, EachCategoryInOwnFile)
 
             CreateLogTable(1000, 1);
         }
@@ -74,7 +74,6 @@ namespace CDMyLogger.ViewModel
                 LogFileDate = mLogFileDate = DateTimeOffset.Now;
             }
             TheCommonUtils.CreateDirectories(MyCurLog);
-            TheCDEngines.MyContentEngine.RegisterEvent(eEngineEvents.NewEventLogEntry, sinkNewEvent);
 
             if (TheBaseAssets.MyCmdArgs?.ContainsKey("CreateEventLog") != true)
             {
@@ -90,12 +89,8 @@ namespace CDMyLogger.ViewModel
                     }
                 }
             }
-        }
-
-        void sinkNewEvent(ICDEThing sender, object pLogEntry)
-        {
-            TheEventLogData pData = pLogEntry as TheEventLogData;
-            WriteLogToFile(pData, true);
+            if (LogRemoteEvents)
+                TheCDEngines.MyContentEngine.RegisterEvent(eEngineEvents.NewEventLogEntry, sinkLogMe);
         }
 
         private readonly object writeLock = new object();
