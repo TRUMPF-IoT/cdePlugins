@@ -22,7 +22,6 @@ namespace CDMyLogger.ViewModel
         {
             if (AutoConnect)
                 IsConnected = true;
-            TheCDEngines.MyContentEngine.RegisterEvent(eEngineEvents.NewEventLogEntry, sinkLogMe);
         }
 
         protected override void DoCreateUX(TheFormInfo pForm)
@@ -31,12 +30,6 @@ namespace CDMyLogger.ViewModel
             MyStatusFormDashPanel.PropertyBag = new nmiDashboardTile { Thumbnail = "FA5Bf392" };
         }
 
-
-        void sinkLogMe(ICDEThing sender, object para)
-        {
-            if (!TheCommonUtils.IsLocalhost(sender.GetBaseThing().cdeN))
-                LogEvent(para as TheEventLogData);
-        }
 
         public override bool LogEvent(TheEventLogData pItem)
         {
@@ -90,6 +83,8 @@ namespace CDMyLogger.ViewModel
                     string tOrg = pItem.EventTrigger;
                     if (string.IsNullOrEmpty(tOrg))
                         tOrg = pItem.StationName;
+                    else
+                        tOrg = $"{tOrg} ({pItem.StationName})";
                     // Webhooks are able to send multiple embeds per message
                     // As such, your embeds must be passed as a collection.
                     try

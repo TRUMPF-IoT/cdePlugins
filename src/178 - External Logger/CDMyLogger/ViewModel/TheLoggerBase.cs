@@ -5,8 +5,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-// TODO: Add reference for C-DEngine.dll
-// TODO: Make sure plugin file name starts with either CDMy or C-DMy
 using nsCDEngine.BaseClasses;
 using nsCDEngine.Engines;
 using nsCDEngine.Engines.NMIService;
@@ -30,15 +28,22 @@ namespace CDMyLogger.ViewModel
         // Also recommended, the use of the 'GetSafe...' and 'SetSafe...' methods.
         public bool IsConnected
         {
-            get { return TheThing.GetSafePropertyBool(MyBaseThing, "IsConnected"); }
-            set { TheThing.SetSafePropertyBool(MyBaseThing, "IsConnected", value); }
+            get { return TheThing.MemberGetSafePropertyBool(MyBaseThing); }
+            set { TheThing.MemberSetSafePropertyBool(MyBaseThing, value); }
         }
 
-        [ConfigProperty(Required = true, Generalize = true)]
+        [ConfigProperty(Generalize = true)]
         public bool AutoConnect
         {
-            get { return TheThing.GetSafePropertyBool(MyBaseThing, "AutoConnect"); }
-            set { TheThing.SetSafePropertyBool(MyBaseThing, "AutoConnect", value); }
+            get { return TheThing.MemberGetSafePropertyBool(MyBaseThing); }
+            set { TheThing.MemberSetSafePropertyBool(MyBaseThing, value); }
+
+        }
+        [ConfigProperty(Generalize = true)]
+        public bool LogRemoteEvents
+        {
+            get { return TheThing.MemberGetSafePropertyBool(MyBaseThing); }
+            set { TheThing.MemberSetSafePropertyBool(MyBaseThing, value); }
         }
 
         [ConfigProperty(Required = true, Generalize = true)]
@@ -101,12 +106,13 @@ namespace CDMyLogger.ViewModel
                 mIsUXInitCalled = true;
 
                 var tHead = TheNMIEngine.AddStandardForm(MyBaseThing, MyBaseThing.FriendlyName,12, null,null,0,$"..Event Logs on {TheCommonUtils.GetMyNodeName()}");
-                MyStatusForm = tHead["Form"] as TheFormInfo; // TheNMIEngine.AddForm(new TheFormInfo(MyBaseThing) { FormTitle = MyBaseThing.DeviceType, DefaultView = eDefaultView.Form, PropertyBag = new ThePropertyBag { "MaxTileWidth=6" } });
+                MyStatusForm = tHead["Form"] as TheFormInfo; 
                 MyStatusFormDashPanel = tHead["DashIcon"] as TheDashPanelInfo;
                 var tBlock = TheNMIEngine.AddStatusBlock(MyBaseThing, MyStatusForm, 2);
                 tBlock["Group"].SetParent(1);
 
                 tBlock = TheNMIEngine.AddConnectivityBlock(MyBaseThing, MyStatusForm, 120, sinkConnect);
+                TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleCheck, 135, 2, 0xf0, "Log Remote Events", nameof(LogRemoteEvents), new nmiCtrlSingleCheck() { TileWidth = 3, ParentFld = 120 });
                 tBlock["Group"].SetParent(1);
                 DoCreateUX(tHead["Form"] as TheFormInfo);
                 mIsUXInitialized = true;
@@ -133,6 +139,8 @@ namespace CDMyLogger.ViewModel
             MyBaseThing.StatusLevel = 1;
             MyBaseThing.LastMessage = $"Connected to Logger at {DateTimeOffset.Now}";
             TheBaseAssets.MySYSLOG.RegisterEvent2("NewLogEntry", OnNewEvent);
+            if (LogRemoteEvents)
+                TheCDEngines.MyContentEngine.RegisterEvent(eEngineEvents.NewEventLogEntry, sinkLogMe);
         }
         public virtual void Disconnect(TheProcessMessage pMsg)
         {
@@ -140,8 +148,17 @@ namespace CDMyLogger.ViewModel
             MyBaseThing.StatusLevel = 0;
             MyBaseThing.LastMessage = $"Disconnected from Logger at {DateTimeOffset.Now}";
             TheBaseAssets.MySYSLOG.UnregisterEvent2("NewLogEntry", OnNewEvent);
+            if (LogRemoteEvents)
+                TheCDEngines.MyContentEngine.UnregisterEvent(eEngineEvents.NewEventLogEntry, sinkLogMe);
         }
 
+        protected virtual void sinkLogMe(ICDEThing sender, object para)
+        {
+            if (para is not TheEventLogData tData)
+                return;
+            if (!TheCommonUtils.IsLocalhost(tData.cdeN))
+                LogEvent(para as TheEventLogData);
+        }
 
         public virtual void OnNewEvent(TheProcessMessage timer, object unused)
         {
@@ -155,7 +172,7 @@ namespace CDMyLogger.ViewModel
 
         public virtual List<TheEventLogData> GetEvents(int PageNo, int PageSize, bool LatestFirst)
         {
-            return null;
+            return new();
         }
         #endregion
     }
