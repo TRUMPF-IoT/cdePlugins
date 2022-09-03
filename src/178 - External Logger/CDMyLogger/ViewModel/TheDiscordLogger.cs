@@ -33,7 +33,7 @@ namespace CDMyLogger.ViewModel
 
         public override bool LogEvent(TheEventLogData pItem)
         {
-            if (string.IsNullOrEmpty(MyBaseThing.Address) || pItem==null || !IsConnected)
+            if (string.IsNullOrEmpty(MyBaseThing.Address) || pItem == null || !IsConnected)
                 return false;
             switch (pItem.EventCategory)
             {
@@ -48,7 +48,7 @@ namespace CDMyLogger.ViewModel
 
             TheCommonUtils.cdeRunTaskAsync("webHook", async (_) =>
             {
-                using (var client = new DiscordWebhookClient(MyBaseThing.Address))  
+                using (var client = new DiscordWebhookClient(MyBaseThing.Address))
                 {
                     Discord.Color tCol = Discord.Color.Default;
                     switch (pItem.EventLevel)
@@ -57,7 +57,7 @@ namespace CDMyLogger.ViewModel
                             tCol = Discord.Color.DarkGreen;
                             break;
                         case eMsgLevel.l1_Error:
-                            tCol=Discord.Color.Red;
+                            tCol = Discord.Color.Red;
                             break;
                         case eMsgLevel.l2_Warning:
                             tCol = Discord.Color.LightOrange;
@@ -72,23 +72,23 @@ namespace CDMyLogger.ViewModel
                             tCol = Discord.Color.Green;
                             break;
                     }
-                    var embed = new EmbedBuilder
-                    {
-                        Description = pItem.EventName,
-                        Title = pItem.EventString,
-                        Color = tCol,
-                        Timestamp = pItem.EventTime,
-                    };
-
-                    string tOrg = pItem.EventTrigger;
-                    if (string.IsNullOrEmpty(tOrg))
-                        tOrg = pItem.StationName;
-                    else
-                        tOrg = $"{tOrg} ({pItem.StationName})";
-                    // Webhooks are able to send multiple embeds per message
-                    // As such, your embeds must be passed as a collection.
                     try
                     {
+                        var embed = new EmbedBuilder
+                        {
+                            Description = pItem.EventName,
+                            Title = pItem.EventString,
+                            Color = tCol,
+                            Timestamp = pItem.EventTime,
+                        };
+
+                        string tOrg = pItem.EventTrigger;
+                        if (string.IsNullOrEmpty(tOrg))
+                            tOrg = pItem.StationName;
+                        else
+                            tOrg = $"{tOrg} ({pItem.StationName})";
+                        // Webhooks are able to send multiple embeds per message
+                        // As such, your embeds must be passed as a collection.
                         if (pItem.EventData?.Length > 0)
                         {
                             using (var ms = new MemoryStream(pItem.EventData))

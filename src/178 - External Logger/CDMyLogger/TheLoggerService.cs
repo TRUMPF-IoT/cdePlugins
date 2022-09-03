@@ -25,6 +25,7 @@ namespace CDMyLogger
         public const string RSSLogger = "RSS Logger";
         public const string InternalLogger = "Internal Logger";
         public const string DiscordLogger = "Discord Logger";
+        public const string ConsoleLogger = "Console Logger";
     }
 
     class LoggerService : ThePluginBase, ICDELoggerEngine
@@ -194,6 +195,9 @@ namespace CDMyLogger
                             break;
                         case eTheLoggerServiceTypes.DiscordLogger:
                             CreateOrUpdateService<TheDiscordLogger>(tDev, true);
+                            break;
+                        case eTheLoggerServiceTypes.ConsoleLogger:
+                            CreateOrUpdateService<TheConsoleLogger>(tDev, true);
                             break;
                     }
                 }
