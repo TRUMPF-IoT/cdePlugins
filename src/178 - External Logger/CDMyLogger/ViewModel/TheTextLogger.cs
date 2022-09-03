@@ -34,7 +34,7 @@ namespace CDMyLogger.ViewModel
             TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleCheck, 140, 2, 0x80, "Write to Console", "WriteToConsole", new nmiCtrlSingleCheck { ParentFld = 120, TileWidth = 3 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleCheck, 141, 2, 0x80, "Each Category in separate file", "EachCategoryInOwnFile", new nmiCtrlSingleCheck { ParentFld = 120, TileWidth = 3 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleCheck, 142, 2, 0x80, "Each day in a separate file", "EachDayInOwnFile", new nmiCtrlSingleCheck { ParentFld = 120, TileWidth = 3 });
-            //TODO: add log Details (LogFileLocation, MaxLength, MaxFiles, EachCategoryInOwnFile)
+            // add log Details (LogFileLocation, MaxLength, MaxFiles, EachCategoryInOwnFile)
 
             CreateLogTable(1000, 1);
         }
@@ -63,46 +63,26 @@ namespace CDMyLogger.ViewModel
             MyBaseThing.StatusLevel = 1;
             MyBaseThing.LastMessage = $"Connected to Logger at {DateTimeOffset.Now}";
 
-            mLogFilePath = Address;
             mMaxLogFileSize = (int)TheThing.GetSafePropertyNumber(MyBaseThing, "MaxLogFileSize");
             mWriteToConsole = TheThing.GetSafePropertyBool(MyBaseThing, "WriteToConsole");
-            MyCurLog = TheThing.GetSafePropertyString(MyBaseThing, "LogFilePath");
             mLogFileDate = TheThing.GetSafePropertyDate(MyBaseThing, "LogFileDate");
-            if (string.IsNullOrEmpty(MyCurLog) || (mLogFileDate!=DateTimeOffset.MinValue && mLogFileDate.Day!=DateTimeOffset.Now.Day))
-            {
-                LogFilePath = MyCurLog = TheCommonUtils.cdeFixupFileName(mLogFilePath + string.Format("\\LOG_{0:yyyMMdd_HHmmss}.txt", DateTime.Now));
+            if (string.IsNullOrEmpty(Address))
+                Address = "Log";
+            if (mLogFileDate==DateTimeOffset.MinValue || mLogFileDate.Day!=DateTimeOffset.Now.Day)
                 LogFileDate = mLogFileDate = DateTimeOffset.Now;
-            }
-            TheCommonUtils.CreateDirectories(MyCurLog);
-            TheCDEngines.MyContentEngine.RegisterEvent(eEngineEvents.NewEventLogEntry, sinkNewEvent);
+            tTimeStamp = $"{mLogFileDate:yyyMMdd_HHmmss}";
 
-            if (TheBaseAssets.MyCmdArgs?.ContainsKey("CreateEventLog") != true)
-            {
-                // CODE REVIEW: What is the purpose of this export?
-                var pipelineConfig = MyBaseThing.GetThingPipelineConfigurationAsync(false).Result;
-                if (pipelineConfig != null)
-                {
-                    var tWrite = TheCommonUtils.SerializeObjectToJSONString(pipelineConfig);
-                    TheCommonUtils.CreateDirectories(TheCommonUtils.cdeFixupFileName($"\\ConfigTemplates\\{MyBaseThing.FriendlyName}.cdeConfig"));
-                    using (System.IO.StreamWriter fs = new System.IO.StreamWriter(TheCommonUtils.cdeFixupFileName($"\\ConfigTemplates\\{MyBaseThing.FriendlyName}.cdeConfig"), false))
-                    {
-                        fs.Write(tWrite);
-                    }
-                }
-            }
+            if (LogRemoteEvents)
+                TheCDEngines.MyContentEngine.RegisterEvent(eEngineEvents.NewEventLogEntry, sinkLogMe);
         }
 
-        void sinkNewEvent(ICDEThing sender, object pLogEntry)
-        {
-            TheEventLogData pData = pLogEntry as TheEventLogData;
-            WriteLogToFile(pData, true);
-        }
-
-        private readonly object writeLock = new object();
-        private string mLogFilePath;
+        private readonly object writeLock = new ();
         private DateTimeOffset mLogFileDate;
         private int mMaxLogFileSize = 0;
         private bool mWriteToConsole = false;
+        string tLastLogFile;
+        string tTimeStamp;
+        string tBaseLogName;
         public string MyCurLog;
 
         private bool WriteLogToFile(TheEventLogData pLogItem, bool WaitForLock)
@@ -111,20 +91,15 @@ namespace CDMyLogger.ViewModel
                 return false;
             if (mWriteToConsole)
                 Console.WriteLine($"{pLogItem.EventCategory} : {TheCommonUtils.GetDateTimeString(pLogItem.EventTime, -1)} : {pLogItem.EventName} : {pLogItem.EventString}");
-            if (string.IsNullOrEmpty(mLogFilePath) && string.IsNullOrEmpty(TheThing.GetSafePropertyString(MyBaseThing, "LogFilePath")))
-                return false;
 
             if (EachCategoryInOwnFile)
-            {
-                //TODO: Tune with array of EventCategory Log file names
-                //MyCurLog = mLogFilePath + string.Format("\\{1}_{0:yyyMMdd_HHmmss}.txt", DateTime.Now,pLogItem.EventCategory);
-                //MyCurLog = TheCommonUtils.cdeFixupFileName(MyCurLog);
-                //TheCommonUtils.CreateDirectories(MyCurLog);
-            }
+                tBaseLogName = $"{Address}\\{pLogItem.EventCategory}";
+            else
+                tBaseLogName = Address;
             if (EachDayInOwnFile && mLogFileDate.Day != DateTimeOffset.Now.Day)
             {
-                LogFilePath = MyCurLog = TheCommonUtils.cdeFixupFileName(mLogFilePath + string.Format("\\LOG_{0:yyyMMdd_HHmmss}.txt", DateTime.Now));
                 LogFileDate = mLogFileDate = DateTimeOffset.Now;
+                tTimeStamp = $"{mLogFileDate:yyyMMdd_HHmmss}";
             }
             // ReSharper disable once EmptyEmbeddedStatement
             if (WaitForLock) while (TheCommonUtils.cdeIsLocked(writeLock)) { TheCommonUtils.SleepOneEye(50, 50); }
@@ -132,32 +107,34 @@ namespace CDMyLogger.ViewModel
             {
                 lock (writeLock)
                 {
-                    var bLogFileExists = System.IO.File.Exists(MyCurLog);
+                    MyCurLog = SetCurrentFileName();
+                    var bLogFileExists = File.Exists(MyCurLog);
                     if (mMaxLogFileSize > 0 && bLogFileExists)
                     {
                         try
                         {
-                            System.IO.FileInfo f2 = new System.IO.FileInfo(MyCurLog);
+                            FileInfo f2 = new (MyCurLog);
                             if (f2.Length > mMaxLogFileSize * (1024 * 1024))
                             {
-                                MyCurLog = LogFilePath = TheCommonUtils.cdeFixupFileName(mLogFilePath + string.Format("\\LOG_{0:yyyMMdd_HHmmss}.txt", DateTime.Now));
                                 LogFileDate = mLogFileDate = DateTimeOffset.Now;
+                                tTimeStamp = $"{mLogFileDate:yyyMMdd_HHmmss}";
+                                MyCurLog = SetCurrentFileName();
+                                bLogFileExists = File.Exists(MyCurLog);
                             }
                         }
                         catch
                         {
                             //ignored
                         }
-                        bLogFileExists = System.IO.File.Exists(MyCurLog);
                     }
                     try
                     {
-                        using (System.IO.StreamWriter fs = new System.IO.StreamWriter(MyCurLog, bLogFileExists))
+                        using (StreamWriter fs = new (MyCurLog, bLogFileExists))
                         {
                             if (EachCategoryInOwnFile)
                                 fs.WriteLine($"{pLogItem.EventTime} : {TheCommonUtils.GetDateTimeString(pLogItem.EventTime, -1)} : {pLogItem.EventString}");
                             else
-                                fs.WriteLine($"{pLogItem.EventCategory} : {TheCommonUtils.GetDateTimeString(pLogItem.EventTime,-1)} : {pLogItem.EventName} : {pLogItem.EventString}");
+                                fs.WriteLine($"{pLogItem.EventCategory} : {TheCommonUtils.GetDateTimeString(pLogItem.EventTime, -1)} : {pLogItem.EventName} : {pLogItem.EventString}");
                         }
                     }
                     catch
@@ -167,6 +144,18 @@ namespace CDMyLogger.ViewModel
                 }
             }
             return true;
+        }
+
+        private string SetCurrentFileName()
+        {
+            var tCurrLogFile = $"{tBaseLogName}_{tTimeStamp}.txt";
+            if (tCurrLogFile != tLastLogFile)
+            {
+                tLastLogFile = tCurrLogFile;
+                tCurrLogFile = TheCommonUtils.cdeFixupFileName(tCurrLogFile);
+                TheCommonUtils.CreateDirectories(tCurrLogFile);
+            }
+            return tCurrLogFile;
         }
 
         /// <summary>
@@ -189,17 +178,6 @@ namespace CDMyLogger.ViewModel
             set
             {
                 TheThing.SetSafePropertyNumber(MyBaseThing, "MaxLogFiles", value);
-            }
-        }
-
-
-        public string LogFilePath
-        {
-            get { return TheThing.GetSafePropertyString(MyBaseThing, "LogFilePath"); }
-            set
-            {
-                TheThing.SetSafePropertyString(MyBaseThing, "LogFilePath", value);
-                mLogFilePath = value;
             }
         }
 
@@ -270,8 +248,8 @@ namespace CDMyLogger.ViewModel
         void sinkStorageReady(StoreEventArgs pArgs)
         {
             string FileToReturn1 = TheCommonUtils.cdeFixupFileName(Address);
-            DirectoryInfo di = new DirectoryInfo(FileToReturn1);
-            List<TheFileInfo> tList = new List<TheFileInfo>();
+            DirectoryInfo di = new (FileToReturn1);
+            List<TheFileInfo> tList = new ();
             TheISMManager.ProcessDirectory(di, ref tList, "", ".TXT", false, true);
             MyLogFiles.MyMirrorCache.Clear(false);
             foreach (TheFileInfo t in tList)
@@ -300,19 +278,21 @@ namespace CDMyLogger.ViewModel
                     TheBackupDefinition tFile = MyLogFiles.GetEntryByID(TheCommonUtils.CGuid(pCmds[2]));
                     if (tFile != null)
                     {
-                        TSM tFilePush = new TSM(eEngineName.ContentService, string.Format("CDE_FILE:{0}.txt:text/text", tFile.Title));
+                        TSM tFilePush = new (eEngineName.ContentService, string.Format("CDE_FILE:{0}.txt:text/text", tFile.Title));
                         try
                         {
-                            using (FileStream fr = new FileStream(tFile.FileName, FileMode.Open))
+                            using (FileStream fr = new (tFile.FileName, FileMode.Open))
                             {
-                                using (BinaryReader br = new BinaryReader(fr))
+                                using (BinaryReader br = new (fr))
                                 {
                                     tFilePush.PLB = br.ReadBytes((int)fr.Length);
                                 }
                             }
                         }
                         catch (Exception)
-                        { }
+                        { 
+                            //ignored
+                        }
                         if (tFilePush.PLB == null)
                             TheCommCore.PublishToOriginator(pMsg.Message, new TSM(eEngineName.NMIService, "NMI_TOAST", "Log cannot be downloaded..."));
                         else

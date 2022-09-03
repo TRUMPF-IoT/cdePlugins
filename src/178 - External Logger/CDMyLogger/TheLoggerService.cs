@@ -25,6 +25,7 @@ namespace CDMyLogger
         public const string RSSLogger = "RSS Logger";
         public const string InternalLogger = "Internal Logger";
         public const string DiscordLogger = "Discord Logger";
+        public const string ConsoleLogger = "Console Logger";
     }
 
     class LoggerService : ThePluginBase, ICDELoggerEngine
@@ -90,7 +91,7 @@ namespace CDMyLogger
                 if (TheCommonUtils.CBool(tP.ToString()))
                     TheBaseAssets.MyServiceHostInfo.UseGELFLoggingFormat = true;
 
-                bool DoLogKPIs =TheCommonUtils.CBool(TheBaseAssets.MySettings.GetSetting("LogKPIs"));
+                bool DoLogKPIs = TheCommonUtils.CBool(TheBaseAssets.MySettings.GetSetting("LogKPIs"));
                 if (DoLogKPIs)
                     TheThing.SetSafePropertyBool(MyBaseThing, "LogKPIs", true);
                 bool DoPublish = TheCommonUtils.CBool(TheBaseAssets.MySettings.GetSetting("PublishEvents"));
@@ -114,9 +115,9 @@ namespace CDMyLogger
 
         void sinkTimer(long timer)
         {
-            if ((timer%5)==0)
+            if ((timer % 5) == 0)
             {
-                if (TheThing.GetSafePropertyBool(MyBaseThing,"LogKPIs"))
+                if (TheThing.GetSafePropertyBool(MyBaseThing, "LogKPIs"))
                 {
                     TheBaseAssets.MySYSLOG.WriteToLog(23099, new TSM(MyBaseEngine.GetEngineName(), TheCDEKPIs.GetKPIs(true), eMsgLevel.l4_Message));
                 }
@@ -146,13 +147,16 @@ namespace CDMyLogger
                 tForm.AddButtonText = "Add new Logger Service";
 
 
-                var tF = TheNMIEngine.AddStandardForm(MyBaseThing, "Global Logger Settings", 6, TheThing.GetSafeThingGuid(MyBaseThing, "LOGGERSETTINGS").ToString(), null, 0xF0,TheNMIEngine.GetNodeForCategory());
+                var tF = TheNMIEngine.AddStandardForm(MyBaseThing, "Global Logger Settings", 6, TheThing.GetSafeThingGuid(MyBaseThing, "LOGGERSETTINGS").ToString(), null, 0xF0, TheNMIEngine.GetNodeForCategory());
                 var tMyUserSettingsForm = tF["Form"] as TheFormInfo;
-                TheNMIEngine.AddSmartControl(MyBaseThing, tMyUserSettingsForm, eFieldType.SingleCheck, 10, 2, 0x80, "Disable CDE-Log to Console", "DisableStandardLog", new nmiCtrlSingleCheck() { ParentFld = 1, TileWidth=3 });
-                TheNMIEngine.AddSmartControl(MyBaseThing, tMyUserSettingsForm, eFieldType.SingleCheck, 20, 2, 0x80, "Use GELF to Console", "UseGELF", new nmiCtrlSingleCheck() { ParentFld = 1, TileWidth=3 });
+                TheNMIEngine.AddSmartControl(MyBaseThing, tMyUserSettingsForm, eFieldType.SingleCheck, 10, 2, 0x80, "Disable CDE-Log to Console", "DisableStandardLog", new nmiCtrlSingleCheck() { ParentFld = 1, TileWidth = 3 });
+                TheNMIEngine.AddSmartControl(MyBaseThing, tMyUserSettingsForm, eFieldType.SingleCheck, 20, 2, 0x80, "Use GELF to Console", "UseGELF", new nmiCtrlSingleCheck() { ParentFld = 1, TileWidth = 3 });
                 TheNMIEngine.AddSmartControl(MyBaseThing, tMyUserSettingsForm, eFieldType.SingleCheck, 40, 2, 0, "Log KPIs", "LogKPIs", new nmiCtrlSingleCheck() { ParentFld = 1, TileWidth = 3 });
                 TheNMIEngine.AddSmartControl(MyBaseThing, tMyUserSettingsForm, eFieldType.SingleCheck, 50, 2, 0, "Publish Events", nameof(PublishEvents), new nmiCtrlSingleCheck() { ParentFld = 1, TileWidth = 3 });
-
+                var but=TheNMIEngine.AddSmartControl(MyBaseThing, tMyUserSettingsForm, eFieldType.TileButton, 60, 2, 0, "Test Log Entry", null, new nmiCtrlTileButton { NoTE = true, ClassName = "cdeGoodActionButton", ParentFld=1 });
+                but.RegisterUXEvent(MyBaseThing, eUXEvents.OnClick, "TestLog", (sender, obj) => { 
+                    SetMessage("Test Event Log Entry","TESTLOG",-1,DateTimeOffset.Now,178001,eMsgLevel.l6_Debug);
+                });
                 TheNMIEngine.RegisterEngine(MyBaseEngine);      //Registers this engine and its "SmartPage" with the System
                 mIsUXInitCompleted = true;
             }
@@ -171,7 +175,7 @@ namespace CDMyLogger
                     switch (tDev.DeviceType)
                     {
                         case eTheLoggerServiceTypes.TextLogger:
-                            var tt=CreateOrUpdateService<TheTextLogger>(tDev, true);
+                            var tt = CreateOrUpdateService<TheTextLogger>(tDev, true);
                             CreatedATextLogger = true;
                             break;
                         case eTheLoggerServiceTypes.GELF:
@@ -192,6 +196,9 @@ namespace CDMyLogger
                         case eTheLoggerServiceTypes.DiscordLogger:
                             CreateOrUpdateService<TheDiscordLogger>(tDev, true);
                             break;
+                        case eTheLoggerServiceTypes.ConsoleLogger:
+                            CreateOrUpdateService<TheConsoleLogger>(tDev, true);
+                            break;
                     }
                 }
             }
@@ -210,7 +217,7 @@ namespace CDMyLogger
                 }
                 catch (Exception e)
                 {
-                    TheBaseAssets.MySYSLOG.WriteToLog(25010, new TSM(MyBaseEngine.GetEngineName(), $"Could not auto-create Event Log. Address {tLogName} - Path: {tThin?.MyCurLog}", eMsgLevel.l1_Error,e.ToString()));
+                    TheBaseAssets.MySYSLOG.WriteToLog(25010, new TSM(MyBaseEngine.GetEngineName(), $"Could not auto-create Event Log. Address {tLogName} - Path: {tThin?.MyCurLog}", eMsgLevel.l1_Error, e.ToString()));
                 }
             }
             MyBaseEngine.SetStatusLevel(-1); //Calculates the current statuslevel of the service/engine
@@ -238,10 +245,9 @@ namespace CDMyLogger
 
         void OnThingDeleted(ICDEThing pEngine, object pDeletedThing)
         {
-            if (pDeletedThing != null && pDeletedThing is ICDEThing)
+            if (pDeletedThing is ICDEThing thing)
             {
-                //TODO: Stop Resources, Thread etc associated with this Thing
-                ((ICDEThing)pDeletedThing).FireEvent(eEngineEvents.ShutdownEvent, pEngine, null, false);
+                thing.FireEvent(eEngineEvents.ShutdownEvent, pEngine, null, false);
             }
         }
 
@@ -274,19 +280,19 @@ namespace CDMyLogger
                 foreach (TheThing tDev in tDevList)
                 {
                     var tTwin = tDev.GetObject() as ICDELoggerEngine;
-                    var tRes=tTwin?.LogEvent(pItem);
-                    if (!bRet && tRes==true)
+                    var tRes = tTwin?.LogEvent(pItem);
+                    if (!bRet && tRes == true)
                         bRet = true;
                 }
             }
             if (PublishEvents) //This allows to have a logger on a different node
-                TheCommCore.PublishCentral(new TSM(eEngineName.ContentService,eEngineEvents.NewEventLogEntry,pItem.EventLevel,TheCommonUtils.SerializeObjectToJSONString(pItem)), true);
+                TheCommCore.PublishCentral(new TSM(eEngineName.ContentService, eEngineEvents.NewEventLogEntry, pItem.EventLevel, TheCommonUtils.SerializeObjectToJSONString(pItem)), true);
             return bRet;
         }
 
         public List<TheEventLogData> GetEvents(int PageNo, int PageSize, bool LatestFirst)
         {
-            return null; //TODO implement
+            return new();
         }
 
     }

@@ -22,6 +22,8 @@ using Opc.Ua;
 using Opc.Ua.Client;
 using Opc.Ua.Client.Controls;
 using Opc.Ua.Configuration;
+using nsCDEngine.Security;
+using System.Web;
 #if ENABLE_CSVIMPORT
 using nsTheCSVParser;
 #endif
@@ -1395,6 +1397,9 @@ namespace CDMyOPCUAClient.ViewModel
 
             ConnectionState = ConnectionStateEnum.Disconnected;
             BrowsedTagCnt = 0;
+
+            if (string.IsNullOrWhiteSpace(AppCertSubjectName))
+                AppCertSubjectName = $"{TheCommonUtils.GetMyNodeName()}_{TheBaseAssets.MyServiceHostInfo.MyDeviceInfo.DeviceID.ToString().Substring(0, 8)}";
 
             // Migration from V3.1
             if (GetProperty("UseSecurity", false) != null)
@@ -2859,7 +2864,7 @@ namespace CDMyOPCUAClient.ViewModel
 
                 m_configuration = new ApplicationConfiguration();
                 m_configuration.ApplicationType = ApplicationType.Client;
-                m_configuration.ApplicationName = "C-MyOPCUA Client:" + MyBaseThing.FriendlyName;
+                m_configuration.ApplicationName = "CDMyOPCUA-Client-" + HttpUtility.UrlEncode(MyBaseThing.FriendlyName);
 
                 m_configuration.CertificateValidator = new MyCertificateValidator(this);
 
@@ -2909,8 +2914,7 @@ namespace CDMyOPCUAClient.ViewModel
 
                 //m_configuration.TransportQuotas.MaxByteStringLength = 2097152;
 
-                m_configuration.Validate(ApplicationType.Client).Wait()
-                    ;
+                m_configuration.Validate(ApplicationType.Client).Wait();
                 m_configuration.CertificateValidator.CertificateValidation += m_CertificateValidation;
 
                 // check the application certificate. Create if it doesn't exist and Opc.Ua.CertificateGenerator.exe is installed
@@ -2919,8 +2923,7 @@ namespace CDMyOPCUAClient.ViewModel
                 application.ApplicationConfiguration = m_configuration;
                 if (!DisableSecurity)
                 { 
-                    application.CheckApplicationInstanceCertificate(true, 0).Wait()
-                        ;
+                    application.CheckApplicationInstanceCertificate(true, 0).Wait();
                 }
 
                 EndpointConfiguration endpointConfiguration = EndpointConfiguration.Create(m_configuration);
