@@ -60,8 +60,7 @@ namespace CDMyLogger.ViewModel
             if (IsConnected)
                 return;
             IsConnected = true;
-            MyBaseThing.StatusLevel = 1;
-            MyBaseThing.LastMessage = $"Connected to Logger at {DateTimeOffset.Now}";
+            SetMessage($"Text Logger started", 1, DateTimeOffset.Now, 178000, eMsgLevel.l4_Message);
 
             mMaxLogFileSize = (int)TheThing.GetSafePropertyNumber(MyBaseThing, "MaxLogFileSize");
             mWriteToConsole = TheThing.GetSafePropertyBool(MyBaseThing, "WriteToConsole");
