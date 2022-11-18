@@ -101,10 +101,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDMyImages", "160 - CDMyImages\CDMyImages\CDMyImages.csproj", "{F0237369-3723-495A-96BF-5D0A1BB5B1EA}"
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		123 - CDMyModbus\NModbus4Shared\NModbus4Shared.projitems*{87d6ea89-f134-41b9-8015-5e5cf7b93da2}*SharedItemsImports = 13
-		123 - CDMyModbus\NModbus4Shared\NModbus4Shared.projitems*{f810d2d8-abb9-43c5-9053-827cb51ca6ba}*SharedItemsImports = 5
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -199,5 +195,9 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {65B36CB7-1C08-480C-96F5-F480F39A709F}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		123 - CDMyModbus\NModbus4Shared\NModbus4Shared.projitems*{87d6ea89-f134-41b9-8015-5e5cf7b93da2}*SharedItemsImports = 13
+		123 - CDMyModbus\NModbus4Shared\NModbus4Shared.projitems*{f810d2d8-abb9-43c5-9053-827cb51ca6ba}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal
