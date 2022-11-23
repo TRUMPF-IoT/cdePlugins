@@ -2,7 +2,9 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-﻿using CDMyComputer.ViewModels;
+using cdeEnergyBase;
+using CDMyComputer.ViewModels;
+using CDMyEnergy.ViewModels;
 using nsCDEngine.BaseClasses;
 using nsCDEngine.Communication;
 using nsCDEngine.Engines;
@@ -200,24 +202,22 @@ namespace CDMyComputer
             }
         }
 
-        private void sinkEnergyFound(ICDEThing sender, object incoming)
+        private void sinkEnergyFound(ICDEThing sender, object pIncoming)
         {
-            if (!(incoming is TSM pMessage)) return;
+            TheProcessMessage pMsg = pIncoming as TheProcessMessage;
+            if (pMsg == null) return;
 
-            if (pMessage.TXT.Equals("NEWENERGYREADING"))
+            string[] cmd = pMsg.Message.TXT.Split(':');
+
+            switch (cmd[0]) 
             {
-                int pos = pMessage.PLS.IndexOf("\"Watts\":");
-                if (pos >= 0)
-                {
-                    string t = pMessage.PLS.Substring(pos);
-                    int pos2 = t.IndexOf(",");
-                    if (pos2 < 0) pos2 = t.IndexOf("}");
-                    if (pos2 >= 0)
+                case eEnergyMessages.EnergySiteConsumptionUpdate:
+                    TheEnergyData tData = TheCommonUtils.DeserializeJSONStringToObject<TheEnergyData>(pMsg.Message.PLS);
+                    if (tData != null)
                     {
-                        t = t.Substring("\"Watts\":".Length, pos2 - "\"Watts\":".Length);
-                        LastStationWatts = TheCommonUtils.CDbl(t);
+                        LastStationWatts =tData.Watts;
                     }
-                }
+                    break;
             }
         }
         #endregion
@@ -330,12 +330,9 @@ namespace CDMyComputer
                 TheDiagnostics.SetThreadName("C-MyComputer-HealthTimer", true);
                 if (!IsEnergyRegistered)
                 {
-                    TheThing tThing = TheThingRegistry.GetBaseEngineAsThing("CDMyEnergy.TheCDMyEnergyEngine");
-                    if (tThing != null)
-                    {
-                        IsEnergyRegistered = true;
-                        tThing.RegisterEvent(eEngineEvents.MessageProcessed, sinkEnergyFound);
-                    }
+                    IsEnergyRegistered = true;
+                    TheCDEngines.RegisterNewMiniRelay("EnergyMessages");
+                    TheThingRegistry.GetBaseEngine("EnergyMessages")?.RegisterEvent(eEngineEvents.IncomingMessage, sinkEnergyFound);
                 }
                 SendHealthInfo(Guid.Empty);
 
