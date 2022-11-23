@@ -310,24 +310,31 @@ namespace CDMyRulesEngine.ViewModel
                     TheThing tActionThing = TheThingRegistry.GetThingByMID("*", TheCommonUtils.CGuid(ActionObject));
                     if (tActionThing != null)
                     {
-                        string tActionValue = ActionValue;
-                        if (!string.IsNullOrEmpty(tActionValue))
+                        try
                         {
-                            ICDEThing triggerThing = TheThingRegistry.GetThingByMID("*", TheCommonUtils.CGuid(TriggerObject)) as ICDEThing;
-                            tActionValue = TheCommonUtils.GenerateFinalStr(tActionValue, triggerThing);
-                            tActionValue = tActionValue.Replace("%OldValue%", TriggerOldValue);
-                            tActionValue = TheCommonUtils.GenerateFinalStr(tActionValue, MyBaseThing);
-                        }
+                            string tActionValue = ActionValue;
+                            if (!string.IsNullOrEmpty(tActionValue))
+                            {
+                                ICDEThing triggerThing = TheThingRegistry.GetThingByMID("*", TheCommonUtils.CGuid(TriggerObject)) as ICDEThing;
+                                tActionValue = TheCommonUtils.GenerateFinalStr(tActionValue, triggerThing);
+                                tActionValue = tActionValue.Replace("%OldValue%", TriggerOldValue);
+                                tActionValue = TheCommonUtils.GenerateFinalStr(tActionValue, MyBaseThing);
+                            }
 
-                        ICDEThing tObject = tActionThing.GetObject() as ICDEThing;
-                        if (tObject != null)
-                            tObject.SetProperty(ActionProperty, tActionValue);
-                        else
-                            tActionThing.SetProperty(ActionProperty, tActionValue);
-                        if (IsRuleLogged)
-                            LogEvent(tActionValue);
-                        if (TheThing.GetSafePropertyBool(MyBaseThing,"IsEVTLogged"))
-                            TheLoggerFactory.LogEvent(eLoggerCategory.RuleEvent, TheCommonUtils.GenerateFinalStr(MyBaseThing.FriendlyName, MyBaseThing), eMsgLevel.l4_Message, TheBaseAssets.MyServiceHostInfo.GetPrimaryStationURL(false), TriggerObject, tActionValue);
+                            ICDEThing tObject = tActionThing.GetObject() as ICDEThing;
+                            if (tObject != null)
+                                tObject.SetProperty(ActionProperty, tActionValue);
+                            else
+                                tActionThing.SetProperty(ActionProperty, tActionValue);
+                            if (IsRuleLogged)
+                                LogEvent(tActionValue);
+                            if (TheThing.GetSafePropertyBool(MyBaseThing, "IsEVTLogged"))
+                                TheLoggerFactory.LogEvent(eLoggerCategory.RuleEvent, TheCommonUtils.GenerateFinalStr(MyBaseThing.FriendlyName, MyBaseThing), eMsgLevel.l4_Message,$"{TheBaseAssets.MyServiceHostInfo.GetPrimaryStationURL(false)}: Event Triggered", TriggerObject, tActionValue);
+                        }
+                        catch (Exception ex)
+                        {
+                            TheLoggerFactory.LogEvent(eLoggerCategory.RuleEvent, TheCommonUtils.GenerateFinalStr(MyBaseThing.FriendlyName, MyBaseThing), eMsgLevel.l4_Message,$"{TheBaseAssets.MyServiceHostInfo.GetPrimaryStationURL(false)}: Rule action failed with exception:{ex.Message}", TriggerObject, null);
+                        }
                     }
                     break;
             }
