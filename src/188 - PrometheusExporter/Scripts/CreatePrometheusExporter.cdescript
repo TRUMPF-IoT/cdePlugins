@@ -47,6 +47,7 @@
               "DeviceType": "ApplicationHost",
               "PropertiesIncluded": [
                 "QSenders;cde_qs_count",
+                "[QSenders].[LabeledKpis];cde_qs_count_per_scope",
                 "QSenderInRegistry;cde_qs_inregistry",
                 "QSReceivedTSM;cde_qs_tsm_received",
                 "QSSendErrors;cde_qs_tsm_send_errors",
