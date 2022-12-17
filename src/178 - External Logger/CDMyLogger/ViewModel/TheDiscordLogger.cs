@@ -28,6 +28,19 @@ namespace CDMyLogger.ViewModel
         {
             base.DoCreateUX(pForm);
             MyStatusFormDashPanel.PropertyBag = new nmiDashboardTile { Thumbnail = "FA5Bf392" };
+
+            var but=TheNMIEngine.AddSmartControl(MyBaseThing, pForm, eFieldType.TileButton, 136, 2, 0xf0, "Test Entry", null, new nmiCtrlTileButton() { NoTE=true, TileWidth = 3, ParentFld = 120, ClassName="cdeGoodActionButton" });
+            but.RegisterUXEvent(MyBaseThing, eUXEvents.OnClick, "HRE", (sender, psmg) => {
+                LogEvent(new TheEventLogData
+                {
+                    EventCategory = eLoggerCategory.ThingEvent,
+                    EventLevel = eMsgLevel.l4_Message,
+                    EventTime= DateTime.Now,
+                    EventName="Test Event",
+                    EventString="Clicked in the UX",
+                    StationName=TheBaseAssets.MyServiceHostInfo.MyStationName
+                }); 
+            });
         }
 
 
