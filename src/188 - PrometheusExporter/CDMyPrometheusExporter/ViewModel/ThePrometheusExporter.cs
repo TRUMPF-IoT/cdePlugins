@@ -500,110 +500,33 @@ namespace CDMyPrometheusExporter.ViewModel
                                 }
                             }
 
-                            var valueToReport = GetMetricValue(tMetric.Value);
-                            if (senderThing.ChangeNaNToNull && valueToReport == 0) //CM: closest reuse of disable sending of null/0
-                                continue;
-                            var labels = GetMetricLabels(senderThing, propertyName, metricName);
-
-                            switch (senderThing.TargetType?.ToLowerInvariant())
+                            var senderThingLabels = GetMetricLabels(senderThing, propertyName, metricName);
+                            if (propertyName.EndsWith("].[LabeledKpis]") && tMetric.Value != null)
                             {
-                                case "counter":
-                                    {
-                                        var counter = myCountersByMetricName.GetOrAdd(metricName,
-                                        (s) =>
-                                        {
-                                            Prometheus.Counter cs;
-                                            try
-                                            {
-                                                cs = Metrics.CreateCounter(s, "", labels);
-                                                return cs;
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                TheBaseAssets.MySYSLOG.WriteToLog(95307, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(strPrometheusExporter, $"Error creating metric {s} in server: {this.MyBaseThing?.Address}", eMsgLevel.l1_Error, e.ToString()));
-                                            }
-                                            return null;
-                                        });
-                                        if (counter != null)
-                                        {
-                                            if (counter.LabelNames.Length > 0)
-                                            {
-                                                var labelValues = GetLabelValues(tThing, counter.LabelNames);
-                                                var labelCounter = counter.Labels(labelValues);
-                                                var valueInc = valueToReport - labelCounter.Value;
-                                                if (valueInc > 0)
-                                                {
-                                                    labelCounter.Inc(valueInc);
-                                                }
-                                                else if (valueInc < 0)
-                                                {
-                                                    TheBaseAssets.MySYSLOG.WriteToLog(95307, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(strPrometheusExporter, $"Error reporting metric {metricName} in '{this.MyBaseThing?.Address} {this.MyBaseThing}'. Counter value {valueToReport} smaller than reported {labelCounter.Value}", eMsgLevel.l1_Error));
-                                                }
-                                            }
-                                            else
-                                            {
-                                                counter.Inc(valueToReport - counter.Value);
-                                            }
-                                        }
-                                    }
-                                    break;
+                                var labeledKpis = TheCommonUtils.DeserializeJSONStringToObject<List<TheCDEKPIs.LabeledKpi>>(tMetric.Value?.ToString());
 
-                                case null:
-                                case "":
-                                case "gauge":
-                                    {
-                                        var gauge = myGaugesByMetricName.GetOrAdd(metricName, (s) => Metrics.CreateGauge(s, "", labels));
-                                        if (gauge != null)
+                                foreach (var labeledKpi in labeledKpis)
+                                {
+                                    CreateOrUpdateMetric(senderThing, propertyName, metricName, labeledKpi.Value,
+                                        senderThingLabels.Concat(labeledKpi.Labels.Keys).ToArray(),
+                                        labels =>
                                         {
-                                            if (gauge.LabelNames.Length > 0)
-                                            {
-                                                var labelValues = GetLabelValues(tThing, gauge.LabelNames);
-                                                gauge.Labels(labelValues).Set(valueToReport);
-                                            }
-                                            else
-                                            {
-                                                gauge.Set(valueToReport);
-                                            }
-                                        }
-                                    }
-                                    break;
-                                case "histogram":
-                                    {
-                                        var histogram = myHistogramsByMetricName.GetOrAdd(metricName, (s) => Metrics.CreateHistogram(s, "", GetHistogramBuckets(senderThing, propertyName, metricName, labels)));
-                                        if (histogram != null)
-                                        {
-                                            if (histogram.LabelNames.Length > 0)
-                                            {
-                                                var labelValues = GetLabelValues(tThing, histogram.LabelNames);
-                                                histogram.Labels(labelValues).Observe(valueToReport);
-                                            }
-                                            else
-                                            {
-                                                histogram.Observe(valueToReport);
-                                            }
-                                        }
-                                    }
-                                    break;
-                                case "summary":
-                                    {
-                                        var summary = mySummariesByMetricName.GetOrAdd(metricName, (s) => Metrics.CreateSummary(s, "", labels));
-                                        if (summary != null)
-                                        {
-                                            if (summary.LabelNames.Length > 0)
-                                            {
-                                                var labelValues = GetLabelValues(tThing, summary.LabelNames);
-                                                summary.Labels(labelValues).Observe(valueToReport);
-                                            }
-                                            else
-                                            {
-                                                summary.Observe(valueToReport);
-                                            }
-                                        }
-                                    }
-                                    break;
-                                default:
-                                    TheBaseAssets.MySYSLOG.WriteToLog(95307, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(strPrometheusExporter, $"Unexpected metric type in server: {this.MyBaseThing?.Address}", eMsgLevel.l1_Error, senderThing.TargetType));
-                                    break;
+                                            return labels.Select(l =>
+                                                    labeledKpi.Labels.TryGetValue(l, out var labelValue)
+                                                        ? labelValue
+                                                        : GetLabelValues(tThing, new [] { l }).FirstOrDefault())
+                                                .ToArray();
+                                        });
+                                }
+                            }
+                            else
+                            {
+                                var valueToReport = GetMetricValue(tMetric.Value);
+                                if (senderThing.ChangeNaNToNull && valueToReport == 0) //CM: closest reuse of disable sending of null/0
+                                    continue;
+
+                                CreateOrUpdateMetric(senderThing, propertyName, metricName, valueToReport, senderThingLabels,
+                                    labels => GetLabelValues(tThing, labels));
                             }
                         }
                         catch (Exception e)
@@ -615,20 +538,122 @@ namespace CDMyPrometheusExporter.ViewModel
             }
         }
 
+        private void CreateOrUpdateMetric(TheSenderThing senderThing, string propertyName, string metricName,
+            double valueToReport, string[] labels, Func<string[], string[]> getLabelValues)
+        {
+            switch (senderThing.TargetType?.ToLowerInvariant())
+            {
+                case "counter":
+                    {
+                        var counter = myCountersByMetricName.GetOrAdd(metricName,
+                        (s) =>
+                        {
+                            Prometheus.Counter cs;
+                            try
+                            {
+                                cs = Metrics.CreateCounter(s, "", labels);
+                                return cs;
+                            }
+                            catch (Exception e)
+                            {
+                                TheBaseAssets.MySYSLOG.WriteToLog(95307, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(strPrometheusExporter, $"Error creating metric {s} in server: {this.MyBaseThing?.Address}", eMsgLevel.l1_Error, e.ToString()));
+                            }
+                            return null;
+                        });
+                        if (counter != null)
+                        {
+                            if (counter.LabelNames.Length > 0)
+                            {
+                                var labelValues = getLabelValues(counter.LabelNames);
+                                var labelCounter = counter.Labels(labelValues);
+                                var valueInc = valueToReport - labelCounter.Value;
+                                if (valueInc > 0)
+                                {
+                                    labelCounter.Inc(valueInc);
+                                }
+                                else if (valueInc < 0)
+                                {
+                                    TheBaseAssets.MySYSLOG.WriteToLog(95307, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(strPrometheusExporter, $"Error reporting metric {metricName} in '{this.MyBaseThing?.Address} {this.MyBaseThing}'. Counter value {valueToReport} smaller than reported {labelCounter.Value}", eMsgLevel.l1_Error));
+                                }
+                            }
+                            else
+                            {
+                                counter.Inc(valueToReport - counter.Value);
+                            }
+                        }
+                    }
+                    break;
+
+                case null:
+                case "":
+                case "gauge":
+                    {
+                        var gauge = myGaugesByMetricName.GetOrAdd(metricName, (s) => Metrics.CreateGauge(s, "", labels));
+                        if (gauge != null)
+                        {
+                            if (gauge.LabelNames.Length > 0)
+                            {
+                                var labelValues = getLabelValues(gauge.LabelNames);
+                                gauge.Labels(labelValues).Set(valueToReport);
+                            }
+                            else
+                            {
+                                gauge.Set(valueToReport);
+                            }
+                        }
+                    }
+                    break;
+                case "histogram":
+                    {
+                        var histogram = myHistogramsByMetricName.GetOrAdd(metricName, (s) => Metrics.CreateHistogram(s, "", GetHistogramBuckets(senderThing, propertyName, metricName, labels)));
+                        if (histogram != null)
+                        {
+                            if (histogram.LabelNames.Length > 0)
+                            {
+                                var labelValues = getLabelValues(histogram.LabelNames);
+                                histogram.Labels(labelValues).Observe(valueToReport);
+                            }
+                            else
+                            {
+                                histogram.Observe(valueToReport);
+                            }
+                        }
+                    }
+                    break;
+                case "summary":
+                    {
+                        var summary = mySummariesByMetricName.GetOrAdd(metricName, (s) => Metrics.CreateSummary(s, "", labels));
+                        if (summary != null)
+                        {
+                            if (summary.LabelNames.Length > 0)
+                            {
+                                var labelValues = getLabelValues(summary.LabelNames);
+                                summary.Labels(labelValues).Observe(valueToReport);
+                            }
+                            else
+                            {
+                                summary.Observe(valueToReport);
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    TheBaseAssets.MySYSLOG.WriteToLog(95307, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(strPrometheusExporter, $"Unexpected metric type in server: {this.MyBaseThing?.Address}", eMsgLevel.l1_Error, senderThing.TargetType));
+                    break;
+            }
+        }
+
         private double GetMetricValue(object value)
         {
-            if (value is DateTimeOffset)
+            if (value is DateTimeOffset offset)
             {
-                return ((DateTimeOffset)value).ToUnixTimeSeconds();
+                return offset.ToUnixTimeSeconds();
             }
-            else if (value is DateTime)
+            if (value is DateTime time)
             {
-                return (new DateTimeOffset((DateTime)value)).ToUnixTimeSeconds();
+                return new DateTimeOffset(time).ToUnixTimeSeconds();
             }
-            else
-            {
-                return TheCommonUtils.CDbl(value);
-            }
+            return TheCommonUtils.CDbl(value);
         }
 
         private HistogramConfiguration GetHistogramBuckets(TheSenderThing senderThing, string propertyName, string metricName, string[] labelNames)
@@ -647,7 +672,7 @@ namespace CDMyPrometheusExporter.ViewModel
             return partitionKeyParts;
         }
 
-        string[] GetLabelValues(TheThing tThing, string[] labelNames)
+        private string[] GetLabelValues(TheThing tThing, string[] labelNames)
         {
             var labelValues = new string[labelNames.Length];
             int i = 0;
@@ -669,7 +694,8 @@ namespace CDMyPrometheusExporter.ViewModel
             }
             return labelValues;
         }
-        string GetValidLabelName(string labelName)
+
+        private string GetValidLabelName(string labelName)
         {
             var label = labelName.Replace("[", "").Replace("]", "");
             label = Regex.Replace(label, "[^A-Za-z0-9_]", "_"); // Replace any other illegal character with _
@@ -683,7 +709,8 @@ namespace CDMyPrometheusExporter.ViewModel
             }
             return label;
         }
-        string GetValidLabelValue(string value)
+
+        private string GetValidLabelValue(string value)
         {
             return value;
         }
