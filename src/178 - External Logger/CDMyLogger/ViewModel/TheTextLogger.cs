@@ -71,8 +71,7 @@ namespace CDMyLogger.ViewModel
                 LogFileDate = mLogFileDate = DateTimeOffset.Now;
             tTimeStamp = $"{mLogFileDate:yyyMMdd_HHmmss}";
 
-            if (LogRemoteEvents)
-                TheCDEngines.MyContentEngine.RegisterEvent(eEngineEvents.NewEventLogEntry, sinkLogMe);
+            TheCDEngines.MyContentEngine.RegisterEvent(eEngineEvents.NewEventLogEntry, sinkLogMe);
         }
 
         private readonly object writeLock = new ();

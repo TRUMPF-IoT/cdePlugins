@@ -139,8 +139,7 @@ namespace CDMyLogger.ViewModel
             MyBaseThing.StatusLevel = 1;
             MyBaseThing.LastMessage = $"Connected to Logger at {DateTimeOffset.Now}";
             TheBaseAssets.MySYSLOG.RegisterEvent2("NewLogEntry", OnNewEvent);
-            if (LogRemoteEvents)
-                TheCDEngines.MyContentEngine.RegisterEvent(eEngineEvents.NewEventLogEntry, sinkLogMe);
+            TheCDEngines.MyContentEngine.RegisterEvent(eEngineEvents.NewEventLogEntry, sinkLogMe);
         }
         public virtual void Disconnect(TheProcessMessage pMsg)
         {
@@ -148,13 +147,12 @@ namespace CDMyLogger.ViewModel
             MyBaseThing.StatusLevel = 0;
             MyBaseThing.LastMessage = $"Disconnected from Logger at {DateTimeOffset.Now}";
             TheBaseAssets.MySYSLOG.UnregisterEvent2("NewLogEntry", OnNewEvent);
-            if (LogRemoteEvents)
-                TheCDEngines.MyContentEngine.UnregisterEvent(eEngineEvents.NewEventLogEntry, sinkLogMe);
+            TheCDEngines.MyContentEngine.UnregisterEvent(eEngineEvents.NewEventLogEntry, sinkLogMe);
         }
 
         protected virtual void sinkLogMe(ICDEThing sender, object para)
         {
-            if (para is not TheEventLogData tData)
+            if (!LogRemoteEvents || para is not TheEventLogData tData)
                 return;
             if (!TheCommonUtils.IsLocalhost(tData.cdeN))
                 LogEvent(para as TheEventLogData);
