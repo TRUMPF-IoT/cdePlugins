@@ -248,19 +248,7 @@ namespace CDMyComputer
             {
                 TheBaseAssets.MySYSLOG.WriteToLog(8006, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM("jcHealth", "Cannot create CPU Counter", eMsgLevel.l1_Error, e.ToString()));
             }
-            try
-            {
-                MyCDELoadCounter = new PerformanceCounter
-                {
-                    CategoryName = "Process",
-                    CounterName = "% Processor Time",
-                    InstanceName = Process.GetCurrentProcess().ProcessName
-                };
-            }
-            catch (Exception e)
-            {
-                TheBaseAssets.MySYSLOG.WriteToLog(8006, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM("jcHealth", "Cannot Create Load Counter", eMsgLevel.l1_Error, e.ToString()));
-            }
+
             MyCounter = new List<ThePerfCounter>();
             UseNicState = true;
 
@@ -283,9 +271,9 @@ namespace CDMyComputer
             {
                 wmiObjectWin32 = new ManagementObjectSearcher("select * from Win32_OperatingSystem");
             }
-            catch(Exception)
+            catch(Exception e)
             {
-
+                TheBaseAssets.MySYSLOG.WriteToLog(8007, new TSM("jcHealth", "wmiObject-Warning (Not Supported on XP)", eMsgLevel.l2_Warning, e.ToString()));
             }
             StartProcessCPUMeasure();
 
@@ -441,30 +429,19 @@ namespace CDMyComputer
                         MyHealthData.CPULoad = TheCommonUtils.CDbl(MyCPULoadCounter.NextValue()).cdeTruncate(2);
                     }
                 }
-                catch (Exception e)
+                catch (UnauthorizedAccessException e)
                 {
-                    TheBaseAssets.MySYSLOG.WriteToLog(8007, new TSM("jcHealth", "PerfCounter-Warning (Not Supported on XP)", eMsgLevel.l2_Warning, e.ToString()));
-                    MyCPULoadCounter = new PerformanceCounter
-                    {
-                        CategoryName = "Processor Information",
-                        CounterName = "% Processor Time",
-                        InstanceName = "_Total"
-                    };
-                }
-                try
-                {
-                    //if (MyHealthData != null && MyCDELoadCounter != null)
-                    //    MyHealthData.cdeLoad = MyCDELoadCounter.NextValue().cdeTruncate(2);
+                    TheBaseAssets.MySYSLOG.WriteToLog(8007, new TSM("jcHealth", "PerfCounter-Warning (Requires admin privileges)", eMsgLevel.l2_Warning, e.ToString()));
+
+                    MyCPULoadCounter?.Dispose();
+                    MyCPULoadCounter = null; // avoid further retries
                 }
                 catch (Exception e)
                 {
                     TheBaseAssets.MySYSLOG.WriteToLog(8007, new TSM("jcHealth", "PerfCounter-Warning (Not Supported on XP)", eMsgLevel.l2_Warning, e.ToString()));
-                    MyCDELoadCounter = new PerformanceCounter
-                    {
-                        CategoryName = "Process",
-                        CounterName = "% Processor Time",
-                        InstanceName = Process.GetCurrentProcess().ProcessName
-                    };
+
+                    MyCPULoadCounter?.Dispose();
+                    MyCPULoadCounter = null; // avoid further retries
                 }
 
                 if (UseNicState)
@@ -804,8 +781,7 @@ namespace CDMyComputer
         }
 
         private static PerformanceCounter MyCPULoadCounter;
-        private static PerformanceCounter MyCDELoadCounter;
-        //private static PerformanceCounter MyRamCounter;
+
         [DllImport("kernel32")]
         static extern int GetCurrentThreadId();
         [DllImport("kernel32.dll")]
