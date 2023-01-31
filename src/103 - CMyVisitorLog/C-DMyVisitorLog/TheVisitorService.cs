@@ -101,7 +101,7 @@ namespace CDMyVisitorLog
             if (MyVisitorLog == null)
                 MyVisitorLog = new TheVisitorLog(MyBaseThing);
             TheQueuedSenderRegistry.RegisterHealthTimer(GetSystemInfo);
-            TheCDEngines.MyNMIService.RegisterEvent("NMI_MY_LOCATION", (sender2, para) =>
+            TheCDEngines.MyNMIService?.RegisterEvent("NMI_MY_LOCATION", (sender2, para) =>
             {
                 var t = para as TheNMILocationInfo;
                 if (t != null)
