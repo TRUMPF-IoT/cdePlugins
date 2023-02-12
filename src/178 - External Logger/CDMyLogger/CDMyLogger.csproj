@@ -1,5 +1,5 @@
 <!--
- SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+ SPDX-FileCopyrightText: 2009-2023 TRUMPF Laser GmbH, authors: C-Labs
  SPDX-License-Identifier: MPL-2.0
  -->
 <Project Sdk="Microsoft.NET.Sdk">
@@ -10,11 +10,11 @@
     <RootNamespace>CDMyLogger</RootNamespace>
 	  <LangVersion>latest</LangVersion>
     <PackageId>CDMyLogger</PackageId>
-    <Version>5.145.0</Version>
+    <Version>5.162.1</Version>
     <Authors>Chris Muench</Authors>
     <Company>C-Labs</Company>
     <Product>CDMyLogger</Product>
-    <Copyright>Copyright © 2015-2022 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <Copyright>Copyright © 2015-2023 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
@@ -23,7 +23,7 @@
   <ItemGroup>
     <PackageReference Include="C-DEngine" Version="5.*" />
     <PackageReference Include="Discord.Net.Webhook">
-		  <Version>3.8.1</Version>
+		  <Version>3.9.0</Version>
 	  </PackageReference>
   </ItemGroup>
 
