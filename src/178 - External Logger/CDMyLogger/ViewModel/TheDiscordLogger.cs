@@ -1,4 +1,8 @@
-﻿using Discord;
+﻿// SPDX-FileCopyrightText: 2009-2023 TRUMPF Laser GmbH, authors: C-Labs
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using Discord;
 using Discord.Webhook;
 using nsCDEngine.BaseClasses;
 using nsCDEngine.Engines;
@@ -61,32 +65,32 @@ namespace CDMyLogger.ViewModel
 
             TheCommonUtils.cdeRunTaskAsync("webHook", async (_) =>
             {
-                using (var client = new DiscordWebhookClient(MyBaseThing.Address))
+                try
                 {
-                    Discord.Color tCol = Discord.Color.Default;
-                    switch (pItem.EventLevel)
+                    using (var client = new DiscordWebhookClient(MyBaseThing.Address))
                     {
-                        case eMsgLevel.l4_Message:
-                            tCol = Discord.Color.DarkGreen;
-                            break;
-                        case eMsgLevel.l1_Error:
-                            tCol = Discord.Color.Red;
-                            break;
-                        case eMsgLevel.l2_Warning:
-                            tCol = Discord.Color.LightOrange;
-                            break;
-                        case eMsgLevel.l6_Debug:
-                            tCol = Discord.Color.LightGrey;
-                            break;
-                        case eMsgLevel.l7_HostDebugMessage:
-                            tCol = Discord.Color.DarkerGrey;
-                            break;
-                        case eMsgLevel.l3_ImportantMessage:
-                            tCol = Discord.Color.Green;
-                            break;
-                    }
-                    try
-                    {
+                        Discord.Color tCol = Discord.Color.Default;
+                        switch (pItem.EventLevel)
+                        {
+                            case eMsgLevel.l4_Message:
+                                tCol = Discord.Color.DarkGreen;
+                                break;
+                            case eMsgLevel.l1_Error:
+                                tCol = Discord.Color.Red;
+                                break;
+                            case eMsgLevel.l2_Warning:
+                                tCol = Discord.Color.LightOrange;
+                                break;
+                            case eMsgLevel.l6_Debug:
+                                tCol = Discord.Color.LightGrey;
+                                break;
+                            case eMsgLevel.l7_HostDebugMessage:
+                                tCol = Discord.Color.DarkerGrey;
+                                break;
+                            case eMsgLevel.l3_ImportantMessage:
+                                tCol = Discord.Color.Green;
+                                break;
+                        }
                         var embed = new EmbedBuilder
                         {
                             Description = pItem.EventName,
@@ -112,10 +116,10 @@ namespace CDMyLogger.ViewModel
                         else
                             await client.SendMessageAsync(text: $"Event Log Entry for: {tOrg}", embeds: new[] { embed.Build() });
                     }
-                    catch (Exception e)
-                    {
-                        SetMessage($"Error: {e}", DateTimeOffset.Now, 178001, eMsgLevel.l1_Error);
-                    }
+                }
+                catch (Exception e)
+                {
+                    SetMessage($"Error: {e}", DateTimeOffset.Now, 178001, eMsgLevel.l1_Error);
                 }
             });
             return true;
