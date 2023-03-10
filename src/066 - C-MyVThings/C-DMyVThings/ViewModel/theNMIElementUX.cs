@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+// SPDX-FileCopyrightText: 2009-2023 TRUMPF Laser GmbH, authors: C-Labs
 //
 // SPDX-License-Identifier: MPL-2.0
 
@@ -62,15 +62,6 @@ namespace CDMyVThings.ViewModel
             SummaryForm.PropertyBag = new nmiDashboardTile() { Format = $"{MyBaseThing.FriendlyName}<br>{{0}}", Caption = MyBaseThing.FriendlyName };
 
             CountBar = TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleEnded, 5, 2, MyBaseThing.cdeA, "CurrentValue", "Value", null);
-            CountBar.RegisterEvent2("OnShowEditor", (pMsg, paramspMsg2) => {
-                var tMyForm = TheNMIEngine.GetNMIEditorForm();
-                if (tMyForm != null)
-                {
-                    TheNMIEngine.DeleteFieldsByRange(tMyForm, 10, 9999);
-                    TheNMIEngine.AddSmartControl(MyBaseThing, tMyForm, eFieldType.Table, 2010, 0xA2, 0x80, "All Properties", $"mypropertybag;2;{CountBar.cdeMID}", new ThePropertyBag() { "NoTE=true", "TileHeight=5", "TileWidth=6" });
-                    TheNMIEngine.ReloadNMIEditor();
-                }
-            });
             ChangeTimestampField = TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.DateTime, 6, 0, MyBaseThing.cdeA, "Last Change", nameof(ValueChangeTimestamp), new nmiCtrlDateTime { ParentFld=1, Visibility = ShowChangeTimestamp });
             TimestampField = TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.DateTime, 7, 0, MyBaseThing.cdeA, "Timestamp", nameof(ValueTimestamp), new nmiCtrlDateTime { ParentFld=1, Visibility = ShowChangeTimestamp });
 
