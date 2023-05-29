@@ -58,6 +58,7 @@ namespace CDMyLogger.ViewModel
                 case eLoggerCategory.NMIAudit:
                 case eLoggerCategory.NodeConnect:
                     return false;
+                case eLoggerCategory.RuleEvent:
                 case eLoggerCategory.UserEvent:
                 case eLoggerCategory.ThingEvent:
                     break;

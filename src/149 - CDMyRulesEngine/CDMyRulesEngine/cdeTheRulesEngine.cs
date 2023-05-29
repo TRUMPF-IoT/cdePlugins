@@ -292,7 +292,6 @@ namespace CDMyRulesEngine
             if (pRule == null || TheBaseAssets.MyServiceHostInfo.IsCloudService)
                 return false;
 
-            pRule.GetBaseThing().EngineName = MyBaseEngine.GetEngineName();
             if (pRule.TriggerCondition == eRuleTrigger.Set)
                 pRule.ActionValue = null;
             pRule.IsRuleRunning = false;

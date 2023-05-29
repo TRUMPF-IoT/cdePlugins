@@ -154,7 +154,7 @@ namespace CDMyRulesEngine.ViewModel
                 {  new TheFieldInfo() { FldOrder=170,DataItem="MyPropertyBag.TriggerValue.Value",Flags=2,Type=eFieldType.SingleEnded,Header="Trigger Value", PropertyBag=new ThePropertyBag() { "ParentFld=100", "HelpText=...this objects..." }  }},
 
                 /* Action Settings Group */
-                { new TheFieldInfo() { FldOrder=505,DataItem="MyPropertyBag.ActionObjectType.Value",Flags=2,Type=eFieldType.ComboBox,Header="Action Object Type",PropertyBag = new nmiCtrlComboBox() { ParentFld=idGroupActionSettings, Options="Set Property on a Thing:CDE_THING;Publish Central:CDE_PUBLISHCENTRAL;Publish to Service:CDE_PUBLISH2SERVICE", DefaultValue="CDE_THING" } }},
+                { new TheFieldInfo() { FldOrder=505,DataItem="MyPropertyBag.ActionObjectType.Value",Flags=2,Type=eFieldType.ComboBox,Header="Action Object Type",PropertyBag = new nmiCtrlComboBox() { ParentFld=idGroupActionSettings, Options="Set Property on a Thing:CDE_THING;Publish Central:CDE_PUBLISHCENTRAL;Publish to Service:CDE_PUBLISH2SERVICE;Just Log:CDE_LOG", DefaultValue="CDE_THING" } }},
                 {  new TheFieldInfo() { FldOrder=506,DataItem="MyPropertyBag.ActionDelay.Value",Flags=2,Type=eFieldType.Number,Header="Delay", DefaultValue="0", PropertyBag=new ThePropertyBag() { "ParentFld=500", "HelpText=...after a delay of these seconds..." }  }},
 
                 /* Thing / Property Action Sub-Group */
@@ -281,7 +281,7 @@ namespace CDMyRulesEngine.ViewModel
 
         internal void FireAction(bool FireNow)
         {
-            if (TheCDEngines.MyThingEngine == null || !TheBaseAssets.MasterSwitch) return;
+             if (TheCDEngines.MyThingEngine == null || !TheBaseAssets.MasterSwitch) return;
             if (!FireNow)
             {
                 int tDelay = ActionDelay;
@@ -302,9 +302,16 @@ namespace CDMyRulesEngine.ViewModel
             {
                 case "CDE_PUBLISHCENTRAL":
                     SendRuleTSM(false);
+                    if (IsRuleLogged)
+                        LogEvent("Published to All");
                     break;
                 case "CDE_PUBLISH2SERVICE":
                     SendRuleTSM(true);
+                    if (IsRuleLogged)
+                        LogEvent("Published to Service");
+                    break;
+                case "CDE_LOG":
+                    LogEvent("Just Logging");
                     break;
                 default: //case "CDE_THING":
                     TheThing tActionThing = TheThingRegistry.GetThingByMID("*", TheCommonUtils.CGuid(ActionObject));
@@ -336,6 +343,11 @@ namespace CDMyRulesEngine.ViewModel
                             TheLoggerFactory.LogEvent(eLoggerCategory.RuleEvent, TheCommonUtils.GenerateFinalStr(MyBaseThing.FriendlyName, MyBaseThing), eMsgLevel.l4_Message,$"{TheBaseAssets.MyServiceHostInfo.GetPrimaryStationURL(false)}: Rule action failed with exception:{ex.Message}", TriggerObject, null);
                         }
                     }
+                    else
+                    {
+                        if (IsRuleLogged)
+                            LogEvent("Fired but no Action Object Set");
+                    }
                     break;
             }
             TheThing.SetSafePropertyDate(MyBaseThing, "LastAction", DateTimeOffset.Now);
@@ -348,6 +360,7 @@ namespace CDMyRulesEngine.ViewModel
             {
                 EventTime = DateTimeOffset.Now,
                 EventLevel = eMsgLevel.l4_Message,
+                EventCategory= eLoggerCategory.RuleEvent,
                 StationName = TheBaseAssets.MyServiceHostInfo.GetPrimaryStationURL(false),
                 EventName = TheCommonUtils.GenerateFinalStr(MyBaseThing.FriendlyName, MyBaseThing)
             };
