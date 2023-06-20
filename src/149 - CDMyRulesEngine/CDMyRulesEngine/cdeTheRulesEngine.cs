@@ -65,6 +65,10 @@ namespace CDMyRulesEngine
                 TheCDEngines.MyThingEngine.RegisterEvent(eEngineEvents.ThingRegistered, sinkThingWasRegistered);
                 //TheThingRegistry.eventThingRegistered += sinkThingWasRegistered;
                 TheCDEngines.MyThingEngine.RegisterEvent(eEngineEvents.ThingInitCalled, sinkActivateRules);
+
+                TheThing tThing = TheThingRegistry.GetThingByID(MyBaseEngine.GetEngineName(), "SYSTEM_CLOCK");
+                if (tThing?.GetObject() == null)
+                    TheThingRegistry.RegisterThing(new TheClock(tThing, MyBaseEngine));
             }
             MyBaseThing.RegisterEvent(eEngineEvents.IncomingMessage, HandleMessage);
             mIsInitialized = true; // CODE REVIEW Markus: Is the rules engine really ready for consumption at this stage, or should we wait until storage is ready?
