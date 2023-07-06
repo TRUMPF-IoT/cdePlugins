@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+﻿// SPDX-FileCopyrightText: 2009-2023 TRUMPF Laser GmbH, authors: C-Labs
 //
 // SPDX-License-Identifier: MPL-2.0
 
@@ -89,7 +89,6 @@ namespace CDMyNetwork
         {
             OnThingDeleted(this, this);
             mIsInitialized = false;
-            // TODO Properly implement delete
             return true;
         }
 
@@ -100,9 +99,9 @@ namespace CDMyNetwork
 
         void OnThingDeleted(ICDEThing tThing, object deletedThing)
         {
-            if (deletedThing is ICDEThing)
+            if (deletedThing is ICDEThing thing)
             {
-                var fileServer = ((ICDEThing)deletedThing).GetBaseThing().GetObject() as TheNetworkServiceBase;
+                var fileServer = thing.GetBaseThing().GetObject() as TheNetworkServiceBase;
                 fileServer?.Disconnect();
             }
         }
@@ -146,7 +145,7 @@ namespace CDMyNetwork
                 tServer = tDevice.GetObject() as T;
                 if (tServer != null)
                 {
-                    //tServer.InitServer(null);
+                    //tServer.InitServer(null)
                 }
                 else
                 {
@@ -207,7 +206,7 @@ namespace CDMyNetwork
                 {
                     TheNetworkServiceBase tHid = tDevice.GetObject() as TheNetworkServiceBase;
                     if (tHid?.GetBaseThing().StatusLevel > 1)
-                        CombinedCode++; // = tHid.StatusLevel;
+                        CombinedCode++; 
                 }
             }
             MyBaseEngine.SetStatusLevel(-1);
