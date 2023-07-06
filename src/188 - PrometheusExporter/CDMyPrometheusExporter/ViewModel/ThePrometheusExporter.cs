@@ -505,19 +505,21 @@ namespace CDMyPrometheusExporter.ViewModel
                             {
                                 var labeledKpis = TheCommonUtils.DeserializeJSONStringToObject<List<TheCDEKPIs.LabeledKpi>>(tMetric.Value?.ToString());
 
+                                var listLabeledKpiLabelValues = new HashSet<string>();
                                 foreach (var labeledKpi in labeledKpis)
                                 {
-                                    CreateOrUpdateMetric(senderThing, propertyName, metricName, labeledKpi.Value,
-                                        senderThingLabels.Concat(labeledKpi.Labels.Keys).ToArray(),
-                                        labels =>
-                                        {
-                                            return labels.Select(l =>
-                                                    labeledKpi.Labels.TryGetValue(l, out var labelValue)
-                                                        ? labelValue
-                                                        : GetLabelValues(tThing, new [] { l }).FirstOrDefault())
-                                                .ToArray();
-                                        });
+                                    var labelNames = senderThingLabels.Concat(labeledKpi.Labels.Keys).ToArray();
+                                    var labelValues = labelNames.Select(l =>
+                                            labeledKpi.Labels.TryGetValue(l, out var labelValue)
+                                                ? labelValue
+                                                : GetLabelValues(tThing, new[] {l}).FirstOrDefault())
+                                        .ToArray();
+
+                                    listLabeledKpiLabelValues.Add(string.Join(string.Empty, labelValues));
+                                    CreateOrUpdateMetric(senderThing, propertyName, metricName, labeledKpi.Value, labelNames, labelValues);
                                 }
+
+                                RemoveUnavailableMetrics(senderThing, metricName, listLabeledKpiLabelValues);
                             }
                             else
                             {
@@ -525,8 +527,8 @@ namespace CDMyPrometheusExporter.ViewModel
                                 if (senderThing.ChangeNaNToNull && valueToReport == 0) //CM: closest reuse of disable sending of null/0
                                     continue;
 
-                                CreateOrUpdateMetric(senderThing, propertyName, metricName, valueToReport, senderThingLabels,
-                                    labels => GetLabelValues(tThing, labels));
+                                var labelValues = GetLabelValues(tThing, senderThingLabels);
+                                CreateOrUpdateMetric(senderThing, propertyName, metricName, valueToReport, senderThingLabels, labelValues);
                             }
                         }
                         catch (Exception e)
@@ -538,15 +540,14 @@ namespace CDMyPrometheusExporter.ViewModel
             }
         }
 
-        private void CreateOrUpdateMetric(TheSenderThing senderThing, string propertyName, string metricName,
-            double valueToReport, string[] labels, Func<string[], string[]> getLabelValues)
+        private void CreateOrUpdateMetric(TheSenderThing senderThing, string propertyName, string metricName, double valueToReport, string[] labels, string[] labelValues)
         {
             switch (senderThing.TargetType?.ToLowerInvariant())
             {
                 case "counter":
                     {
                         var counter = myCountersByMetricName.GetOrAdd(metricName,
-                        (s) =>
+                        s =>
                         {
                             Prometheus.Counter cs;
                             try
@@ -564,7 +565,6 @@ namespace CDMyPrometheusExporter.ViewModel
                         {
                             if (counter.LabelNames.Length > 0)
                             {
-                                var labelValues = getLabelValues(counter.LabelNames);
                                 var labelCounter = counter.Labels(labelValues);
                                 var valueInc = valueToReport - labelCounter.Value;
                                 if (valueInc > 0)
@@ -588,12 +588,11 @@ namespace CDMyPrometheusExporter.ViewModel
                 case "":
                 case "gauge":
                     {
-                        var gauge = myGaugesByMetricName.GetOrAdd(metricName, (s) => Metrics.CreateGauge(s, "", labels));
+                        var gauge = myGaugesByMetricName.GetOrAdd(metricName, s => Metrics.CreateGauge(s, "", labels));
                         if (gauge != null)
                         {
                             if (gauge.LabelNames.Length > 0)
                             {
-                                var labelValues = getLabelValues(gauge.LabelNames);
                                 gauge.Labels(labelValues).Set(valueToReport);
                             }
                             else
@@ -605,12 +604,11 @@ namespace CDMyPrometheusExporter.ViewModel
                     break;
                 case "histogram":
                     {
-                        var histogram = myHistogramsByMetricName.GetOrAdd(metricName, (s) => Metrics.CreateHistogram(s, "", GetHistogramBuckets(senderThing, propertyName, metricName, labels)));
+                        var histogram = myHistogramsByMetricName.GetOrAdd(metricName, s => Metrics.CreateHistogram(s, "", GetHistogramBuckets(senderThing, propertyName, metricName, labels)));
                         if (histogram != null)
                         {
                             if (histogram.LabelNames.Length > 0)
                             {
-                                var labelValues = getLabelValues(histogram.LabelNames);
                                 histogram.Labels(labelValues).Observe(valueToReport);
                             }
                             else
@@ -622,12 +620,11 @@ namespace CDMyPrometheusExporter.ViewModel
                     break;
                 case "summary":
                     {
-                        var summary = mySummariesByMetricName.GetOrAdd(metricName, (s) => Metrics.CreateSummary(s, "", labels));
+                        var summary = mySummariesByMetricName.GetOrAdd(metricName, s => Metrics.CreateSummary(s, "", labels));
                         if (summary != null)
                         {
                             if (summary.LabelNames.Length > 0)
                             {
-                                var labelValues = getLabelValues(summary.LabelNames);
                                 summary.Labels(labelValues).Observe(valueToReport);
                             }
                             else
@@ -637,6 +634,55 @@ namespace CDMyPrometheusExporter.ViewModel
                         }
                     }
                     break;
+                default:
+                    TheBaseAssets.MySYSLOG.WriteToLog(95307, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(strPrometheusExporter, $"Unexpected metric type in server: {this.MyBaseThing?.Address}", eMsgLevel.l1_Error, senderThing.TargetType));
+                    break;
+            }
+        }
+
+        private void RemoveUnavailableMetrics<TMetric, TMetricChild>(TMetric metric, HashSet<string> existingLabelValues)
+            where TMetric : Collector<TMetricChild>
+            where TMetricChild : ChildBase
+        {
+            var metricLabelValues = metric.GetAllLabelValues().ToList();
+            var labelsToRemove = DetermineMetricLabelsToRemove(metricLabelValues, existingLabelValues).ToList();
+            labelsToRemove.ForEach(metric.RemoveLabelled);
+        }
+
+        private IEnumerable<string[]> DetermineMetricLabelsToRemove(List<string[]> metricLabelValues, HashSet<string> labelValues)
+        {
+            if (metricLabelValues == null || metricLabelValues.Count == 0)
+                return Array.Empty<string[]>();
+
+            return metricLabelValues.Where(mlv => labelValues.Add(string.Join(string.Empty, mlv)));
+        }
+
+        private void RemoveUnavailableMetrics(TheSenderThing senderThing, string metricName, HashSet<string> existingLabelValues)
+        {
+            switch (senderThing.TargetType?.ToLowerInvariant())
+            {
+                case "counter":
+                    if (myCountersByMetricName.TryGetValue(metricName, out var counter))
+                        RemoveUnavailableMetrics<Counter, Counter.Child>(counter, existingLabelValues);
+                    break;
+
+                case null:
+                case "":
+                case "gauge":
+                    if (myGaugesByMetricName.TryGetValue(metricName, out var gauge))
+                        RemoveUnavailableMetrics<Gauge, Gauge.Child>(gauge, existingLabelValues);
+                    break;
+
+                case "histogram":
+                    if (myHistogramsByMetricName.TryGetValue(metricName, out var histogram))
+                        RemoveUnavailableMetrics<Histogram, Histogram.Child>(histogram, existingLabelValues);
+                    break;
+
+                case "summary":
+                    if (mySummariesByMetricName.TryGetValue(metricName, out var summary))
+                        RemoveUnavailableMetrics<Summary, Summary.Child>(summary, existingLabelValues);
+                    break;
+
                 default:
                     TheBaseAssets.MySYSLOG.WriteToLog(95307, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(strPrometheusExporter, $"Unexpected metric type in server: {this.MyBaseThing?.Address}", eMsgLevel.l1_Error, senderThing.TargetType));
                     break;
