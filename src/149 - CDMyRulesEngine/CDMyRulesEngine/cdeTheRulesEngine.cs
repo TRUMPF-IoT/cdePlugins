@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+﻿// SPDX-FileCopyrightText: 2009-2023 TRUMPF Laser GmbH, authors: C-Labs
 //
 // SPDX-License-Identifier: MPL-2.0
 using CDMyRulesEngine.ViewModel;
@@ -65,6 +65,10 @@ namespace CDMyRulesEngine
                 TheCDEngines.MyThingEngine.RegisterEvent(eEngineEvents.ThingRegistered, sinkThingWasRegistered);
                 //TheThingRegistry.eventThingRegistered += sinkThingWasRegistered;
                 TheCDEngines.MyThingEngine.RegisterEvent(eEngineEvents.ThingInitCalled, sinkActivateRules);
+
+                TheThing tThing = TheThingRegistry.GetThingByID(MyBaseEngine.GetEngineName(), "SYSTEM_CLOCK");
+                if (tThing?.GetObject() == null)
+                    TheThingRegistry.RegisterThing(new TheClock(tThing, MyBaseEngine));
             }
             MyBaseThing.RegisterEvent(eEngineEvents.IncomingMessage, HandleMessage);
             mIsInitialized = true; // CODE REVIEW Markus: Is the rules engine really ready for consumption at this stage, or should we wait until storage is ready?
@@ -292,7 +296,6 @@ namespace CDMyRulesEngine
             if (pRule == null || TheBaseAssets.MyServiceHostInfo.IsCloudService)
                 return false;
 
-            pRule.GetBaseThing().EngineName = MyBaseEngine.GetEngineName();
             if (pRule.TriggerCondition == eRuleTrigger.Set)
                 pRule.ActionValue = null;
             pRule.IsRuleRunning = false;

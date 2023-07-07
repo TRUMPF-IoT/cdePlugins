@@ -23,7 +23,7 @@
   <ItemGroup>
     <PackageReference Include="C-DEngine" Version="5.*" />
     <PackageReference Include="Discord.Net.Webhook">
-		  <Version>3.9.0</Version>
+		  <Version>3.10.0</Version>
 	  </PackageReference>
   </ItemGroup>
 

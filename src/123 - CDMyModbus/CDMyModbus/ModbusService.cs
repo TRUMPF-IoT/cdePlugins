@@ -39,11 +39,11 @@ namespace Modbus
             MyBaseEngine.SetDeviceTypes(new List<TheDeviceTypeInfo>
             {
                 new TheDeviceTypeInfo { Capabilities = new eThingCaps[] { eThingCaps.SensorProvider, eThingCaps.ConfigManagement }, DeviceType = eModbusType.ModbusTCPDevice, Description = "Modbus TCP Device" },
-                new TheDeviceTypeInfo { Capabilities = new eThingCaps[] { eThingCaps.SensorProvider, eThingCaps.ConfigManagement }, DeviceType = eModbusType.ModbusRTUDevice, Description = "Modbus RTU Device" } //TODO: Did I do this right?
+                new TheDeviceTypeInfo { Capabilities = new eThingCaps[] { eThingCaps.SensorProvider, eThingCaps.ConfigManagement }, DeviceType = eModbusType.ModbusRTUDevice, Description = "Modbus RTU Device" } 
             });
 
             MyBaseEngine.SetEngineID(new Guid("{7E749DF5-10CD-4671-AB58-05EF078C9125}")); 
-            MyBaseEngine.SetPluginInfo("This service allows you to connect to devices via Modbus", 0, null, "toplogo-150.png", "C-Labs", "http://www.c-labs.com", new List<string>() { }); //TODO: Describe your plugin - this will later be used in the Plugin-Store
+            MyBaseEngine.SetPluginInfo("This service allows you to connect to devices via Modbus", 0, null, "toplogo-150.png", "C-Labs", "http://www.c-labs.com", new List<string>() { }); 
         }
 
         public override bool Init()

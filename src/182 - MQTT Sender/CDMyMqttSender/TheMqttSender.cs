@@ -473,7 +473,7 @@ namespace CDMyMqttSender.ViewModel
                     connAck = 255;
                     TheBaseAssets.MySYSLOG.WriteToLog(95302, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(strMqttSender, $"Error while reconnecting", eMsgLevel.l1_Error, ex.ToString()));
                 }
-            } while (connAck != MqttMsgConnack.CONN_ACCEPTED && ReconnectInterval > 0 && IsConnected && !Disconnecting && TheBaseAssets.MasterSwitch);
+            } while (connAck != MqttMsgConnack.CONN_ACCEPTED && ReconnectInterval > 0 && IsConnected && AutoConnect && !Disconnecting && TheBaseAssets.MasterSwitch);
         }
 
         protected override bool DoDisconnect(bool bDrain)
@@ -492,6 +492,7 @@ namespace CDMyMqttSender.ViewModel
                     catch { }
                 }
             }
+            Disconnecting = true;
             var client = _client;
             if (client != null)
             {
@@ -531,6 +532,7 @@ namespace CDMyMqttSender.ViewModel
                 }
                 catch { }
             }
+            Disconnecting = false;
             return true;
         }
 
