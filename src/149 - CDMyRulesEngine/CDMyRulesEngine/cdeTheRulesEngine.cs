@@ -17,19 +17,6 @@ namespace CDMyRulesEngine
 
     internal class TheRulesEngine : ThePluginBase, ICDERulesEngine
     {
-        #region Retired Interface - remove once ICDERulesEngine has removed these
-        public bool LogEvent(string pEventName, string tTrigger, string tAction)
-        {
-            TheLoggerFactory.LogEvent(eLoggerCategory.RuleEvent, pEventName,eMsgLevel.l4_Message, null, tTrigger, tAction);
-            return false;
-        }
-        public bool LogEvent(TheEventLogData pData)
-        {
-            TheLoggerFactory.LogEvent(pData);
-            return false;
-        }
-        #endregion
-        #region ICDEPlugin Methods
         /// <summary>
         /// 
         /// </summary>
@@ -39,10 +26,9 @@ namespace CDMyRulesEngine
             base.InitEngineAssets(pBase);
             MyBaseEngine.SetFriendlyName("The Rules Engine");
             MyBaseEngine.AddCapability(eThingCaps.RulesEngine);
-            MyBaseEngine.SetPluginInfo("The C-Labs Rules engine", 0, null, "toplogo-150.png", "C-Labs", "http://www.c-labs.com", null); //TODO: Describe your plugin - this will later be used in the Plugin-Store
+            MyBaseEngine.SetPluginInfo("The C-Labs Rules engine", 0, null, "toplogo-150.png", "C-Labs", "https://www.c-labs.com", null);
             MyBaseEngine.SetEngineID(new Guid("{843B73BA-028F-4BDF-A102-D1E545204036}"));
         }
-        #endregion
 
         public override bool Init()
         {
@@ -58,12 +44,10 @@ namespace CDMyRulesEngine
                 return true;
             }
 
-            if (!TheBaseAssets.MyServiceHostInfo.IsCloudService)//TODO: Allow Cloud Rules
+            if (!TheBaseAssets.MyServiceHostInfo.IsCloudService)
             {
                 TheCDEngines.MyThingEngine.RegisterEvent(eEngineEvents.ThingUpdated, sinkThingWasUpdated);
-                //TheThingRegistry.eventThingUpdated += sinkThingWasUpdated;
                 TheCDEngines.MyThingEngine.RegisterEvent(eEngineEvents.ThingRegistered, sinkThingWasRegistered);
-                //TheThingRegistry.eventThingRegistered += sinkThingWasRegistered;
                 TheCDEngines.MyThingEngine.RegisterEvent(eEngineEvents.ThingInitCalled, sinkActivateRules);
 
                 TheThing tThing = TheThingRegistry.GetThingByID(MyBaseEngine.GetEngineName(), "SYSTEM_CLOCK");
@@ -71,8 +55,7 @@ namespace CDMyRulesEngine
                     TheThingRegistry.RegisterThing(new TheClock(tThing, MyBaseEngine));
             }
             MyBaseThing.RegisterEvent(eEngineEvents.IncomingMessage, HandleMessage);
-            mIsInitialized = true; // CODE REVIEW Markus: Is the rules engine really ready for consumption at this stage, or should we wait until storage is ready?
-                                   //CM: The rules engine is ready but the Event Log might not be fully ready as of this time.
+            mIsInitialized = true; 
             ActivateRules();
             MyBaseEngine.ProcessInitialized();
             return true;
@@ -121,7 +104,7 @@ namespace CDMyRulesEngine
 
         void sinkThingWasRegistered(ICDEThing sender, object pPara)
         {
-            if (TheBaseAssets.MyServiceHostInfo.IsCloudService) return;//TODO: Allow Cloud Rules
+            if (TheBaseAssets.MyServiceHostInfo.IsCloudService) return;
             TheThing pThing = sender as TheThing;
             if (pThing != null && TheThing.GetSafePropertyString(pThing, "DeviceType") == eKnownDeviceTypes.TheThingRule)
             {
@@ -139,7 +122,7 @@ namespace CDMyRulesEngine
 
         void sinkThingWasUpdated(ICDEThing sender, object pPara)
         {
-            if (TheBaseAssets.MyServiceHostInfo.IsCloudService) return; //TODO: Allow Cloud Rules
+            if (TheBaseAssets.MyServiceHostInfo.IsCloudService) return; 
 
             TheThing pThing = sender as TheThing;
             if (pThing != null && TheThing.GetSafePropertyString(pThing, "DeviceType") == eKnownDeviceTypes.TheThingRule)
@@ -179,12 +162,11 @@ namespace CDMyRulesEngine
 
             TheFormInfo tFormGuid = new TheFormInfo(new Guid("{6C34871C-D49B-4D7A-84E0-35E25B1F18B0}") /*TheThing.GetSafeThingGuid(MyBaseThing, "RULESREG")*/, eEngineName.NMIService, "The Rules Registry", $"TheThing;:;0;:;True;:;DeviceType={eKnownDeviceTypes.TheThingRule};EngineName={MyBaseEngine.GetEngineName()}")
             { GetFromFirstNodeOnly = true, IsNotAutoLoading = true, AddButtonText = "Add Rule", AddTemplateType= "44444444-6AD1-45AE-BE61-96AF02329613" };
-            //TheNMIEngine.AddForm(tFormGuid);
             TheNMIEngine.AddFormToThingUX(MyDash, MyBaseThing, tFormGuid, "CMyTable", "Rules Registry", 5, 9, 128, TheNMIEngine.GetNodeForCategory(), null, new ThePropertyBag { "Thumbnail=FA5:f07b" });
             TheNMIEngine.AddFields(tFormGuid, new List<TheFieldInfo>
             {
                 {  new TheFieldInfo() { FldOrder=10,DataItem="MyPropertyBag.IsRuleActive.Value",Flags=2,Type=eFieldType.SingleCheck,Header="Active", FldWidth=1, TileLeft=2,TileTop=6,TileWidth=4,TileHeight=1 }},
-                {  new TheFieldInfo() { FldOrder=20,DataItem="MyPropertyBag.IsRuleLogged.Value",Flags=2,Type=eFieldType.SingleCheck,Header="Logged", FldWidth=1, TileLeft=6,TileTop=6,TileWidth=4,TileHeight=1 }},
+                {  new TheFieldInfo() { FldOrder=20,DataItem="MyPropertyBag.IsEVTLogged.Value",Flags=2,Type=eFieldType.SingleCheck,Header="Logged", FldWidth=1, TileLeft=6,TileTop=6,TileWidth=4,TileHeight=1 }},
 
                 {  new TheFieldInfo() { FldOrder=30,DataItem="MyPropertyBag.FriendlyName.Value",Flags=2,Type=eFieldType.SingleEnded,Header="Rule Name", FldWidth=3, TileLeft=0,TileTop=1,TileWidth=11,TileHeight=1, PropertyBag=new nmiCtrlSingleEnded() { HelpText="Give this rule a friendly name" }   }},
                 {  new TheFieldInfo() { FldOrder=137,DataItem="cdeO",Flags=16,Type=eFieldType.SingleEnded,Header="Status", FldWidth=3, Format="<span style='font-size:xx-small'>Running:%MyPropertyBag.IsRuleRunning.Value%<br>TrigerAlive:%MyPropertyBag.IsTriggerObjectAlive.Value%</span>" }},
@@ -273,14 +255,14 @@ namespace CDMyRulesEngine
                     }
                     ActivateRules();
                     MyDash.Reload(null, false);
-                    TheCommCore.PublishToOriginator(pMsg.Message, new TSM(eEngineName.NMIService, "NMI_TOAST", $"{tList.Count} New Rules claimed"));
+                    TheCommCore.PublishToOriginator(pMsg.Message, new TSM(eEngineName.NMIService, "NMI_TOAST", $"{tList?.Count} New Rules claimed"));
                     break;
                 case "REFRESH_DASH":
                     ActivateRules();
                     MyDash.Reload(null, false);
                     break;
                 case "FIRE_RULE":
-                    var t = TheThingRegistry.GetThingByMID(MyBaseEngine.GetEngineName(), TheCommonUtils.CGuid(pMsg?.Message?.PLS));
+                    var t = TheThingRegistry.GetThingByMID(MyBaseEngine.GetEngineName(), TheCommonUtils.CGuid(pMsg.Message?.PLS));
                     if (t!=null)
                     {
                         TheRule tR=t.GetObject() as TheRule;
@@ -321,9 +303,8 @@ namespace CDMyRulesEngine
             {
                 if (mIsInitialized)
                     InitRules();
-                //List<TheRule> tList = MyRulesStore.MyMirrorCache.GetEntriesByFunc(s => s.IsRuleActive && !s.IsRuleRunning && s.IsRuleWaiting);
                 List<TheThing> tList = TheThingRegistry.GetThingsByFunc("*", s =>
-                    TheThing.GetSafePropertyString(s,"Parent").Equals(MyBaseThing.ID) && //TheBaseAssets.MyServiceHostInfo.MyDeviceInfo.DeviceID) &&
+                    TheThing.GetSafePropertyString(s,"Parent").Equals(MyBaseThing.ID) && 
                     TheThing.GetSafePropertyBool(s, "IsRuleActive") &&
                     !TheThing.GetSafePropertyBool(s, "IsRuleRunning") &&
                     TheThing.GetSafePropertyBool(s, "IsRuleWaiting"));
@@ -337,12 +318,6 @@ namespace CDMyRulesEngine
                         {
                             tRule.IsIllegal = true;
                             tRule.IsRuleWaiting = false;
-                            continue;
-                        }
-                        if (tRule.TriggerStartTime > DateTimeOffset.Now) continue;
-                        if (tRule.TriggerEndTime < DateTimeOffset.Now)
-                        {
-                            RemoveTrigger(tRule, false);
                             continue;
                         }
                         switch (tRule.TriggerObjectType)
@@ -374,8 +349,6 @@ namespace CDMyRulesEngine
                                 TheThing tTriggerThing = TheThingRegistry.GetThingByMID("*", TheCommonUtils.CGuid(tRule.TriggerObject));
                                 if (tTriggerThing != null)
                                 {
-                                    //if (tTriggerThing.GetObject() == null) continue;  //TODO: Verify if this can stay removed
-                                    //if (tTriggerThing.GetProperty("FriendlyName").Value.ToString().Contains("Motion")) continue;
                                     cdeP tProp = tTriggerThing.GetProperty(tRule.TriggerProperty, true);
                                     if (tProp != null)
                                     {
@@ -385,7 +358,7 @@ namespace CDMyRulesEngine
                                     tRule.IsRuleWaiting = false;
                                     tRule.IsRuleRunning = true;
                                     tRule.IsTriggerObjectAlive = true;
-                                    tRule.RuleTrigger(tProp.ToString(), true);
+                                    tRule.RuleTrigger(tProp?.ToString(), true);
                                     TheSystemMessageLog.WriteLog(4445, TSM.L(eDEBUG_LEVELS.VERBOSE) ? null : new TSM(eKnownDeviceTypes.TheThingRule, $"Rule {tRule.FriendlyName} started with TriggerType: {tRule.TriggerObjectType}"), false);
                                 }
                                 break;
@@ -436,7 +409,6 @@ namespace CDMyRulesEngine
         {
             TheProcessMessage pMsg = pIncoming as TheProcessMessage;
             if (pMsg == null || pMsg.Message == null) return;
-            //System.Diagnostics.Debug.WriteLine(string.Format("{0} {1} {2}", pMsg.Message.ENG, pMsg.Message.TXT, pMsg.Message.PLS));
             List<TheThing> tList = TheThingRegistry.GetThingsByFunc("*", s => TheThing.GetSafePropertyString(s, "TriggerObject") == pMsg.Message.ENG);
             if (tList != null)
             {
@@ -444,12 +416,6 @@ namespace CDMyRulesEngine
                 {
                     TheRule tRule = tThing.GetObject() as TheRule;
                     if (tRule == null || !tRule.IsRuleActive) continue;
-                    if (tRule.TriggerStartTime > DateTimeOffset.Now) continue;
-                    if (tRule.TriggerEndTime < DateTimeOffset.Now)
-                    {
-                        RemoveTrigger(tRule,false);
-                        continue;
-                    }
                     if (pMsg.Message.TXT.StartsWith(tRule.TriggerProperty))
                         tRule.RuleTrigger(pMsg.Message.PLS);
                 }
@@ -463,19 +429,12 @@ namespace CDMyRulesEngine
             {
                 TheRule tRule = tThing.GetObject() as TheRule;
                 if (tRule == null || !tRule.IsRuleActive) return;
-                if (tRule.TriggerStartTime > DateTimeOffset.Now) return;
-                if (tRule.TriggerEndTime < DateTimeOffset.Now)
-                {
-                    RemoveTrigger(tRule, false);
-                    return;
-                }
                 tRule.FireAction(false);
             }
         }
 
         void sinkRuleAction(cdeP pProp)
         {
-            //List<TheRule> tList = MyRulesStore.MyMirrorCache.GetEntriesByFunc(s => TheCommonUtils.CGuid(s.TriggerObject) != Guid.Empty && TheCommonUtils.CGuid(s.TriggerObject) == TheCommonUtils.CGuid(pEvent.TXT));
             List<TheThing> tList = TheThingRegistry.GetThingsByFunc("*", s => pProp.cdeO != Guid.Empty && TheCommonUtils.CGuid(TheThing.GetSafePropertyString(s, "TriggerObject")) == pProp.cdeO);
             if (tList != null)
             {
@@ -483,12 +442,6 @@ namespace CDMyRulesEngine
                 {
                     TheRule tRule = tThing.GetObject() as TheRule;
                     if (tRule == null || !tRule.IsRuleActive) continue;
-                    if (tRule.TriggerStartTime > DateTimeOffset.Now) continue;
-                    if (tRule.TriggerEndTime < DateTimeOffset.Now)
-                    {
-                        RemoveTrigger(tRule,true);
-                        continue;
-                    }
                     if (string.IsNullOrEmpty(pProp.Name) || string.IsNullOrEmpty(pProp.ToString()))
                         continue;
                     if (!pProp.Name.Equals(tRule.TriggerProperty))
@@ -512,20 +465,20 @@ namespace CDMyRulesEngine
 
         public void AddRulesWizard()
         {
-            var flds = TheNMIEngine.AddNewWizard(MyBaseThing, new Guid("6C34871C-D49B-4D7A-84E0-35E25B1F18B0"), "Welcome to the Rule Wizard Demo", new nmiCtrlWizard { SideBarTitle = "The Rules Wizard", PanelTitle = "<i class='fa faIcon fa-5x'>&#xf0d0;</i></br>Create new Rule" });
+            var flds = TheNMIEngine.AddNewWizard(MyBaseThing, new Guid("6C34871C-D49B-4D7A-84E0-35E25B1F18B0"), "Welcome to the Rule Wizard", new nmiCtrlWizard { SideBarTitle = "The Rules Wizard", PanelTitle = "<i class='fa faIcon fa-5x'>&#xf0d0;</i></br>Create new Rule" });
             var tMyForm2 = flds["Form"] as TheFormInfo;
-            AddWizardHeader(tMyForm2); //Not Required but looks nice. Might become a later addition to the APIs
+            AddWizardHeader(tMyForm2); 
 
-            var tFlds = TheNMIEngine.AddNewWizardPage(MyBaseThing, tMyForm2, 0, 1, 2, null /*"TEST"*/);
+            TheNMIEngine.AddNewWizardPage(MyBaseThing, tMyForm2, 0, 1, 2, null /*"TEST"*/);
             TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.SingleEnded, 1, 1, 2, 0, "Rule Name", "FriendlyName", new TheNMIBaseControl { Explainer = "1. Enter name for the new rule." });
 
-            tFlds = TheNMIEngine.AddNewWizardPage(MyBaseThing, tMyForm2, 1, 2, 3, null /* "Rule Trigger"*/);
+            TheNMIEngine.AddNewWizardPage(MyBaseThing, tMyForm2, 1, 2, 3, null /* "Rule Trigger"*/);
             var tTrig = TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.ThingPicker, 2, 1, 2, 0, "Trigger Thing", "TriggerObject", new nmiCtrlThingPicker { IncludeEngines = true, Explainer = "1. Click to see all available trigger objects" });
             TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.PropertyPicker, 2, 2, 2, 0, "Trigger Property", "TriggerProperty", new nmiCtrlPropertyPicker { ThingFld = tTrig.FldOrder, Explainer = "2. Select Trigger property" });
             TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.ComboBox, 2, 3, 2, 0, "Trigger Condition", "TriggerCondition", new nmiCtrlComboBox { DefaultValue = "2", Options = "Fire:0;State:1;Equals:2;Larger:3;Smaller:4;Not:5;Contains:6;Set:7;StartsWith:8;EndsWith:9;Flank:10", Explainer = "3. Select Trigger condition" });
             TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.SingleEnded, 2, 4, 2, 0, "Trigger Value", "TriggerValue", new nmiCtrlSingleEnded { Explainer = "4. Enter trigger value" });
 
-            tFlds = TheNMIEngine.AddNewWizardPage(MyBaseThing, tMyForm2, 2, 3, 4, null/*"Action Type"*/, "5:'<%MyPropertyBag.ActionObjectType.Value%>'!='CDE_THING' && '<%MyPropertyBag.ActionObjectType.Value%>'!=''");
+            TheNMIEngine.AddNewWizardPage(MyBaseThing, tMyForm2, 2, 3, 4, null, "5:'<%MyPropertyBag.ActionObjectType.Value%>'!='CDE_THING' && '<%MyPropertyBag.ActionObjectType.Value%>'!=''");
             TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.ComboBox, 3, 1, 2, 0, "What Action to do", "ActionObjectType", new nmiCtrlComboBox { DefaultValue = "CDE_THING", Options = "Set Property on a Thing:CDE_THING;Publish Central:CDE_PUBLISHCENTRAL;Publish to Service:CDE_PUBLISH2SERVICE" });
             //HELP SECTION action type help section
             TheNMIEngine.AddWizardExplainer(MyBaseThing, tMyForm2, 3, 2, 0, "Action Object Type: Defines how the action should be executed:", new nmiCtrlSmartLabel { });
@@ -534,19 +487,19 @@ namespace CDMyRulesEngine
             TheNMIEngine.AddWizardExplainer(MyBaseThing, tMyForm2, 3, 5, 0, "Publish to Service: sends a message to a specific service in the mesh", new nmiCtrlSmartLabel { });
 
 
-            tFlds = TheNMIEngine.AddNewWizardPage(MyBaseThing, tMyForm2, 3, 4, 6, null  /*"Action Object"*/);
+            TheNMIEngine.AddNewWizardPage(MyBaseThing, tMyForm2, 3, 4, 6, null);
             var tAThing=TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.ThingPicker, 4, 1, 2, 0, "Action Thing", "ActionObject", new nmiCtrlThingPicker { IncludeEngines = true, Explainer = "1. Select the “Thing” (object) that contains the property to be changed with the action" });
             TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.PropertyPicker, 4, 2, 2, 0, "Action Property", "ActionProperty", new nmiCtrlPropertyPicker { ThingFld = tAThing.FldOrder, Explainer = "2. Select action property" });
             TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.SingleEnded, 4, 3, 2, 0, "Action Value", "ActionValue", new nmiCtrlSingleEnded { Explainer = "3. Select Action Value" });
 
-            tFlds = TheNMIEngine.AddNewWizardPage(MyBaseThing, tMyForm2, 3, 5, 6, null /* "Action TSM"*/ );
+            TheNMIEngine.AddNewWizardPage(MyBaseThing, tMyForm2, 3, 5, 6, null);
             TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.ThingPicker, 5, 1, 2, 0, "TSM Engine", "TSMEngine", new nmiCtrlThingPicker { IncludeEngines = true,  Filter = "EngineNames", Explainer = "1. Specify the Target Engine the message will be send to." });
             TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.SingleEnded, 5, 2, 2, 0, "TSM Text", "TSMText", new nmiCtrlSingleEnded { Explainer = "2. Specify the command/text of the message.Target plugins are using this to parse the content of the payload" });
             TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.TextArea, 5, 3, 2, 0, "TSM Payload", "TSMPayload", new nmiCtrlSingleEnded { TileHeight = 2, Explainer = "3. specify the payload message (TSM.PLS)" });
 
-            tFlds = TheNMIEngine.AddNewWizardPage(MyBaseThing, tMyForm2, 3, 6, 0, null  /*"Final Settings"*/);
+            TheNMIEngine.AddNewWizardPage(MyBaseThing, tMyForm2, 3, 6, 0, null);
             TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.SingleCheck, 6, 1, 2, 0, "Activate Rule Now", "IsRuleActive", new nmiCtrlSingleCheck { Explainer = "1. Click to make rule active." });
-            TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.SingleCheck, 6, 2, 2, 0, "Log Rule", "IsRuleLogged", new nmiCtrlSingleCheck { Explainer = "2. Click to log rule." });
+            TheNMIEngine.AddWizardControl(MyBaseThing, tMyForm2, eFieldType.SingleCheck, 6, 2, 2, 0, "Log Rule", "IsEVTLogged", new nmiCtrlSingleCheck { Explainer = "2. Click to log rule." });
         }
 
         private void AddWizardHeader(TheFormInfo tMyForm2)
