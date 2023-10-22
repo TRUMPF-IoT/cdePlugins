@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+﻿// SPDX-FileCopyrightText: 2009-2023 TRUMPF Laser GmbH, authors: C-Labs
 //
 // SPDX-License-Identifier: MPL-2.0
 using System;
@@ -20,7 +20,7 @@ namespace CDMyRulesEngine.ViewModel
     class TheRule : TheThingRule
     {
         // Base object references 
-        private IBaseEngine MyBaseEngine;    // Base engine (service)
+        private readonly IBaseEngine MyBaseEngine;    // Base engine (service)
 
         // Initialization flags
         protected bool mIsInitStarted = false;
@@ -96,7 +96,6 @@ namespace CDMyRulesEngine.ViewModel
                 var tstFlds = TheNMIEngine.AddStatusBlock(MyBaseThing, tFormGuid, idGroupStatus);
                 tstFlds["Group"].SetParent(idForm);
                 tstFlds["Group"].Header = "Rule Status";
-                // tstFlds["Group"].PropertyBag = new ThePropertyBag { "DoClose=true" };
                 tstFlds["FriendlyName"].Header = "Rule Name";
 
                 // When the Friendly Name changes, propogate to the other UI elements that use it.
@@ -124,7 +123,6 @@ namespace CDMyRulesEngine.ViewModel
                         TheRule tRule = tThing.GetObject() as TheRule;
                         if (tRule != null)
                         {
-                            //FireAction(tRule, true);
                             tRule.FireAction(true);
                             MyBaseEngine.ProcessMessage(new TheProcessMessage(new TSM(MyBaseEngine.GetEngineName(), "FIRE_RULE", MyBaseThing.cdeMID.ToString())));
                             TheCommCore.PublishToOriginator(pMSG.Message, new TSM(eEngineName.NMIService, "NMI_TOAST", string.Format("Rule {0} triggered", tRule.GetBaseThing().FriendlyName)));
@@ -190,30 +188,13 @@ namespace CDMyRulesEngine.ViewModel
             MyBaseThing.LastUpdate = DateTimeOffset.Now;
         }
 
-        #region Message Handling
-        public override void HandleMessage(ICDEThing sender, object pIncoming)
-        {
-            TheProcessMessage pMsg = pIncoming as TheProcessMessage;
-            if (pMsg == null) return;
-
-            string[] cmd = pMsg.Message.TXT.Split(':');
-            switch (cmd[0])
-            {
-                default:
-                    break;
-            }
-        }
-        #endregion
-
         internal void RuleTrigger(string tVal, bool bForce = false)
         {
-            if (TriggerStartTime.TimeOfDay != TriggerEndTime.TimeOfDay)
+            if ((TriggerStartTime.TimeOfDay != TriggerEndTime.TimeOfDay) &&
+                (DateTimeOffset.Now.TimeOfDay < TriggerStartTime.TimeOfDay || DateTimeOffset.Now.TimeOfDay > TriggerEndTime.TimeOfDay))
             {
-                if (DateTimeOffset.Now.TimeOfDay < TriggerStartTime.TimeOfDay || DateTimeOffset.Now.TimeOfDay > TriggerEndTime.TimeOfDay)
-                {
-                    MyBaseThing.StatusLevel = 0;
-                    return;
-                }
+                MyBaseThing.StatusLevel = 0;
+                return;
             }
             if (TriggerOnlyEvery > 0 && DateTimeOffset.Now.Subtract(LastAction).TotalSeconds < TriggerOnlyEvery)
             {
@@ -386,8 +367,7 @@ namespace CDMyRulesEngine.ViewModel
             }
             tSec.EventTrigger = TheThingRegistry.GetThingByMID(TheCommonUtils.CGuid(TriggerObject))?.FriendlyName;
             tSec.ActionObject = ActionText;
-            var tEng=MyBaseEngine.GetBaseThing().GetObject() as TheRulesEngine;
-            tEng?.LogEvent(tSec);
+            TheLoggerFactory.LogEvent(tSec);
             return true;
         }
 
@@ -413,8 +393,6 @@ namespace CDMyRulesEngine.ViewModel
             string text = TheCommonUtils.CStr(GetProperty("TSMText", false));
             string payload = TheCommonUtils.CStr(GetProperty("TSMPayload", false));
 
-            //payload = payload.Replace("%DTO%", TheCommonUtils.CStr(DateTimeOffset.Now));
-            //text = text.Replace("%DTO%", TheCommonUtils.CStr(DateTimeOffset.Now));
             ICDEThing triggerThing = TheThingRegistry.GetThingByMID("*", TheCommonUtils.CGuid(TriggerObject)) as ICDEThing;
             string escPayload = TheCommonUtils.GenerateFinalStr(payload, triggerThing);
             escPayload = TheCommonUtils.GenerateFinalStr(escPayload, MyBaseThing);
