@@ -35,7 +35,7 @@ namespace CDMyRulesEngine.ViewModel
         private const int idGroupThingPropAction = 550;
         private const int idGroupTSMAction = 600;
 
-        public TheRule(TheThing tBaseThing, ICDEPlugin pPlugin):base (tBaseThing)
+        public TheRule(TheThing tBaseThing, ICDEPlugin pPlugin) : base(tBaseThing)
         {
             MyBaseEngine = pPlugin.GetBaseEngine();
         }
@@ -58,7 +58,7 @@ namespace CDMyRulesEngine.ViewModel
                 MyBaseThing.RegisterOnChange("IsTriggerObjectAlive", sinkUpdateRule);
                 MyBaseThing.RegisterOnChange("LastTriggered", sinkUpdateRule);
                 MyBaseThing.LastMessage = "Rule ready";
-                MyBaseThing.StatusLevel = 0;
+                MyBaseThing.StatusLevel = 5;
                 mIsInitCompleted = true;
             }
             return true;
@@ -139,7 +139,7 @@ namespace CDMyRulesEngine.ViewModel
                 TheNMIEngine.AddSmartControl(MyBaseThing, tFormGuid, eFieldType.CollapsibleGroup, idGroupActionSettings, 2, 0, "Action Settings", null, new nmiCtrlCollapsibleGroup { ParentFld = idForm, TileWidth = 6, IsSmall = true });
 
                 // Create "Thing Property Action" settings group (Field Order = idGroupThingPropAction (550), Parent = 500)
-                TheNMIEngine.AddSmartControl(MyBaseThing, tFormGuid, eFieldType.CollapsibleGroup, idGroupThingPropAction, 2, 0, "Thing/Property Action", null, new nmiCtrlCollapsibleGroup { ParentFld = idGroupActionSettings, TileWidth = 6, IsSmall = true});
+                TheNMIEngine.AddSmartControl(MyBaseThing, tFormGuid, eFieldType.CollapsibleGroup, idGroupThingPropAction, 2, 0, "Thing/Property Action", null, new nmiCtrlCollapsibleGroup { ParentFld = idGroupActionSettings, TileWidth = 6, IsSmall = true });
 
                 // Create "TSM Action" settings group (Field Order = idGroupTSMAction (600), Parent = 500)
                 TheNMIEngine.AddSmartControl(MyBaseThing, tFormGuid, eFieldType.CollapsibleGroup, idGroupTSMAction, 2, 0, "TSM Action", null, new nmiCtrlCollapsibleGroup { ParentFld = idGroupActionSettings, TileWidth = 6, IsSmall = true, DoClose = true });
@@ -151,7 +151,10 @@ namespace CDMyRulesEngine.ViewModel
                 {  new TheFieldInfo() { FldOrder=140,DataItem="MyPropertyBag.TriggerObject.Value",Flags=2,Type=eFieldType.ThingPicker,Header="Trigger Object", PropertyBag=new nmiCtrlThingPicker() { ParentFld=idGroupTriggerObject, HelpText="If this objects...", IncludeEngines=true }  }},
                 {  new TheFieldInfo() { FldOrder=150,DataItem="MyPropertyBag.TriggerProperty.Value",Flags=2,Type=eFieldType.PropertyPicker,Header="Trigger Property", DefaultValue="Value",PropertyBag=new nmiCtrlPropertyPicker() { ParentFld=idGroupTriggerObject, HelpText="...property is...", ThingFld=140 }   }},
                 {  new TheFieldInfo() { FldOrder=160,DataItem="MyPropertyBag.TriggerCondition.Value",Flags=2,Type=eFieldType.ComboBox,Header="Trigger Condition", DefaultValue="2",PropertyBag=new nmiCtrlComboBox() { ParentFld=idGroupTriggerObject, HelpText="... then this value, this rule will fire...", DefaultValue="2", Options="Fire:0;State:1;Equals:2;Larger:3;Smaller:4;Not:5;Contains:6;Set:7;StartsWith:8;EndsWith:9;Flank:10" }}},
-                {  new TheFieldInfo() { FldOrder=170,DataItem="MyPropertyBag.TriggerValue.Value",Flags=2,Type=eFieldType.SingleEnded,Header="Trigger Value", PropertyBag=new ThePropertyBag() { "ParentFld=100", "HelpText=...this objects..." }  }},
+                {  new TheFieldInfo() { FldOrder=170,DataItem="MyPropertyBag.TriggerValue.Value",Flags=2,Type=eFieldType.SingleEnded,Header="Trigger Value", PropertyBag=new nmiCtrlSingleEnded() { ParentFld=100, NoTE=true }  }},
+                {  new TheFieldInfo() { FldOrder=175,DataItem="MyPropertyBag.TriggerStartTime.Value",Flags=2,Type=eFieldType.Time,Header="Start Time", PropertyBag=new nmiCtrlDateTime() { ParentFld=100, NoTE=true, TileWidth=3 }  }},
+                {  new TheFieldInfo() { FldOrder=180,DataItem="MyPropertyBag.TriggerEndTime.Value",Flags=2,Type=eFieldType.Time,Header="End Time", PropertyBag=new nmiCtrlDateTime() { ParentFld=100, NoTE=true, TileWidth=3  }  }},
+                {  new TheFieldInfo() { FldOrder=185,DataItem="MyPropertyBag.TriggerOnlyEvery.Value",Flags=2,Type=eFieldType.Number,Header="Trigger Every (sec)", PropertyBag=new nmiCtrlNumber() { ParentFld=100, NoTE=true,  }  }},
 
                 /* Action Settings Group */
                 { new TheFieldInfo() { FldOrder=505,DataItem="MyPropertyBag.ActionObjectType.Value",Flags=2,Type=eFieldType.ComboBox,Header="Action Object Type",PropertyBag = new nmiCtrlComboBox() { ParentFld=idGroupActionSettings, Options="Set Property on a Thing:CDE_THING;Publish Central:CDE_PUBLISHCENTRAL;Publish to Service:CDE_PUBLISH2SERVICE;Just Log:CDE_LOG", DefaultValue="CDE_THING" } }},
@@ -160,12 +163,12 @@ namespace CDMyRulesEngine.ViewModel
                 /* Thing / Property Action Sub-Group */
                 {  new TheFieldInfo() { FldOrder=560,DataItem="MyPropertyBag.ActionObject.Value",Flags=2,Type=eFieldType.ThingPicker,Header="Action Object", PropertyBag=new nmiCtrlThingPicker() { ParentFld=550, HelpText="...this objects...", IncludeEngines=true }  }},
                 {  new TheFieldInfo() { FldOrder=562,DataItem="MyPropertyBag.ActionProperty.Value",Flags=2,Type=eFieldType.PropertyPicker,Header="Action Property", DefaultValue="Value",PropertyBag=new nmiCtrlPropertyPicker() { ParentFld=idGroupThingPropAction, HelpText="...property will change to...", ThingFld=560 } }},
-                {  new TheFieldInfo() { FldOrder=563,DataItem="MyPropertyBag.ActionValue.Value",Flags=2,Type=eFieldType.SingleEnded,Header="Action Value", PropertyBag=new nmiCtrlSingleEnded { ParentFld=idGroupThingPropAction, HelpText = "...this value", Style="text-overflow:ellipsis;overflow:hidden; max-width:400px" } }},
+                {  new TheFieldInfo() { FldOrder=563,DataItem="MyPropertyBag.ActionValue.Value",Flags=2,Type=eFieldType.SingleEnded,Header="Action Value", PropertyBag=new nmiCtrlSingleEnded { ParentFld=idGroupThingPropAction, NoTE=true, Style="text-overflow:ellipsis;overflow:hidden; max-width:400px" } }},
 
                 /* TSM Action Sub-Group */
                 { new TheFieldInfo() { FldOrder=630,DataItem="MyPropertyBag.TSMEngine.Value",Flags=2,Type=eFieldType.ThingPicker,Header="TSM Engine",PropertyBag = new nmiCtrlThingPicker() { ParentFld=600,ValueProperty="EngineName", IncludeEngines=true, Filter="DeviceType=IBaseEngine" } }},
-                { new TheFieldInfo() { FldOrder=631,DataItem="MyPropertyBag.TSMText.Value",Flags=2,Type=eFieldType.SingleEnded,Header="TSM Text",PropertyBag = new ThePropertyBag() { "ParentFld=600", "HelpText=Command of the TSM" } }},
-                { new TheFieldInfo() { FldOrder=632,DataItem="MyPropertyBag.TSMPayload.Value",Flags=2,Type=eFieldType.TextArea,Header="TSM Payload", PropertyBag = new nmiCtrlTextArea() { ParentFld=idGroupTSMAction, TileHeight=2, HelpText="Body of the TSM" } }},
+                { new TheFieldInfo() { FldOrder=631,DataItem="MyPropertyBag.TSMText.Value",Flags=2,Type=eFieldType.SingleEnded,Header="TSM Text",PropertyBag = new nmiCtrlSingleEnded() { ParentFld=600, NoTE=true } }},
+                { new TheFieldInfo() { FldOrder=632,DataItem="MyPropertyBag.TSMPayload.Value",Flags=2,Type=eFieldType.TextArea,Header="TSM Payload", PropertyBag = new nmiCtrlTextArea() { ParentFld=idGroupTSMAction,NoTE=true, TileHeight=2, HelpText="Body of the TSM" } }},
 
             });
 
@@ -178,13 +181,11 @@ namespace CDMyRulesEngine.ViewModel
         {
             if (IsRuleRunning)
             {
-                if (IsTriggerObjectAlive)
-                    MyBaseThing.StatusLevel = 1;
-                else
+                if (!IsTriggerObjectAlive)
                     MyBaseThing.StatusLevel = 2;
             }
             else
-                MyBaseThing.StatusLevel = 0;
+                MyBaseThing.StatusLevel = 5;
             MyBaseThing.LastMessage = $"Running:{IsRuleRunning} TrigerAlive:{IsTriggerObjectAlive} LastFired:{TheThing.GetSafePropertyBool(MyBaseThing, "LastTriggered")} Owner:{MyBaseThing.cdeO}";
             MyBaseThing.LastUpdate = DateTimeOffset.Now;
         }
@@ -206,6 +207,20 @@ namespace CDMyRulesEngine.ViewModel
 
         internal void RuleTrigger(string tVal, bool bForce = false)
         {
+            if (TriggerStartTime.TimeOfDay != TriggerEndTime.TimeOfDay)
+            {
+                if (DateTimeOffset.Now.TimeOfDay < TriggerStartTime.TimeOfDay || DateTimeOffset.Now.TimeOfDay > TriggerEndTime.TimeOfDay)
+                {
+                    MyBaseThing.StatusLevel = 0;
+                    return;
+                }
+            }
+            if (TriggerOnlyEvery > 0 && DateTimeOffset.Now.Subtract(LastAction).TotalSeconds < TriggerOnlyEvery)
+            {
+                MyBaseThing.StatusLevel = 0;
+                return;
+            }
+            MyBaseThing.StatusLevel = 1;
             MyBaseThing.Value = tVal;
             switch (TriggerCondition)
             {
@@ -291,7 +306,6 @@ namespace CDMyRulesEngine.ViewModel
                     if (tTimer != null)
                     {
                         tTimer.Dispose();
-                        tTimer = null;
                     }
                     tTimer = new Timer(sinkFireOnTimer,this, tDelay * 1000, Timeout.Infinite);
                     SetDelayTimer(tTimer);
@@ -350,15 +364,17 @@ namespace CDMyRulesEngine.ViewModel
                     }
                     break;
             }
-            TheThing.SetSafePropertyDate(MyBaseThing, "LastAction", DateTimeOffset.Now);
+            if (!IsRuleLogged)
+                LastAction = DateTimeOffset.Now;
             FireEvent("RuleFired", this, this, true);
         }
 
         public bool LogEvent(string ActionText)
         {
+            LastAction=DateTimeOffset.Now;
             TheEventLogData tSec = new TheEventLogData
             {
-                EventTime = DateTimeOffset.Now,
+                EventTime = LastAction,
                 EventLevel = eMsgLevel.l4_Message,
                 EventCategory= eLoggerCategory.RuleEvent,
                 StationName = TheBaseAssets.MyServiceHostInfo.GetPrimaryStationURL(false),
