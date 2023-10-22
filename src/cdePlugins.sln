@@ -100,6 +100,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDMyOPCUAClient", "078 - CD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDMyImages", "160 - CDMyImages\CDMyImages\CDMyImages.csproj", "{F0237369-3723-495A-96BF-5D0A1BB5B1EA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Packager", "_Packager", "{A43BEFE9-AF2B-44B2-A176-BAF6D68D0633}"
+	ProjectSection(SolutionItems) = preProject
+		..\BuildTools\cdePackager\C-DEngine.dll = ..\BuildTools\cdePackager\C-DEngine.dll
+		..\BuildTools\cdePackager\cdePackager.exe = ..\BuildTools\cdePackager\cdePackager.exe
+		..\BuildTools\cdePackager\cdePackagerTask.dll = ..\BuildTools\cdePackager\cdePackagerTask.dll
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
