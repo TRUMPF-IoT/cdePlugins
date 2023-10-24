@@ -17,6 +17,188 @@ using System.IO;
 
 namespace CDMyRulesEngine.ViewModel
 {
+    internal static class SolarCalculator
+    {
+        internal class SolarEvents
+        {
+            public DateTimeOffset Sunrise { get; set; }
+            public DateTimeOffset Sunset { get; set; }
+        }
+        private const double MinutesInDay = 24 * 60;
+        private const double SecondsInDay = MinutesInDay * 60;
+        private const double J2000 = 2451545;
+
+        /// <summary>
+        ///  the sunrise/sunset for the given calendar date in the given timezone at the given location.
+        /// Accounts for DST.
+        /// </summary>
+        /// <param name="year">Calendar year in timezone</param>
+        /// <param name="month">Calendar month in timezone</param>
+        /// <param name="day">Calendar day in timezone</param>
+        /// <param name="latitude">Latitude of location in degrees</param>
+        /// <param name="longitude">Longitude of location in degrees</param>
+        /// <param name="timezoneId">Id of the timezone as specified by the .net framework</param>
+        /// <returns></returns>
+        public static SolarEvents Calculate()
+        {
+            var lat = 47;
+            var gDate = DateTime.Now;
+            var timeZone = TimeZoneInfo.Local; // .FindSystemTimeZoneById(timeZoneId)
+            var timeZoneOffset = timeZone.GetUtcOffset(gDate);
+            var lng = timeZoneOffset.Hours * 17;
+            var tzOffHr = timeZoneOffset.TotalHours;
+            var jDate = GregorianToJulian(gDate, tzOffHr); // D
+            var t = JulianCentury(jDate); // G
+            var ml = GeomMeanLongitudeSun(t); // I - deg
+            var ma = GeomMeanAnomalySun(t); // J - deg
+            var eo = EccentricityEarthOrbit(t); // K
+            var eoc = EquationOfCenterSun(ma, t); // L
+            var tl = TrueLongitudeSun(ml, eoc); // M - deg
+            var al = ApparentLongitudeSun(tl, t); // P - deg
+            var oe = MeanObliquityOfEcliptic(t); // Q - deg
+            var oc = ObliquityCorrection(oe, t); // R - deg
+            var d = DeclinationSun(oc, al); // T - deg
+            var eot = EquationOfTime(oc, ml, eo, ma); // V - minutes
+            var ha = HourAngleSunrise(lat, d); // W - Deg
+            var sn = SolarNoon(lng, eot, tzOffHr); // X - LST
+            var sunrise = Sunrise(sn, ha); // Y - LST
+            var sunset = Sunset(sn, ha); // Z - LST
+            var sunriseOffset = ToDate(timeZone, gDate, sunrise);
+            var sunsetOffset = ToDate(timeZone, gDate, sunset);
+
+            return new SolarEvents
+            {
+                Sunrise = sunriseOffset,
+                Sunset = sunsetOffset
+            };
+        }
+
+        private static double GregorianToJulian(DateTime gDate, double timeZoneOffsetHours)
+        {
+            var year = gDate.Year;
+            var month = gDate.Month;
+            if (month <= 2)
+            {
+                year -= 1;
+                month += 12;
+            }
+            var A = Math.Floor(year / 100d);
+            var B = 2 - A + Math.Floor(A / 4d);
+            var jDay = Math.Floor(365.25 * (year + 4716)) + Math.Floor(30.6001 * (month + 1)) + gDate.Day + B - 1524.5;
+            var jTime = ((gDate.Hour * (60 * 60)) + (gDate.Minute * 60) + gDate.Second) / SecondsInDay;
+            return jDay + jTime - timeZoneOffsetHours / 24;
+        }
+
+        public static DateTimeOffset ToDate(TimeZoneInfo timeZone, DateTime gDate, double time)
+        {
+            var hours = (int)Math.Floor(time * 24);
+            var minutes = (int)Math.Floor((time * 24 * 60) % 60);
+            var seconds = (int)Math.Floor((time * 24 * 60 * 60) % 60);
+            return new DateTimeOffset(gDate.Year, gDate.Month, gDate.Day, hours, minutes, seconds, timeZone.GetUtcOffset(gDate));
+        }
+
+        private static double JulianCentury(double jDate)
+        {
+            const double daysInCentury = 36525;
+            return (jDate - J2000) / daysInCentury;
+        }
+
+        private static double GeomMeanAnomalySun(double t)
+        {
+            return 357.52911 + t * (35999.05029 - 0.0001537 * t);
+        }
+
+        private static double GeomMeanLongitudeSun(double t)
+        {
+            return Mod(280.46646 + t * (36000.76983 + t * 0.0003032), 0, 360);
+        }
+
+        private static double EccentricityEarthOrbit(double t)
+        {
+            return 0.016708634 - t * (0.000042037 + 0.0000001267 * t);
+        }
+
+        private static double EquationOfCenterSun(double ma, double t)
+        {
+            return Math.Sin(Radians(ma)) * (1.914602 - t * (0.004817 + 0.000014 * t))
+                + Math.Sin(Radians(2 * ma)) * (0.019993 - 0.000101 * t)
+                + Math.Sin(Radians(3 * ma)) * 0.000289;
+        }
+
+        private static double TrueLongitudeSun(double ml, double eoc)
+        {
+            return ml + eoc;
+        }
+
+        private static double ApparentLongitudeSun(double tl, double t)
+        {
+            return tl - 0.00569 - 0.00478 * Math.Sin(Radians(125.04 - 1934.136 * t));
+        }
+
+        private static double MeanObliquityOfEcliptic(double t)
+        {
+            return 23 + (26 + ((21.448 - t * (46.815 + t * (0.00059 - t * 0.001813)))) / 60) / 60;
+        }
+
+        private static double ObliquityCorrection(double oe, double t)
+        {
+            return oe + 0.00256 * Math.Cos(Radians(125.04 - 1934.136 * t));
+        }
+
+        private static double EquationOfTime(double oc, double ml, double eo, double ma)
+        {
+            var y = Math.Tan(Radians(oc / 2)) * Math.Tan(Radians(oc / 2)); // U
+            var eTime = y * Math.Sin(2 * Radians(ml))
+                - 2 * eo * Math.Sin(Radians(ma))
+                + 4 * eo * y * Math.Sin(Radians(ma)) * Math.Cos(2 * Radians(ml))
+                - 0.5 * y * y * Math.Sin(4 * Radians(ml))
+                - 1.25 * eo * eo * Math.Sin(2 * Radians(ma));
+            return 4 * Degrees(eTime);
+        }
+
+        private static double DeclinationSun(double oc, double al)
+        {
+            return Degrees(Math.Asin(Math.Sin(Radians(oc)) * Math.Sin(Radians(al))));
+        }
+
+        private static double HourAngleSunrise(double lat, double d)
+        {
+            return Degrees(Math.Acos(Math.Cos(Radians(90.833)) / (Math.Cos(Radians(lat)) * Math.Cos(Radians(d))) - Math.Tan(Radians(lat)) * Math.Tan(Radians(d))));
+        }
+
+        private static double SolarNoon(double lng, double eot, double tzOff)
+        {
+            return (720 - 4 * lng - eot + tzOff * 60) / MinutesInDay;
+        }
+
+        private static double Sunrise(double sn, double ha)
+        {
+            return sn - ha * 4 / MinutesInDay;
+        }
+
+        private static double Sunset(double sn, double ha)
+        {
+            return sn + ha * 4 / MinutesInDay;
+        }
+
+
+        private static double Mod(double x, double lo, double hi)
+        {
+            while (x > hi) x -= hi;
+            while (x < lo) x += hi;
+            return x;
+        }
+
+        private static double Radians(double degrees)
+        {
+            return degrees * Math.PI / 180;
+        }
+
+        private static double Degrees(double radians)
+        {
+            return radians * 180 / Math.PI;
+        }
+    }
     class TheRule : TheThingRule
     {
         // Base object references 
@@ -150,8 +332,10 @@ namespace CDMyRulesEngine.ViewModel
                 {  new TheFieldInfo() { FldOrder=150,DataItem="MyPropertyBag.TriggerProperty.Value",Flags=2,Type=eFieldType.PropertyPicker,Header="Trigger Property", DefaultValue="Value",PropertyBag=new nmiCtrlPropertyPicker() { ParentFld=idGroupTriggerObject, HelpText="...property is...", ThingFld=140 }   }},
                 {  new TheFieldInfo() { FldOrder=160,DataItem="MyPropertyBag.TriggerCondition.Value",Flags=2,Type=eFieldType.ComboBox,Header="Trigger Condition", DefaultValue="2",PropertyBag=new nmiCtrlComboBox() { ParentFld=idGroupTriggerObject, HelpText="... then this value, this rule will fire...", DefaultValue="2", Options="Fire:0;State:1;Equals:2;Larger:3;Smaller:4;Not:5;Contains:6;Set:7;StartsWith:8;EndsWith:9;Flank:10" }}},
                 {  new TheFieldInfo() { FldOrder=170,DataItem="MyPropertyBag.TriggerValue.Value",Flags=2,Type=eFieldType.SingleEnded,Header="Trigger Value", PropertyBag=new nmiCtrlSingleEnded() { ParentFld=100, NoTE=true }  }},
-                {  new TheFieldInfo() { FldOrder=175,DataItem="MyPropertyBag.TriggerStartTime.Value",Flags=2,Type=eFieldType.Time,Header="Start Time", PropertyBag=new nmiCtrlDateTime() { ParentFld=100, NoTE=true, TileWidth=3 }  }},
-                {  new TheFieldInfo() { FldOrder=180,DataItem="MyPropertyBag.TriggerEndTime.Value",Flags=2,Type=eFieldType.Time,Header="End Time", PropertyBag=new nmiCtrlDateTime() { ParentFld=100, NoTE=true, TileWidth=3  }  }},
+                {  new TheFieldInfo() { FldOrder=175,DataItem="MyPropertyBag.TriggerStartTimeType.Value",Flags=2,Type=eFieldType.ComboBox,Header="Type", PropertyBag=new nmiCtrlComboBox() { Options="Start Time:0;Sunrise:1;Sunset:2", ParentFld=100, NoTE=true, TileWidth=1 }  }},
+                {  new TheFieldInfo() { FldOrder=176,DataItem="MyPropertyBag.TriggerStartTime.Value",Flags=2,Type=eFieldType.Time,Header="Start Time", PropertyBag=new nmiCtrlDateTime() { ParentFld=100, NoTE=true, TileWidth=2 }  }},
+                {  new TheFieldInfo() { FldOrder=180,DataItem="MyPropertyBag.TriggerEndTimeType.Value",Flags=2,Type=eFieldType.ComboBox,Header="Type", PropertyBag=new nmiCtrlComboBox() { Options="Start Time:0;Sunrise:1;Sunset:2",ParentFld=100, NoTE=true, TileWidth=1 }  }},
+                {  new TheFieldInfo() { FldOrder=181,DataItem="MyPropertyBag.TriggerEndTime.Value",Flags=2,Type=eFieldType.Time,Header="End Time", PropertyBag=new nmiCtrlDateTime() { ParentFld=100, NoTE=true, TileWidth=2  }  }},
                 {  new TheFieldInfo() { FldOrder=185,DataItem="MyPropertyBag.TriggerOnlyEvery.Value",Flags=2,Type=eFieldType.Number,Header="Trigger Every (sec)", PropertyBag=new nmiCtrlNumber() { ParentFld=100, NoTE=true,  }  }},
 
                 /* Action Settings Group */
@@ -161,7 +345,7 @@ namespace CDMyRulesEngine.ViewModel
                 /* Thing / Property Action Sub-Group */
                 {  new TheFieldInfo() { FldOrder=560,DataItem="MyPropertyBag.ActionObject.Value",Flags=2,Type=eFieldType.ThingPicker,Header="Action Object", PropertyBag=new nmiCtrlThingPicker() { ParentFld=550, HelpText="...this objects...", IncludeEngines=true }  }},
                 {  new TheFieldInfo() { FldOrder=562,DataItem="MyPropertyBag.ActionProperty.Value",Flags=2,Type=eFieldType.PropertyPicker,Header="Action Property", DefaultValue="Value",PropertyBag=new nmiCtrlPropertyPicker() { ParentFld=idGroupThingPropAction, HelpText="...property will change to...", ThingFld=560 } }},
-                {  new TheFieldInfo() { FldOrder=563,DataItem="MyPropertyBag.ActionValue.Value",Flags=2,Type=eFieldType.SingleEnded,Header="Action Value", PropertyBag=new nmiCtrlSingleEnded { ParentFld=idGroupThingPropAction, NoTE=true, Style="text-overflow:ellipsis;overflow:hidden; max-width:400px" } }},
+                {  new TheFieldInfo() { FldOrder=563,DataItem="MyPropertyBag.ActionValue.Value",Flags=2,Type=eFieldType.SingleEnded,Header="Action Value", PropertyBag=new nmiCtrlSingleEnded { ParentFld=idGroupThingPropAction, NoTE=true } }},
 
                 /* TSM Action Sub-Group */
                 { new TheFieldInfo() { FldOrder=630,DataItem="MyPropertyBag.TSMEngine.Value",Flags=2,Type=eFieldType.ThingPicker,Header="TSM Engine",PropertyBag = new nmiCtrlThingPicker() { ParentFld=600,ValueProperty="EngineName", IncludeEngines=true, Filter="DeviceType=IBaseEngine" } }},
@@ -190,8 +374,19 @@ namespace CDMyRulesEngine.ViewModel
 
         internal void RuleTrigger(string tVal, bool bForce = false)
         {
-            if ((TriggerStartTime.TimeOfDay != TriggerEndTime.TimeOfDay) &&
-                (DateTimeOffset.Now.TimeOfDay < TriggerStartTime.TimeOfDay || DateTimeOffset.Now.TimeOfDay > TriggerEndTime.TimeOfDay))
+            switch (TriggerStartTimeType)
+            {
+                case 1: TriggerStartTime = SolarCalculator.Calculate().Sunrise.TimeOfDay; break;
+                case 2: TriggerStartTime = SolarCalculator.Calculate().Sunset.TimeOfDay; break;
+            }
+            switch (TriggerEndTimeType)
+            {
+                case 1: TriggerEndTime = SolarCalculator.Calculate().Sunrise.TimeOfDay; break;
+                case 2: TriggerEndTime = SolarCalculator.Calculate().Sunset.TimeOfDay; break;
+            }
+            if ((TriggerStartTime != TriggerEndTime) &&
+                ((TriggerStartTime > TriggerEndTime && (DateTimeOffset.Now.TimeOfDay < TriggerStartTime || DateTimeOffset.Now.TimeOfDay < TriggerEndTime)) ||
+                (TriggerStartTime < TriggerEndTime && (DateTimeOffset.Now.TimeOfDay < TriggerStartTime || DateTimeOffset.Now.TimeOfDay > TriggerEndTime))))
             {
                 MyBaseThing.StatusLevel = 0;
                 return;
