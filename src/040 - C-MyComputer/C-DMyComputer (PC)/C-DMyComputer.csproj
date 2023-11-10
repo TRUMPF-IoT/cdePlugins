@@ -37,7 +37,7 @@
 			<!--<ExcludeAssets>contentFiles</ExcludeAssets>  Uncomment to use the DLL instead of source code-->
 		</PackageReference>
 		<PackageReference Include="System.Management">
-			<Version>7.0.0</Version>
+			<Version>7.0.2</Version>
 		</PackageReference>
 		<PackageReference Include="System.Diagnostics.PerformanceCounter">
 			<Version>7.0.0</Version>
