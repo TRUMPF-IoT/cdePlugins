@@ -807,10 +807,8 @@ if (CInt(Application["DBG"])>0)	ResponseEmail(null,"SQL-DR: "+ pSQL,1);
 
                 while (MyInsertQueue.Count > 0 && TheBaseAssets.MasterSwitch)
                 {
-                    Guid MyQItemKey =Guid.Empty;
-#pragma warning disable CS0618 // Type or member is obsolete
-                    TheInsertQueueItem MyQItem = MyInsertQueue.GetFirstItem(out MyQItemKey);
-#pragma warning restore CS0618 // Type or member is obsolete
+                    TheInsertQueueItem MyQItem = MyInsertQueue.TheValues[0]; //.fi.GetFirstItem(out MyQItemKey)
+                    Guid MyQItemKey = MyQItem.cdeMID;
                     bool doRemoveItem = true;
                     if (MyQItem == null || MyQItemKey==Guid.Empty) break;
                     try
