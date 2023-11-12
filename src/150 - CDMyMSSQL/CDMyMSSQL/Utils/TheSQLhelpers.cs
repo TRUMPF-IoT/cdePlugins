@@ -1028,13 +1028,15 @@ if (CInt(Application["DBG"])>0)	ResponseEmail(null,"SQL-DR: "+ pSQL,1);
                                     {
                                         TheBaseAssets.MySYSLOG.WriteToLog(4421, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM("SQLHelper", $"SQL Update/Insert - maximum retries failed on: {SQLcreate2.Substring(20)}", eMsgLevel.l1_Error, sqlException.ToString()));
                                         AppendError("SQL Update/Insert - maximum retries failed on: " + SQLcreate2, sqlException.ToString());
+                                        doRemoveItem = true;
                                         break;
                                     }
 
                                     // Determine if we should retry or abort.
                                     if (!RetryLitmus(sqlException))
                                     {
-                                        TheBaseAssets.MySYSLOG.WriteToLog(4422, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM("SQLHelper", $"SQL Update/Insert - No retries due to fatal SQL error on: {SQLcreate2.Substring(20)}", eMsgLevel.l1_Error, sqlException.ToString()));
+                                        TheBaseAssets.MySYSLOG.WriteToLog(4422, TSM.L(eDEBUG_LEVELS.VERBOSE) ? null : new TSM("SQLHelper", $"SQL Update/Insert - No retries due to fatal SQL error on: {SQLcreate2.Substring(20)}", eMsgLevel.l1_Error, sqlException.ToString()));
+                                        doRemoveItem = true;
                                         break;
                                     }
                                     else
