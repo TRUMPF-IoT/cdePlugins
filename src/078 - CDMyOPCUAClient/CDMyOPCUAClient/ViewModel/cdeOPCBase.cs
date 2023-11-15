@@ -86,7 +86,7 @@ namespace CDMyOPCUAClient.ViewModel
             return _resolvedNodeId;
         }
 
-        public static NodeId ResolveNodeIdName(string nodeIdName, Session session)
+        public static NodeId ResolveNodeIdName(string nodeIdName, ISession session)
         {
             try
             {

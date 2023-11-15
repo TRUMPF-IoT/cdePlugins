@@ -548,7 +548,7 @@ namespace CDMyOPCUAClient.ViewModel
         }
 
 
-        public string ReadTag(Session session)
+        public string ReadTag(ISession session)
         {
             string error = null;
 
@@ -578,7 +578,7 @@ namespace CDMyOPCUAClient.ViewModel
             return error;
         }
 
-        public static DataValueCollection ReadTags(Session session, IEnumerable<string> tagRefs, bool readTypeInfo = false)
+        public static DataValueCollection ReadTags(ISession session, IEnumerable<string> tagRefs, bool readTypeInfo = false)
         {
             ReadValueIdCollection nodesToRead = new ReadValueIdCollection();
             foreach (var tagRef in tagRefs)
