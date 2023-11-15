@@ -4,7 +4,6 @@
 
 using cdeEnergyBase;
 using CDMyComputer.ViewModels;
-using CDMyEnergy.ViewModels;
 using nsCDEngine.BaseClasses;
 using nsCDEngine.Communication;
 using nsCDEngine.Engines;
