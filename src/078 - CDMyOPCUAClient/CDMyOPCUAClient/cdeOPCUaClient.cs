@@ -38,8 +38,7 @@ namespace CDMyOPCUAClient
         {
                 "Opc.Ua.Core.dll",
                 "Opc.Ua.Client.dll",
-                "Opc.Ua.Configuration.dll",
-                "BouncyCastle.Crypto.dll",
+                "Opc.Ua.Configuration.dll"
         },
         Platforms = new cdePlatform[]
         {
