@@ -747,7 +747,7 @@ namespace Modbus
                     }
                     else if (field.SourceType == "int16")
                     {
-                        var value = TheCommonUtils.CInt(data[0]);
+                        var value = (short)data[0];
                         dict[field.PropertyName] = value / scale;
                     }
                     else if (field.SourceType == "utf8")

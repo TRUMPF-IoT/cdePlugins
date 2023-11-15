@@ -2717,7 +2717,7 @@ namespace CDMyOPCUAClient.ViewModel
         /// <summary>
         /// opc.tcp://CX-0E1E60:4840
         /// </summary>
-        internal Session m_session;
+        internal ISession m_session;
         object m_reconnectHandlerLock = new object();
         private SessionReconnectHandler m_reconnectHandler;
         private ApplicationConfiguration m_configuration;
@@ -3082,17 +3082,17 @@ namespace CDMyOPCUAClient.ViewModel
             TheBaseAssets.MySYSLOG.WriteToLog(78104, TSM.L(eDEBUG_LEVELS.EVERYTHING) ? null : new TSM(MyBaseThing.EngineName, String.Format("[{0}] Session closing for server", GetLogAddress()), eMsgLevel.l4_Message));
         }
 
-        private IUserIdentity OnSessionRenewUserIdentity(Session session, IUserIdentity identity)
+        private IUserIdentity OnSessionRenewUserIdentity(ISession session, IUserIdentity identity)
         {
             TheBaseAssets.MySYSLOG.WriteToLog(78105, TSM.L(eDEBUG_LEVELS.VERBOSE) ? null : new TSM(MyBaseThing.EngineName, String.Format("[{0}] Session user identify not renewed for server", GetLogAddress()), eMsgLevel.l1_Error));
             return identity;
         }
 
-        private void OnSessionNotification(Session session, NotificationEventArgs e)
+        private void OnSessionNotification(ISession session, NotificationEventArgs e)
         {
         }
 
-        private void OnSessionPublishError(Session session, PublishErrorEventArgs e)
+        private void OnSessionPublishError(ISession session, PublishErrorEventArgs e)
         {
             //TheBaseAssets.MySYSLOG.WriteToLog(78106, TSM.L(eDEBUG_LEVELS.FULLVERBOSE) ? null : new TSM(MyBaseThing.EngineName, String.Format("[{0}] Session publish error for server", GetLogAddress()), eMsgLevel.l1_Error, e.Status.ToLongString()));
         }
@@ -3756,7 +3756,7 @@ namespace CDMyOPCUAClient.ViewModel
         /// <summary>
         /// Handles a keep alive event from a session.
         /// </summary>
-        private void Session_KeepAlive(Session session, KeepAliveEventArgs e)
+        private void Session_KeepAlive(ISession session, KeepAliveEventArgs e)
         {
             try
             {

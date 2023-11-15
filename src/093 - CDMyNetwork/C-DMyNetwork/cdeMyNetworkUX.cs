@@ -4,6 +4,7 @@
 
 using nsCDEngine.Engines.NMIService;
 using nsCDEngine.Engines.ThingService;
+using nsCDEngine.ViewModels;
 
 namespace CDMyNetwork
 {
@@ -28,14 +29,16 @@ namespace CDMyNetwork
                 PropertyBag =
                 new nmiDashboard() { Category = "Devices", Format = "Network Status<br>Issues: {0}", LabelFormat = "Current Issues: {0}", Thumbnail="FA5:f6ff", ClassName = "cdeLiveTile cdeLiveTileBar", SideBarTitle = "Network Services" }
             });
-            mMyDashboard.RegisterOnLoad((pDash) =>
+            mMyDashboard.RegisterEvent2(eUXEvents.OnLoad, (obj, pMsg) =>
             {
                 if (RootDashPanel == null)
                 {
+                    var tm = pMsg as TheProcessMessage;
+                    TheDashPanelInfo pDash = tm?.Cookie as TheDashPanelInfo;
                     RootDashPanel = pDash;
                     sinkStatChanged(null);
-                    ThePropertyBag.PropBagUpdateValue(pDash.PropertyBag, "Foreground", "=", "white");// "background-image:url('GlasButton.png');color:white;background-color:gray");
-                    ThePropertyBag.PropBagUpdateValue(pDash.PropertyBag, "sStyle", "=", "color:white;");// "background-image:url('GlasButton.png');color:white;background-color:gray");
+                    ThePropertyBag.PropBagUpdateValue(pDash?.PropertyBag, "Foreground", "=", "white");// "background-image:url('GlasButton.png');color:white;background-color:gray");
+                    ThePropertyBag.PropBagUpdateValue(pDash?.PropertyBag, "sStyle", "=", "color:white;");// "background-image:url('GlasButton.png');color:white;background-color:gray");
                     ScanAllServices();
                 }
             });

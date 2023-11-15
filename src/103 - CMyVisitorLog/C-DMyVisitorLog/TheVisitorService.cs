@@ -194,8 +194,8 @@ namespace CDMyVisitorLog
 
             #region GoogleMaps
             string gKey = null;
-            if (TheBaseAssets.MyCmdArgs.ContainsKey("GoogleMapsKey"))
-                gKey=TheBaseAssets.MyCmdArgs["GoogleMapsKey"];
+            if (TheBaseAssets.MySettings.HasSetting("GoogleMapsKey"))
+                gKey=TheBaseAssets.MySettings.GetSetting("GoogleMapsKey");
             if (TheNMIEngine.IsControlTypeRegistered("cdeNMI.ctrlGoogleMaps") && !string.IsNullOrEmpty(gKey))
             {
                 TheNMIEngine.AddSmartControl(MyBaseThing, tMyForm, eFieldType.CollapsibleGroup, 420, 2, 0, "Google Maps", null, new nmiCtrlCollapsibleGroup() { TileWidth = 12, IsSmall=true });

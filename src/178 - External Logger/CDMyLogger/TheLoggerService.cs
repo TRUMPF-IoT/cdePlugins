@@ -202,9 +202,9 @@ namespace CDMyLogger
                     }
                 }
             }
-            if (!CreatedATextLogger && TheBaseAssets.MyCmdArgs?.ContainsKey("CreateEventLog") == true)
+            if (!CreatedATextLogger && TheBaseAssets.MySettings.HasSetting("CreateEventLog"))
             {
-                var tLogName = TheBaseAssets.MyCmdArgs["CreateEventLog"];
+                var tLogName = TheBaseAssets.MySettings.GetSetting("CreateEventLog");
                 TheTextLogger tThin = null;
                 try
                 {

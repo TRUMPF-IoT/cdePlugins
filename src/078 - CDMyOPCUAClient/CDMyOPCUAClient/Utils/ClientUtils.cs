@@ -173,7 +173,7 @@ namespace Opc.Ua.Client.Controls
         /// <param name="attributeId">The id of the attribute.</param>
         /// <param name="value">The value of the attribute.</param>
         /// <returns>The attribute formatted as a string.</returns>
-        public static string GetAttributeDisplayText(Session session, uint attributeId, Variant value)
+        public static string GetAttributeDisplayText(ISession session, uint attributeId, Variant value)
         {
             if (value == Variant.Null)
             {
@@ -437,7 +437,7 @@ namespace Opc.Ua.Client.Controls
         /// <returns>
         /// The references found. Null if an error occurred.
         /// </returns>
-        public static ReferenceDescriptionCollection Browse(Session session, BrowseDescriptionCollection nodesToBrowse, bool throwOnError)
+        public static ReferenceDescriptionCollection Browse(ISession session, BrowseDescriptionCollection nodesToBrowse, bool throwOnError)
         {
             return Browse(session, null, nodesToBrowse, throwOnError);
         }
@@ -445,7 +445,7 @@ namespace Opc.Ua.Client.Controls
         /// <summary>
         /// Browses the address space and returns the references found.
         /// </summary>
-        public static ReferenceDescriptionCollection Browse(Session session, ViewDescription view, BrowseDescriptionCollection nodesToBrowse, bool throwOnError)
+        public static ReferenceDescriptionCollection Browse(ISession session, ViewDescription view, BrowseDescriptionCollection nodesToBrowse, bool throwOnError)
         {
             try
             {
@@ -577,7 +577,7 @@ namespace Opc.Ua.Client.Controls
         /// <returns>
         /// The references found. Null if an error occurred.
         /// </returns>
-        public static ReferenceDescriptionCollection Browse(Session session, BrowseDescription nodeToBrowse, bool throwOnError)
+        public static ReferenceDescriptionCollection Browse(ISession session, BrowseDescription nodeToBrowse, bool throwOnError)
         {
             return Browse(session, null, nodeToBrowse, throwOnError);
         }
@@ -585,7 +585,7 @@ namespace Opc.Ua.Client.Controls
         /// <summary>
         /// Browses the address space and returns the references found.
         /// </summary>
-        public static ReferenceDescriptionCollection Browse(Session session, ViewDescription view, BrowseDescription nodeToBrowse, bool throwOnError)
+        public static ReferenceDescriptionCollection Browse(ISession session, ViewDescription view, BrowseDescription nodeToBrowse, bool throwOnError)
         {
             try
             {

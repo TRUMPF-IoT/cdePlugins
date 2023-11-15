@@ -67,16 +67,15 @@ namespace CDMyComputer
             mIsInitCalled = true;
 
             MyBaseThing.StatusLevel = 4;
-            string temp;
-            TheBaseAssets.MyCmdArgs.TryGetValue("IsHealthCollectionOff", out temp);
+            string temp=TheBaseAssets.MySettings.GetSetting("IsHealthCollectionOff");
             if (!string.IsNullOrEmpty(temp))
                 IsHealthCollectionOff = TheCommonUtils.CBool(temp);
-            TheBaseAssets.MyCmdArgs.TryGetValue("DisableHealthHistory", out temp);
+            temp=TheBaseAssets.MySettings.GetSetting("DisableHealthHistory");
             if (!string.IsNullOrEmpty(temp))
                 DisableHistorian = TheCommonUtils.CBool(temp);
             if (HealthCollectionCycle == 0)
             {
-                TheBaseAssets.MyCmdArgs.TryGetValue("HealthCollectionCycle", out temp);
+                temp=TheBaseAssets.MySettings.GetSetting("HealthCollectionCycle");
                 if (!string.IsNullOrEmpty(temp))
                     HealthCollectionCycle = TheCommonUtils.CInt(temp);
                 if (HealthCollectionCycle == 0)
@@ -85,7 +84,7 @@ namespace CDMyComputer
 
             if (SensorDelay == 0)
             {
-                TheBaseAssets.MyCmdArgs.TryGetValue("SensorDelay", out temp);
+                temp = TheBaseAssets.MySettings.GetSetting("SensorDelay");
                 if (!string.IsNullOrEmpty(temp))
                     SensorDelay = TheCommonUtils.CInt(temp);
                 if (SensorDelay == 0)
@@ -94,7 +93,7 @@ namespace CDMyComputer
 
             if (SensorAccelDeadband < 1)
             {
-                TheBaseAssets.MyCmdArgs.TryGetValue("SensorAccelDeadband", out temp);
+                temp = TheBaseAssets.MySettings.GetSetting("SensorAccelDeadband");
                 if (!string.IsNullOrEmpty(temp))
                     SensorAccelDeadband = TheCommonUtils.CDbl(temp);
                 if (SensorAccelDeadband < 0.1)

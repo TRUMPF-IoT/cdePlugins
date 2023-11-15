@@ -31,7 +31,6 @@
     <PackageReference Include="C-DEngine" Version="5.*" />
     <PackageReference Include="cdeOPCUAClientContractsShared" Version="5.*" IncludeAssets="ContentFiles" />
     <PackageReference Include="cdeReceiverBaseShared" Version="5.*" IncludeAssets="ContentFiles" />
-    <PackageReference Include="cdeConnectionBaseShared" Version="5.*" IncludeAssets="ContentFiles" />
     <PackageReference Include="cdeEventConvertersShared" Version="5.*" IncludeAssets="ContentFiles" />
     <PackageReference Include="cdeConnectionBaseShared" Version="5.*" IncludeAssets="ContentFiles" />
     <PackageReference Include="cdeCommonMessageContractsShared" Version="5.*" IncludeAssets="ContentFiles" />
