@@ -42,7 +42,7 @@ namespace CDMyVThings
         IconUrl = iconUrl,
         Developer = "C-Labs",
         DeveloperUrl = "http://www.c-labs.com",
-        Categories = new string[] { },
+        Categories = new string[] { "Digital-Thing" },
         IsService = true,
         EngineID = "{B9DBC881-0EA8-4FA6-98B8-2C646B6B848F}",
         AcceptsFilePush = true,
