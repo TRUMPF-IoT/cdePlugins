@@ -10,6 +10,7 @@
     <RootNamespace>CDMyMeshSender</RootNamespace>
     <PackageId>CDMyMeshSender</PackageId>
     <Version>5.145.0</Version>
+	  <LangVersion>preview</LangVersion>
     <Authors>Markus Horstmann</Authors>
     <Company>C-Labs</Company>
     <Product>CDMyMeshSender</Product>

@@ -29,7 +29,7 @@ namespace CDMyMessages
             base.InitEngineAssets(pBase);
             MyBaseEngine.SetFriendlyName("My Messaging Service");  
             MyBaseEngine.SetEngineID(new Guid("{7B56E698-59B5-4A11-BFE7-FDB06A912FDC}")); 
-            MyBaseEngine.SetPluginInfo("Send email and other messages to people, social media and other recipients", 0, null, "FA3:f658", "C-Labs", "http://www.c-labs.com", new List<string>());
+            MyBaseEngine.SetPluginInfo("Send email and other messages to people, social media and other recipients", 0, null, "FA3:f658", "C-Labs", "http://www.c-labs.com", new List<string> { "Service" });
             MyBaseEngine.GetEngineState().IsAllowedUnscopedProcessing = true;
         }
         #endregion
