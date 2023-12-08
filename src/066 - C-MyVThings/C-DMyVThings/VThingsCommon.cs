@@ -20,7 +20,6 @@ namespace CDMyVThings
 {
     public class eVThings : TheDeviceTypeEnum
     {
-        //public const string eVAlarm = "Alarm";
         public const string eVTimer = "Timer";
         public const string eVCountdown = "Countdown";
         public const string eMemoryTag = "Memory Tag";
@@ -28,7 +27,6 @@ namespace CDMyVThings
         public const string eDataGenerator = "Data Generator";
         public const string eDataVerifier = "Data Verifier";
         public const string eVStateSensor = "Virtual State Sensor";
-        //public const string eNMIControl = "NMI Control";
         public const string eSineWave = "Sine Wave";
         public const string eVirtualSensor = "Virtual Sensor";
         public const string eDataPlayback = "Data Playback";

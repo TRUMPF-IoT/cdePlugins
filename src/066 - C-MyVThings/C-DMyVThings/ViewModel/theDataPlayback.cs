@@ -24,67 +24,8 @@ using nsCDEngine.Communication;
 namespace CDMyVThings.ViewModel
 {
     [DeviceType(DeviceType = eVThings.eDataPlayback, Description = "Data Player reads recorded thing updates and plays them back.", Capabilities = new[] { eThingCaps.ConfigManagement })]
-    public class TheDataPlayback: ICDEThing
+    public class TheDataPlayback: TheThingBase
     {
-        #region ICDEThing Methods
-        public void SetBaseThing(TheThing pThing)
-        {
-            MyBaseThing = pThing;
-        }
-        public TheThing GetBaseThing()
-        {
-            return MyBaseThing;
-        }
-        public virtual cdeP GetProperty(string pName, bool DoCreate)
-        {
-            return MyBaseThing?.GetProperty(pName, DoCreate);
-        }
-        public virtual cdeP SetProperty(string pName, object pValue)
-        {
-            return MyBaseThing?.SetProperty(pName, pValue);
-        }
-
-        public void RegisterEvent(string pName, Action<ICDEThing, object> pCallBack)
-        {
-            MyBaseThing?.RegisterEvent(pName, pCallBack);
-        }
-        public void UnregisterEvent(string pName, Action<ICDEThing, object> pCallBack)
-        {
-            MyBaseThing?.UnregisterEvent(pName, pCallBack);
-        }
-        public void FireEvent(string pEventName, ICDEThing sender, object pPara, bool FireAsync)
-        {
-            MyBaseThing?.FireEvent(pEventName, sender, pPara, FireAsync);
-        }
-        public bool HasRegisteredEvents(string pEventName)
-        {
-            if (MyBaseThing != null)
-                return MyBaseThing.HasRegisteredEvents(pEventName);
-            return false;
-        }
-
-        public virtual void HandleMessage(ICDEThing sender, object pMsg)
-        { }
-
-
-        protected TheThing MyBaseThing;
-
-        protected bool mIsUXInitCalled;
-        protected bool mIsUXInitialized;
-        protected bool mIsInitCalled;
-        protected bool mIsInitialized;
-        public bool IsUXInit()
-        { return mIsUXInitialized; }
-        public bool IsInit()
-        { return mIsInitialized; }
-
-        /// <summary>
-        /// The possible types of WeMo devices that can be detected
-        /// </summary>
-        #endregion
-
-        private IBaseEngine MyBaseEngine;
-
         // KPIs/Status
         public bool IsActive
         {
@@ -618,7 +559,7 @@ namespace CDMyVThings.ViewModel
         long _propertyCounter;
         DateTimeOffset _lastSendTime;
 
-        public virtual bool Init()
+        public override bool Init()
         {
             if (mIsInitCalled) return false;
             mIsInitCalled = true;
@@ -669,18 +610,11 @@ namespace CDMyVThings.ViewModel
             return true;
         }
 
-        public bool Delete()
-        {
-            mIsInitialized = false;
-            // TODO Properly implement delete
-            return true;
-        }
-
         protected TheFormInfo MyStatusForm;
         protected TheDashPanelInfo SummaryForm;
         protected TheFieldInfo CountBar;
         protected TheFieldInfo PropTable;
-        public virtual bool CreateUX()
+        public override bool CreateUX()
         {
             if (mIsUXInitCalled) return false;
             mIsUXInitCalled = true;
@@ -721,8 +655,8 @@ namespace CDMyVThings.ViewModel
 
             TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleEnded, 90, 2, 0x0, "###CDMyVThings.TheVThings#PlaybackInputFileName#Input File###", nameof(InputFileName), new nmiCtrlSingleEnded() { ParentFld = 49 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.Number, 86, 2, 0x0, "###CDMyVThings.TheVThings#PlaybackNumberThings#Number Things###", nameof(ParallelPlaybackCount), new nmiCtrlNumber() { TileWidth = 3, ParentFld = 49 });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleEnded, 110, 2, 0x0, "###CDMyVThings.TheVThings#PlaybackEngineName#Engine Name###", nameof(PlaybackEngineName), new nmiCtrlSingleEnded() { ParentFld = 49 });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.SingleEnded, 115, 2, 0x0, "###CDMyVThings.TheVThings#PlaybackDeviceType#Device Type###", nameof(PlaybackDeviceType), new nmiCtrlSingleEnded() { ParentFld = 49 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.ThingPicker, 110, 2, 0x0, "###CDMyVThings.TheVThings#PlaybackEngineName#Engine Name###", nameof(PlaybackEngineName), new nmiCtrlThingPicker() { IncludeEngines=true, Filter="DeviceType=IBaseEngine", ParentFld = 49 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.DeviceTypePicker, 115, 2, 0x0, "###CDMyVThings.TheVThings#PlaybackDeviceType#Device Type###", nameof(PlaybackDeviceType), new nmiCtrlDeviceTypePicker() { ParentFld = 49 });
 
 
             TheNMIEngine.AddSmartControl(MyBaseThing, MyStatusForm, eFieldType.CollapsibleGroup, 120, 2, 0x0, "###CDMyVThings.TheVThings#Settings#Upload file...###", null, new nmiCtrlCollapsibleGroup() { ParentFld = 49, DoClose = true, IsSmall = true });
@@ -766,7 +700,7 @@ namespace CDMyVThings.ViewModel
             TheCommCore.PublishToOriginator(pMsg.Message, new TSM(eEngineName.NMIService, "NMI_TOAST", $"###Input data file ({pMsg.Message.TXT}) received!###"));
         }
 
-
+        IBaseEngine MyBaseEngine;
         public TheDataPlayback(TheThing pThing, IBaseEngine pEngine)
         {
             if (pThing != null)
