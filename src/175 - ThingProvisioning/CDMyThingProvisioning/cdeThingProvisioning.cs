@@ -58,7 +58,7 @@ namespace CDMyThingProvisioning
                                        "toplogo-150.png",       // pIcon - custom icon.
                                        "C-Labs",                // pDeveloper - name of the plugin developer.
                                        "http://www.c-labs.com", // pDeveloperUrl - URL to developer home page.
-                                       new List<string>() { }); // pCategories - Search categories for service.
+                                       new List<string>() { "Service" }); // pCategories - Search categories for service.
         }
 
         TheStorageMirror<ScriptSnapshot> MyScriptTableStorage;

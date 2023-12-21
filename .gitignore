@@ -231,3 +231,4 @@ project.assets.json
 /BuildTools/signtool.exe
 /src/gitversion.json
 /src/178 - External Logger/DiscordLib
+/BuildTools/AzureSign/azuresign.bat

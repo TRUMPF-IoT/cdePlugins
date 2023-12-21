@@ -11,6 +11,7 @@
     <PackageId>CDMyOPCUAClient</PackageId>
     <Version>5.145.0</Version>
     <Authors>Markus Horstmann</Authors>
+	  <LangVersion>preview</LangVersion>
     <Company>C-Labs</Company>
     <Product>CDMyOPCUAClient for $(TargetFramework)</Product>
     <Copyright>Copyright © 2017-2022 TRUMPF Laser GmbH, authors: C-Labs</Copyright>

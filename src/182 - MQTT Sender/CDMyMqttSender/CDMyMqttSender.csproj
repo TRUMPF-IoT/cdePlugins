@@ -10,6 +10,7 @@
     <RootNamespace>CDMyMqttSender</RootNamespace>
     <PackageId>CDMyMqttSender</PackageId>
     <Version>5.100.0</Version>
+	  <LangVersion>preview</LangVersion>
     <Authors>Markus Horstmann</Authors>
     <Company>C-Labs</Company>
     <Product>CDMyMqttSender for $(TargetFramework)</Product>

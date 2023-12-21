@@ -46,7 +46,8 @@ namespace CDMyMqttSender
         ManifestFiles = new [] {
                 // MQTT Receiver
                 "GnatMQ.dll",
-            }
+            },
+        Categories = ["Protocol"]
         )
     ]
     class MqttSenderService : ThePluginBase

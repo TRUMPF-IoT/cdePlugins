@@ -30,7 +30,7 @@ namespace CDMyComputer
             MyBaseEngine.AddCapability(eThingCaps.ComputerHealth);
             MyBaseEngine.AddCapability(eThingCaps.HardwareAccess);
             MyBaseEngine.AddCapability(eThingCaps.DoNotIsolate);
-            MyBaseEngine.SetPluginInfo("Monitors the health of all your Nodes", 0, null, "FA3:f108", "C-Labs and its licensors", "http://www.c-labs.com", new List<string>());
+            MyBaseEngine.SetPluginInfo("Monitors the health of all your Nodes", 0, null, "FA3:f108", "C-Labs and its licensors", "http://www.c-labs.com", new List<string> { "Service" });
             MyBaseEngine.AddManifestFiles(new List<string> { "System.Management.dll", "System.Diagnostics.PerformanceCounter.dll" });
         }
 

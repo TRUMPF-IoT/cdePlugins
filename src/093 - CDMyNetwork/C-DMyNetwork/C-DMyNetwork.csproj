@@ -9,6 +9,7 @@
         <Authors>Chris Muench</Authors>
         <Company>C-Labs</Company>
         <Product>C-DMyNetwork</Product>
+	  <LangVersion>preview</LangVersion>
         <Description>Network Services</Description>
         <Copyright>Copyright © 2017-2022 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
         <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
