@@ -59,8 +59,9 @@ namespace CDMyMeshSender
         DeveloperUrl = "http://www.c-labs.com",
         CDEMinVersion = 4.2050,
         ManifestFiles = new string[] { },
+        Categories = ["Service"],
         Platforms = new[] {
-            cdePlatform.X64_V3, cdePlatform.X32_V4, cdePlatform.NETSTD_V20
+            cdePlatform.NETSTD_V20
         })
     ]
     class MeshSenderService : ThePluginBase

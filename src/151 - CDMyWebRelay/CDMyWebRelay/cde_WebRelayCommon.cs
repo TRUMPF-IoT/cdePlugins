@@ -35,6 +35,7 @@ namespace CDMyWebRelay
             MyBaseEngine.SetEngineID(new Guid("{A5FD8A57-C4B9-4EDB-8965-082D3F466E33}"));
             MyBaseEngine.SetFriendlyName("The Web Relay Service");
             MyBaseEngine.GetEngineState().IsAllowedUnscopedProcessing = TheBaseAssets.MyServiceHostInfo.IsCloudService;
+            MyBaseEngine.SetPluginInfo("This service allows you relay web pages", 0, null, "toplogo-150.png", "C-Labs", "http://www.c-labs.com", new List<string> { "Service" });
         }
         #endregion
 

@@ -57,7 +57,7 @@ namespace CDMyLogger
                                        "toplogo-150.png",       // pIcon - custom icon.
                                        "C-Labs",                // pDeveloper - name of the plugin developer.
                                        "http://www.c-labs.com", // pDeveloperUrl - URL to developer home page.
-                                       new List<string>() { }); // pCategories - Search categories for service.
+                                       new List<string>() { "Service" }); // pCategories - Search categories for service.
             MyBaseEngine.AddManifestFiles(new List<string> { "Discord.Net.Core.dll", "Discord.Net.Rest.dll", "Discord.Net.Webhook.dll", "Newtonsoft.Json.dll" });
             MyBaseEngine.AddCapability(eThingCaps.LoggerEngine);
             MyBaseEngine.AddCapability(eThingCaps.ConfigManagement);

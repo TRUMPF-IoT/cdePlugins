@@ -40,9 +40,10 @@ namespace CDMyOPCUAClient
                 "Opc.Ua.Client.dll",
                 "Opc.Ua.Configuration.dll"
         },
+        Categories = ["Protocol"],
         Platforms = new cdePlatform[]
         {
-            cdePlatform.X64_V3, cdePlatform.X32_V4, cdePlatform.NETSTD_V20,
+            cdePlatform.NETSTD_V20,
         }
         )]
     partial class cdeOPCUaClient : ThePluginBase
