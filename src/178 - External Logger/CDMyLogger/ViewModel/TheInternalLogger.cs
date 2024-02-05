@@ -77,7 +77,7 @@ namespace CDMyLogger.ViewModel
 
         public override bool LogEvent(TheEventLogData pData)
         {
-            if (!MyRuleEventLog.IsReady) return false;
+            if (MyRuleEventLog?.IsReady!=true) return false;
             MyRuleEventLog.AddAnItem(pData);
             return true;
         }
