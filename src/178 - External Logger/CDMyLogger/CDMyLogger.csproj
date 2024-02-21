@@ -18,6 +18,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	  <PackageOutputPath>$(SolutionDir)Nugets</PackageOutputPath>
   </PropertyGroup>
 
   <ItemGroup>

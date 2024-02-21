@@ -14,6 +14,7 @@
     <AssemblyName>CDMyRulesEngine</AssemblyName>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	  <PackageOutputPath>$(SolutionDir)Nugets</PackageOutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
