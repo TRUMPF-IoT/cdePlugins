@@ -12,6 +12,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
     <AssemblyName>CDMyImages</AssemblyName>
+	  <PackageOutputPath>$(SolutionDir)Nugets</PackageOutputPath>
   </PropertyGroup>
 
   <Choose>

@@ -17,6 +17,7 @@
     <Copyright>Copyright © 2015-2022 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
+	  <PackageOutputPath>$(SolutionDir)Nugets</PackageOutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
