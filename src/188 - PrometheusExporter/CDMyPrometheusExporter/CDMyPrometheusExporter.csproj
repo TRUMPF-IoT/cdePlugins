@@ -19,6 +19,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	  <PackageOutputPath>$(SolutionDir)Nugets</PackageOutputPath>
   </PropertyGroup>
 
       <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -53,7 +54,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="prometheus-net" Version="8.1.1" />
+    <PackageReference Include="prometheus-net" Version="8.2.1" />
   </ItemGroup>
 
   <!--

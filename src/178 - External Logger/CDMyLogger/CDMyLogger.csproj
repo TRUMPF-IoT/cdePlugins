@@ -18,12 +18,13 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	  <PackageOutputPath>$(SolutionDir)Nugets</PackageOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="C-DEngine" Version="5.*" />
     <PackageReference Include="Discord.Net.Webhook">
-		  <Version>3.12.0</Version>
+		  <Version>3.13.1</Version>
 	  </PackageReference>
   </ItemGroup>
 

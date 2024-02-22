@@ -16,6 +16,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	  <PackageOutputPath>$(SolutionDir)Nugets</PackageOutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

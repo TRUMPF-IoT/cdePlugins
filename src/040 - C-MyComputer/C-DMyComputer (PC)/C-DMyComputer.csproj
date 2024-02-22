@@ -16,6 +16,7 @@
 		<ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
 		<DefineConstants>TRACE;CDE_SYSLOG;$(DefineConstants)</DefineConstants>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<PackageOutputPath>$(SolutionDir)Nugets</PackageOutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>

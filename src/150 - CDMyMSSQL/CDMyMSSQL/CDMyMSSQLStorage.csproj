@@ -15,6 +15,7 @@
 		<Product>CDMyMSSQLStorage</Product>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
+		<PackageOutputPath>$(SolutionDir)Nugets</PackageOutputPath>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -40,12 +41,12 @@
 	<ItemGroup>
 		<PackageReference Include="C-DEngine" Version="5.*" />
 		<PackageReference Include="cdeEnergyContractsShared" Version="5.*" />
-		<PackageReference Include="cdeSensorTemplateShared" Version="5.*" IncludeAssets="ContentFiles" GeneratePathProperty="true"/>
+		<PackageReference Include="cdeSensorTemplateShared" Version="5.*" IncludeAssets="ContentFiles" GeneratePathProperty="true" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<PackageReference Include="System.Data.SqlClient" >
-			<Version>4.8.5</Version>
+		<PackageReference Include="System.Data.SqlClient">
+			<Version>4.8.6</Version>
 		</PackageReference>
 	</ItemGroup>
 
