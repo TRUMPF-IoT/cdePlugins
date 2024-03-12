@@ -14,7 +14,9 @@
     <AssemblyName>CDMyWebRelay</AssemblyName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <!-- Workaround for placing each DLL into a separate directory when using msbuild's GenerateProjectSpecificOutputFolder -->
-    <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>  </PropertyGroup>
+    <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
+	  <PackageOutputPath>$(SolutionDir)Nugets</PackageOutputPath>
+  </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG</DefineConstants>
