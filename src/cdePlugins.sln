@@ -3,44 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.1.32113.165
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDMyMeshSender", "179 - Mesh Sender\CDMyMeshSender\CDMyMeshSender.csproj", "{38CC1070-FD41-40B0-99A0-27BC7C1929B7}"
-	ProjectSection(ProjectDependencies) = postProject
-		{CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125} = {CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDMyMeshReceiver", "180 - Mesh Receiver\CDMyMeshReceiver\CDMyMeshReceiver.csproj", "{58B19F93-07C5-42BD-A6E1-88B896F743CD}"
-	ProjectSection(ProjectDependencies) = postProject
-		{CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125} = {CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDMyThingProvisioning", "175 - ThingProvisioning\CDMyThingProvisioning\CDMyThingProvisioning.csproj", "{E182D68F-D6A5-4BFA-A537-1954E9E7DBD2}"
-	ProjectSection(ProjectDependencies) = postProject
-		{CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125} = {CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDMyPrometheusExporter", "188 - PrometheusExporter\CDMyPrometheusExporter\CDMyPrometheusExporter.csproj", "{AE2B88F8-0B5E-470D-802B-8D6770C4B60C}"
-	ProjectSection(ProjectDependencies) = postProject
-		{CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125} = {CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "C-DMyComputer", "040 - C-MyComputer\C-DMyComputer (PC)\C-DMyComputer.csproj", "{AE86FB00-191C-40A5-929D-3E0F62B62D1D}"
-	ProjectSection(ProjectDependencies) = postProject
-		{CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125} = {CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "C-DMyVThings", "066 - C-MyVThings\C-DMyVThings\C-DMyVThings.csproj", "{11BFE5F8-3102-4868-8393-8D9C2BCF9369}"
-	ProjectSection(ProjectDependencies) = postProject
-		{CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125} = {CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "C-DMyVisitorLog", "103 - CMyVisitorLog\C-DMyVisitorLog\C-DMyVisitorLog.csproj", "{DD82C159-3F12-46BD-A16D-15D0B9BE64A2}"
-	ProjectSection(ProjectDependencies) = postProject
-		{CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125} = {CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDMyLogger", "178 - External Logger\CDMyLogger\CDMyLogger.csproj", "{D8D5EC07-21AE-44D2-90E9-5C692A3ADAF8}"
-	ProjectSection(ProjectDependencies) = postProject
-		{CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125} = {CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Licenses", "_Licenses", "{F35DC658-36F9-4B60-9631-92F6C807FE85}"
 	ProjectSection(SolutionItems) = preProject
@@ -68,8 +44,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Readme", "_Readme", "{1637
 		..\README.md = ..\README.md
 		readme.md = readme.md
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PackagerInstaller", "..\BuildTools\PackagerInstaller\PackagerInstaller.csproj", "{CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "C-DMyNetwork", "093 - CDMyNetwork\C-DMyNetwork\C-DMyNetwork.csproj", "{FCCE39BA-5EA7-4D06-AD08-79FD7229FBDE}"
 EndProject
@@ -138,10 +112,6 @@ Global
 		{D8D5EC07-21AE-44D2-90E9-5C692A3ADAF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8D5EC07-21AE-44D2-90E9-5C692A3ADAF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8D5EC07-21AE-44D2-90E9-5C692A3ADAF8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FCCE39BA-5EA7-4D06-AD08-79FD7229FBDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FCCE39BA-5EA7-4D06-AD08-79FD7229FBDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCCE39BA-5EA7-4D06-AD08-79FD7229FBDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -187,7 +157,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{CC7D7CFB-9EB8-45F6-8791-B95E8ED2B125} = {D8C22184-8D50-440E-AFA0-2090A6A6AC98}
 		{4165FED4-1E63-4915-B096-F02EAE28ABEC} = {52B297F8-501B-4E8F-B7B4-E5040973F429}
 		{CE4F65F7-9FFC-4499-A201-B0462C1F0D52} = {52B297F8-501B-4E8F-B7B4-E5040973F429}
 		{87D6EA89-F134-41B9-8015-5E5CF7B93DA2} = {E4BAAA74-B2C3-4398-924B-E9DB953B0B1C}

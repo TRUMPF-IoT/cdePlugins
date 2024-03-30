@@ -1,20 +1,20 @@
 ﻿<!--
- SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+ SPDX-FileCopyrightText: 2009-2024 TRUMPF Laser GmbH, authors: C-Labs
  SPDX-License-Identifier: MPL-2.0
  -->
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>CDMyMqttSender</AssemblyName>
     <RootNamespace>CDMyMqttSender</RootNamespace>
     <PackageId>CDMyMqttSender</PackageId>
-    <Version>5.100.0</Version>
+    <Version>6.104.0</Version>
 	  <LangVersion>preview</LangVersion>
     <Authors>Markus Horstmann</Authors>
     <Company>C-Labs</Company>
     <Product>CDMyMqttSender for $(TargetFramework)</Product>
-    <Copyright>Copyright © 2015-2022 C-Labs Corporation and its licensors. All rights reserved.</Copyright>
+    <Copyright>Copyright © 2015-2024 C-Labs Corporation and its licensors. All rights reserved.</Copyright>
 	<PackageLicenseExpression>MPL-2.0 AND EPL-1.0</PackageLicenseExpression>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
@@ -33,13 +33,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="C-DEngine" Version="5.*" />
-	<PackageReference Include="cdeSenderBaseShared" Version="5.*" Label="Shared" IncludeAssets="ContentFiles" />
-	<PackageReference Include="cdeCommonMessageContractsShared" Version="5.*" IncludeAssets="ContentFiles" />
-	<PackageReference Include="cdeConnectionBaseShared" Version="5.*" IncludeAssets="ContentFiles" />
-	<PackageReference Include="cdeEventConvertersShared" Version="5.*" IncludeAssets="ContentFiles" />
-	<PackageReference Include="cdeOPCUAClientContractsShared" Version="5.*" IncludeAssets="ContentFiles" />
-	<PackageReference Include="cdeThingMatcherShared" Version="5.*" IncludeAssets="ContentFiles" />
+	  <PackageReference Include="C-DEngine" Version="6.*-*" />
+	<PackageReference Include="cdeSenderBaseShared" Version="6.*-*" IncludeAssets="ContentFiles" />
+	<PackageReference Include="cdeCommonMessageContractsShared" Version="6.*-*" IncludeAssets="ContentFiles" />
+	<PackageReference Include="cdeConnectionBaseShared" Version="6.*-*" IncludeAssets="ContentFiles" />
+	<PackageReference Include="cdeEventConvertersShared" Version="6.*-*" IncludeAssets="ContentFiles" />
+	<PackageReference Include="cdeOPCUAClientContractsShared" Version="6.*-*" IncludeAssets="ContentFiles" />
+	<PackageReference Include="cdeThingMatcherShared" Version="6.*-*" IncludeAssets="ContentFiles" />
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 
 	<ProjectReference Include="..\GnatMQ\GnatMQ.Std.csproj">
@@ -55,7 +55,7 @@
   <!-- From https://dev.to/wabbbit/include-both-nuget-package-references-and-project-reference-dll-using-dotnet-pack-2d8p -->
 	<Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
     <ItemGroup>
-      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
      </ItemGroup>
    </Target>
 

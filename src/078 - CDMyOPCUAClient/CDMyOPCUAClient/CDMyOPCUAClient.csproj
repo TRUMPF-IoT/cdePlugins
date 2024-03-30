@@ -1,20 +1,20 @@
 ﻿<!--
- SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+ SPDX-FileCopyrightText: 2009-2024 TRUMPF Laser GmbH, authors: C-Labs
  SPDX-License-Identifier: MPL-2.0
  -->
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>CDMyOPCUAClient</AssemblyName>
     <RootNamespace>CDMyOPCUAClient</RootNamespace>
     <PackageId>CDMyOPCUAClient</PackageId>
-    <Version>5.145.0</Version>
+    <Version>6.104.0</Version>
     <Authors>Markus Horstmann</Authors>
 	  <LangVersion>preview</LangVersion>
     <Company>C-Labs</Company>
     <Product>CDMyOPCUAClient for $(TargetFramework)</Product>
-    <Copyright>Copyright © 2017-2022 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <Copyright>Copyright © 2017-2024 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
@@ -39,13 +39,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="C-DEngine" Version="5.*" />
-    <PackageReference Include="cdeCommonMessageContractsShared" Version="5.*" IncludeAssets="ContentFiles" />
-    <PackageReference Include="cdeOPCUAClientContractsShared" Version="5.*" IncludeAssets="ContentFiles" />
-    <PackageReference Include="cdeThingMatcherShared" Version="5.*" IncludeAssets="ContentFiles" />
-    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Client" Version="1.5.373.121" />
-    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Configuration" Version="1.5.373.121" />
-    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Core" Version="1.5.373.121" />
+    <PackageReference Include="C-DEngine" Version="6.*-*" />
+    <PackageReference Include="cdeCommonMessageContractsShared" Version="6.*-*" IncludeAssets="ContentFiles" />
+    <PackageReference Include="cdeOPCUAClientContractsShared" Version="6.*-*" IncludeAssets="ContentFiles" />
+    <PackageReference Include="cdeThingMatcherShared" Version="6.*-*" IncludeAssets="ContentFiles" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Client" Version="1.5.374.27" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Configuration" Version="1.5.374.27" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Core" Version="1.5.374.27" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
