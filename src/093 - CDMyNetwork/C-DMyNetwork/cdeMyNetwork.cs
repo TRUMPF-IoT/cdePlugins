@@ -28,6 +28,7 @@ namespace CDMyNetwork
         IconUrl = "FA3:f6ff",
         Developer = "C-Labs",
         Categories = ["Service"],
+        CDEMinVersion =6.104,
         DeveloperUrl = "http://www.c-labs.com"
         )]
     partial class MyNetworkServices : ThePluginBase

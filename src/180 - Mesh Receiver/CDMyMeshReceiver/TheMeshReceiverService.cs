@@ -59,7 +59,7 @@ namespace CDMyMeshReceiver
             MyBaseEngine.SetEngineID(new Guid("{BF99690D-6114-427F-B17A-A606BE3145BD}")); //TODO: Step 2 - set Plugin GUID
             MyBaseEngine.SetPluginInfo("This service allows to receive data from a CDEngine mesh and place them into CDEngine Things.", 0, null, "", "C-Labs and its licensors", "http://www.c-labs.com", new List<string>() { "Service" });
 
-            MyBaseEngine.SetCDEMinVersion(4.011);
+            MyBaseEngine.SetCDEMinVersion(6.104);
             MyBaseEngine.AddManifestFiles(new List<string>
             {
             });
