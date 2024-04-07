@@ -40,11 +40,11 @@
 
   <ItemGroup>
     <PackageReference Include="C-DEngine" Version="6.*-*" />
-    <PackageReference Include="cdeCSVFileParserShared" Version="6.*-*" IncludeAssets="ContentFiles" />
-    <PackageReference Include="cdeEnergyContractsShared" Version="6.*-*" IncludeAssets="ContentFiles" />
-    <PackageReference Include="cdeEventConvertersShared" Version="6.*-*" IncludeAssets="ContentFiles" />
-    <PackageReference Include="cdeMeshManagerContractsShared" Version="6.*-*" IncludeAssets="ContentFiles" />
-    <PackageReference Include="cdeOPCUAClientContractsShared" Version="6.*-*" IncludeAssets="ContentFiles" />
+    <PackageReference Include="cdeCSVFileParserShared" Version="6.*-*"  />
+    <PackageReference Include="cdeEnergyContractsShared" Version="6.*-*"/>
+    <PackageReference Include="cdeEventConvertersShared" Version="6.*-*" />
+    <PackageReference Include="cdeMeshManagerContractsShared" Version="6.*-*" />
+    <PackageReference Include="cdeOPCUAClientContractsShared" Version="6.*-*" />
     <PackageReference Include="cdeSensorTemplateShared" Version="6.*-*" />
   </ItemGroup>
 
