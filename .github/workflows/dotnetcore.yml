@@ -82,8 +82,8 @@ jobs:
       run: dotnet restore './src/cdePlugins.sln'
 
     # Workaround for gitversiontask lock exception: build a single targetframework first
-    - name: Build PackagerInstaller
-      run: dotnet build './BuildTools/PackagerInstaller\PackagerInstaller.csproj' --framework net48 --configuration Release --no-restore --disable-parallel
+    #- name: Build PackagerInstaller
+    #  run: dotnet build './BuildTools/PackagerInstaller\PackagerInstaller.csproj' --framework net48 --configuration Release --no-restore --disable-parallel
 
     - name: Build
       run: dotnet build './src/cdePlugins.sln' --configuration Release --no-restore --disable-parallel /nowarn:nu5105
