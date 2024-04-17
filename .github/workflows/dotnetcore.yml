@@ -35,9 +35,7 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: |
-          8.0
-          7.0
-          6.0
+          8.0.x
         source-url: https://api.nuget.org/v3/index.json
         config-file: .\nuget.config
         owner: ${{secrets.NUGETORG_APIKEY_OWNER}}
