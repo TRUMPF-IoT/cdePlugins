@@ -74,6 +74,26 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDMyOPCUAClient", "078 - CD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDMyImages", "160 - CDMyImages\CDMyImages\CDMyImages.csproj", "{F0237369-3723-495A-96BF-5D0A1BB5B1EA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Packager", "Packager", "{7F7C5C0B-245C-4E40-954F-C947E92CDCAE}"
+	ProjectSection(SolutionItems) = preProject
+		..\BuildTools\cdePackager\C-DEngine.dll = ..\BuildTools\cdePackager\C-DEngine.dll
+		..\BuildTools\cdePackager\cdePackager.deps.json = ..\BuildTools\cdePackager\cdePackager.deps.json
+		..\BuildTools\cdePackager\cdePackager.dll = ..\BuildTools\cdePackager\cdePackager.dll
+		..\BuildTools\cdePackager\cdePackager.dll.config = ..\BuildTools\cdePackager\cdePackager.dll.config
+		..\BuildTools\cdePackager\cdePackager.exe = ..\BuildTools\cdePackager\cdePackager.exe
+		..\BuildTools\cdePackager\cdePackager.runtimeconfig.json = ..\BuildTools\cdePackager\cdePackager.runtimeconfig.json
+		..\BuildTools\cdePackager\cdePackagerTask.dll = ..\BuildTools\cdePackager\cdePackagerTask.dll
+		..\BuildTools\cdePackager\Microsoft.Build.dll = ..\BuildTools\cdePackager\Microsoft.Build.dll
+		..\BuildTools\cdePackager\Microsoft.Build.Framework.dll = ..\BuildTools\cdePackager\Microsoft.Build.Framework.dll
+		..\BuildTools\cdePackager\Microsoft.Build.Utilities.Core.dll = ..\BuildTools\cdePackager\Microsoft.Build.Utilities.Core.dll
+		..\BuildTools\cdePackager\Microsoft.NET.StringTools.dll = ..\BuildTools\cdePackager\Microsoft.NET.StringTools.dll
+		..\BuildTools\cdePackager\PackagePlugIn.targets = ..\BuildTools\cdePackager\PackagePlugIn.targets
+		..\BuildTools\cdePackager\System.Configuration.ConfigurationManager.dll = ..\BuildTools\cdePackager\System.Configuration.ConfigurationManager.dll
+		..\BuildTools\cdePackager\System.Diagnostics.EventLog.dll = ..\BuildTools\cdePackager\System.Diagnostics.EventLog.dll
+		..\BuildTools\cdePackager\System.Reflection.MetadataLoadContext.dll = ..\BuildTools\cdePackager\System.Reflection.MetadataLoadContext.dll
+		..\BuildTools\cdePackager\System.Security.Cryptography.ProtectedData.dll = ..\BuildTools\cdePackager\System.Security.Cryptography.ProtectedData.dll
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -161,6 +181,7 @@ Global
 		{CE4F65F7-9FFC-4499-A201-B0462C1F0D52} = {52B297F8-501B-4E8F-B7B4-E5040973F429}
 		{87D6EA89-F134-41B9-8015-5E5CF7B93DA2} = {E4BAAA74-B2C3-4398-924B-E9DB953B0B1C}
 		{F810D2D8-ABB9-43C5-9053-827CB51CA6BA} = {E4BAAA74-B2C3-4398-924B-E9DB953B0B1C}
+		{7F7C5C0B-245C-4E40-954F-C947E92CDCAE} = {D8C22184-8D50-440E-AFA0-2090A6A6AC98}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {65B36CB7-1C08-480C-96F5-F480F39A709F}
