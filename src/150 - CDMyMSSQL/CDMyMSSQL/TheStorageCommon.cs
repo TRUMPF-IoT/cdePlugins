@@ -29,6 +29,8 @@ namespace CDMyMSSQLStorage
             MyBaseEngine.SetEngineID(new Guid("{0AAFF440-89B5-4B7E-B512-A1F0697711E7}"));
             MyBaseEngine.AddCapability(eThingCaps.DistributedStorage);
             MyBaseEngine.AddCapability(eThingCaps.MustBePresent);
+            MyBaseEngine.SetCDEMinVersion(6.104);
+
             MyBaseEngine.GetEngineState().IsAllowedUnscopedProcessing = true;
             MyBaseEngine.SetPluginInfo("Distributed Storage Service for MS-SQL", 0, null, "toplogo-150.png", "C-Labs", "http://www.c-labs.com", new List<string>() { "IStorageService", "Service" });
             MyBaseEngine.AddManifestFiles(new List<string> { "System.Data.SqlClient.dll" });

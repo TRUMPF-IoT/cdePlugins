@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+// SPDX-FileCopyrightText: 2009-2024 TRUMPF Laser GmbH, authors: C-Labs
 //
 // SPDX-License-Identifier: MPL-2.0
 
@@ -26,7 +26,8 @@ namespace CDMyComputer
             MyBaseEngine.SetFriendlyName("Computer Management");
             MyBaseEngine.SetEngineID(new Guid("{8FB08B63-1A2D-4DF6-8DC8-BADB12500F94}"));
             MyBaseEngine.GetEngineState().IsAcceptingFilePush = true;
-           // MyBaseEngine.RegisterJSEngine(null);
+            // MyBaseEngine.RegisterJSEngine(null);
+            MyBaseEngine.SetCDEMinVersion(6.104);
             MyBaseEngine.AddCapability(eThingCaps.ComputerHealth);
             MyBaseEngine.AddCapability(eThingCaps.HardwareAccess);
             MyBaseEngine.AddCapability(eThingCaps.DoNotIsolate);

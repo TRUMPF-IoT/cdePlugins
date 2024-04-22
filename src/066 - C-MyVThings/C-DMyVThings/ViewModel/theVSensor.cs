@@ -30,7 +30,7 @@ namespace CDMyVThings.ViewModel
         public override void DoInit()
         {
             base.RegisterEvent("HistorianReady", sinkHistReady2);
-            TheThing.SetSafePropertyString(MyBaseThing, "ReportCategory","..Virtual Sensor");
+            TheThing.SetSafePropertyString(MyBaseThing, "ReportCategory", "..Virtual Sensor");
             base.DoInit();
             MyBaseThing.LastMessage = "Sensor ready";
             if (!string.IsNullOrEmpty(TheThing.GetSafePropertyString(MyBaseThing, "RealSensorThing")) && !string.IsNullOrEmpty(TheThing.GetSafePropertyString(MyBaseThing, "RealSensorProperty")))
@@ -41,18 +41,18 @@ namespace CDMyVThings.ViewModel
 
         void sinkHistReady2(ICDEThing sender, object para)
         {
-            MyHistorian.SetCacheStoreInterval(60);
+            //MyHistorian.SetCacheStoreInterval(60);
         }
 
 
-        public override void DoCreateUX(TheFormInfo tMyForm, ThePropertyBag pChartBag=null)
+        public override void DoCreateUX(TheFormInfo tMyForm, ThePropertyBag pChartBag = null)
         {
             base.DoCreateUX(tMyForm);
-            tMyForm.ModelID = string.IsNullOrEmpty(tMyForm.ModelID)?"VSensorForm":tMyForm.ModelID+=";VSensorForm";
+            tMyForm.ModelID = string.IsNullOrEmpty(tMyForm.ModelID) ? "VSensorForm" : tMyForm.ModelID += ";VSensorForm";
             AddSpeedGauge(tMyForm);
 
-            TheNMIEngine.AddSmartControl(MyBaseThing, tMyForm, eFieldType.ThingPicker, 25010, 2, 0xc0, "Thing Picker", "RealSensorThing", new nmiCtrlThingPicker() { ParentFld = TheDefaultSensor.SensorActionArea, IncludeEngines=true, IncludeRemotes=true });
-            TheNMIEngine.AddSmartControl(MyBaseThing, tMyForm, eFieldType.PropertyPicker, 25011, 2, 0xc0, "Property Picker", "RealSensorProperty", new nmiCtrlPropertyPicker() { ParentFld = TheDefaultSensor.SensorActionArea,DefaultValue="Value", ThingFld=25010 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, tMyForm, eFieldType.ThingPicker, 25010, 2, 0xc0, "Thing Picker", "RealSensorThing", new nmiCtrlThingPicker() { ParentFld = TheDefaultSensor.SensorActionArea, IncludeEngines = true, IncludeRemotes = true });
+            TheNMIEngine.AddSmartControl(MyBaseThing, tMyForm, eFieldType.PropertyPicker, 25011, 2, 0xc0, "Property Picker", "RealSensorProperty", new nmiCtrlPropertyPicker() { ParentFld = TheDefaultSensor.SensorActionArea, DefaultValue = "Value", ThingFld = 25010 });
             GetProperty("RealSensorProperty", true).RegisterEvent(eThingEvents.PropertyChanged, (p) =>
             {
                 EngageMapper();
@@ -65,7 +65,7 @@ namespace CDMyVThings.ViewModel
         protected override void SensorCyclicCalc(long timer)
         {
             base.SensorCyclicCalc(timer);
-            if (MyBaseThing.StatusLevel!=0 && IsDisabled)
+            if (MyBaseThing.StatusLevel != 0 && IsDisabled)
             {
                 MyBaseThing.StatusLevel = 0;
                 MyBaseThing.LastMessage = "V-Sensor disabled";
@@ -104,7 +104,5 @@ namespace CDMyVThings.ViewModel
                 IsActive = true;
             }
         }
-
-
     }
 }

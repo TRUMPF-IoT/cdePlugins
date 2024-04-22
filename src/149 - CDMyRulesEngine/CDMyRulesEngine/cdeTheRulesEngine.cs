@@ -26,6 +26,8 @@ namespace CDMyRulesEngine
             base.InitEngineAssets(pBase);
             MyBaseEngine.SetFriendlyName("The Rules Engine");
             MyBaseEngine.AddCapability(eThingCaps.RulesEngine);
+            MyBaseEngine.SetCDEMinVersion(6.104);
+
             MyBaseEngine.SetPluginInfo("The C-Labs Rules engine", 0, null, "toplogo-150.png", "C-Labs", "https://www.c-labs.com", new List<string> { "Service" });
             MyBaseEngine.SetEngineID(new Guid("{843B73BA-028F-4BDF-A102-D1E545204036}"));
         }

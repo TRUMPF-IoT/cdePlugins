@@ -57,7 +57,7 @@ namespace CDMyMeshSender
         IconUrl = "<i class='cl-font cl-Logo fa-5x'></i>",
         Developer = "C-Labs and its licensors",
         DeveloperUrl = "http://www.c-labs.com",
-        CDEMinVersion = 4.2050,
+        CDEMinVersion = 6.104,
         ManifestFiles = new string[] { },
         Categories = ["Service"],
         Platforms = new[] {

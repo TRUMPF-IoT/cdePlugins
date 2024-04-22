@@ -25,6 +25,7 @@ namespace CDMyImages
             base.InitEngineAssets(pBase);
             MyBaseEngine.SetFriendlyName("Image Service");
             MyBaseEngine.GetEngineState().IsAcceptingFilePush = true;
+            MyBaseEngine.SetCDEMinVersion(6.104);
             MyBaseEngine.SetEngineID(new Guid("{795370F8-EF3A-4F1F-BBE0-F16053329B90}"));
             MyBaseEngine.SetPluginInfo("This service allows you to manage images", 0, null, "toplogo-150.png", "C-Labs", "http://www.c-labs.com", new List<string>() { "Digital-Thing" });
         }

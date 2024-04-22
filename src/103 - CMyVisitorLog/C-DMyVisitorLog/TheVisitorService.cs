@@ -43,9 +43,9 @@ namespace CDMyVisitorLog
             MyBaseEngine.SetEngineService(true);                      
 
             MyBaseEngine.SetEngineID(new Guid("{AAE144FE-364F-4FA0-9E67-ABC0A3A26A53}")); 
-            MyBaseEngine.SetPluginInfo("This service allows you to track Visitors", 0, null, "toplogo-150.png", "C-Labs", "http://www.c-labs.com", new List<string> { "Service" }); 
+            MyBaseEngine.SetPluginInfo("This service allows you to track Visitors", 0, null, "toplogo-150.png", "C-Labs", "http://www.c-labs.com", new List<string> { "Service" });
+            MyBaseEngine.SetCDEMinVersion(6.104);
 
-            MyBaseEngine.SetVersion(0);
         }
 
         public override cdeP SetProperty(string pName, object pValue)

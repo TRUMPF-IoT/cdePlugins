@@ -49,8 +49,7 @@ namespace CDMyThingProvisioning
             MyBaseEngine.SetEngineName(GetType().FullName);  // Can be any arbitrary name - recommended is the class name
             MyBaseEngine.SetEngineType(GetType());           // Has to be the type of this class
             MyBaseEngine.SetEngineService(true);             // Keep True if this class is a service
-            MyBaseEngine.SetVersion(0);
-            MyBaseEngine.SetCDEMinVersion(4.1111);
+            MyBaseEngine.SetCDEMinVersion(6.104);
 
             MyBaseEngine.SetPluginInfo("This service lets you create and configure things.",       // Describe plugin for Plugin Store
                                        0,                       // pPrice - retail price (default = 0)

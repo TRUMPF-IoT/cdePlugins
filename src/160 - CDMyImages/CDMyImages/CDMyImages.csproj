@@ -1,22 +1,20 @@
 ﻿<!--
- SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+ SPDX-FileCopyrightText: 2009-2024 TRUMPF Laser GmbH, authors: C-Labs
  SPDX-License-Identifier: MPL-2.0
  -->
 <Project Sdk="Microsoft.NET.Sdk" >
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <Authors>Chris Muench</Authors>
     <Company>C-Labs</Company>
     <Description>Image management for ($(TargetFramework))</Description>
-    <Copyright>Copyright © 2015-2022 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <Copyright>Copyright © 2015-2024 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
     <AssemblyName>CDMyImages</AssemblyName>
 	  <PackageOutputPath>$(SolutionDir)Nugets</PackageOutputPath>
   </PropertyGroup>
 
-  <Choose>
-   <When Condition="'$(TargetFramework)'=='netstandard2.0'">
    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG;CDE_SYSLOG</DefineConstants>
   </PropertyGroup>
@@ -24,12 +22,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>TRACE;RELEASE;CDE_SYSLOG</DefineConstants>
   </PropertyGroup>
-    </When>
-  </Choose>
 
   <ItemGroup>
-    <PackageReference Include="C-DEngine"  Version="5.*" />
-    <!--<ProjectReference Include="..\..\025 - C-DEngine\C-DEngine\C-DEngine.csproj" />-->
+	  <PackageReference Include="C-DEngine" Version="6.*-*" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

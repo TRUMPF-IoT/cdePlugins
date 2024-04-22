@@ -28,7 +28,7 @@ namespace CDMyOPCUAClient
         IsService = true,
         Capabilities = new[] { eThingCaps.ProtocolTransformer, eThingCaps.SensorProvider, eThingCaps.ConfigManagement, eThingCaps.SensorContainer },
         EngineID = "{3C1D53AE-E932-4D11-B1F9-F12428DEC27C}",
-        CDEMinVersion = 4.2050,
+        CDEMinVersion = 6.1040,
         LongDescription = "This Protocol Transformer plugin allows to create Things or Properties of Things from OPC UA Tags",
         IconUrl = "images/OPCLogo.png",
         Developer = "C-Labs and its licensors",

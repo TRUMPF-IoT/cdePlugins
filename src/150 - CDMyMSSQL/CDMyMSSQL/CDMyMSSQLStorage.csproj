@@ -1,17 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<!--
- SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+ SPDX-FileCopyrightText: 2009-2024 TRUMPF Laser GmbH, authors: C-Labs
  SPDX-License-Identifier: MPL-2.0
  -->
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+		<TargetFramework>netstandard2.1</TargetFramework>
 		<Authors>Chris Muench</Authors>
 		<Company>C-Labs</Company>
 		<Description>Distributed Storage Engine for MSSQL for ($(TargetFramework))</Description>
-		<Copyright>Copyright © 2015-2022 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+		<Copyright>Copyright © 2015-2024 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>5.145.0</Version>
+		<Version>6.104.0</Version>
 		<Product>CDMyMSSQLStorage</Product>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
@@ -27,27 +27,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<!-- dotnet nuget doesn't properly apply embedded resources from referenced packages: add them explicitly -->
-		<EmbeddedResource Include="$(PkgCDESensorTemplateShared)\contentFiles\any\$(TargetFramework)\ClientBin\SENSORS\CSS\SensorsDark.min.css" Link="ClientBin\SENSORS\CSS\SensorsDark.min.css" />
-		<EmbeddedResource Include="$(PkgCDESensorTemplateShared)\contentFiles\any\$(TargetFramework)\ClientBin\SENSORS\CSS\SensorsLite.min.css" Link="ClientBin\SENSORS\CSS\SensorsLite.min.css" />
-		<EmbeddedResource Include="$(PkgCDESensorTemplateShared)\contentFiles\any\$(TargetFramework)\ClientBin\SENSORS\CSS\SensorStyles.min.css" Link="ClientBin\SENSORS\CSS\SensorStyles.min.css" />
-		<EmbeddedResource Include="$(PkgCDESensorTemplateShared)\contentFiles\any\$(TargetFramework)\ClientBin\SENSORS\Images\SensorLogo_156x78.png" Link="ClientBin\SENSORS\Images\SensorLogo_156x78.png" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<None Include="..\readme.md" Link="readme.md" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="C-DEngine" Version="5.*" />
-		<PackageReference Include="cdeEnergyContractsShared" Version="5.*" />
-		<PackageReference Include="cdeSensorTemplateShared" Version="5.*" IncludeAssets="ContentFiles" GeneratePathProperty="true" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<PackageReference Include="System.Data.SqlClient">
-			<Version>4.8.6</Version>
-		</PackageReference>
+		<PackageReference Include="C-DEngine" Version="6.*-*" />
+		<PackageReference Include="cdeEnergyContractsShared" Version="6.*-*" IncludeAssets="ContentFiles" />
+		<PackageReference Include="cdeSensorTemplateShared" Version="6.*-*" />
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">

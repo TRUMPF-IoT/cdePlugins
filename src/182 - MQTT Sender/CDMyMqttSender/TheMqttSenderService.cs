@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+﻿// SPDX-FileCopyrightText: 2009-2024 TRUMPF Laser GmbH, authors: C-Labs
 //
 // SPDX-License-Identifier: MPL-2.0
 using System;
@@ -42,7 +42,7 @@ namespace CDMyMqttSender
         //IconUrl = "MQTT.png",
         Developer = "C-Labs and its licensors",
         DeveloperUrl = "http://www.c-labs.com",
-        CDEMinVersion = 4.2050,
+        CDEMinVersion = 6.1040,
         ManifestFiles = new [] {
                 // MQTT Receiver
                 "GnatMQ.dll",
