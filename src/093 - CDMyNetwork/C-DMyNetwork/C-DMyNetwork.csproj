@@ -1,17 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <!--
- SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+ SPDX-FileCopyrightText: 2009-2024 TRUMPF Laser GmbH, authors: C-Labs
  SPDX-License-Identifier: MPL-2.0
  -->
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
-        <Version>5.145.0</Version>
+    <TargetFramework>netstandard2.1</TargetFramework>
+        <Version>6.104.0</Version>
         <Authors>Chris Muench</Authors>
         <Company>C-Labs</Company>
         <Product>C-DMyNetwork</Product>
 	  <LangVersion>preview</LangVersion>
         <Description>Network Services</Description>
-        <Copyright>Copyright © 2017-2022 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+        <Copyright>Copyright © 2017-2024 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
         <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	  <PackageOutputPath>$(SolutionDir)Nugets</PackageOutputPath>
@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="C-DEngine" Version="5.*" />
+	  <PackageReference Include="C-DEngine" Version="6.*-*" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

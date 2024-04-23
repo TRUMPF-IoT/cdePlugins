@@ -210,7 +210,7 @@ namespace CDMyComputer
 
             switch (cmd[0]) 
             {
-                case eEnergyMessages.EnergySiteConsumptionUpdate:
+                case eEnergyMessages.EnergyConsumerUpdate:
                     TheEnergyData tData = TheCommonUtils.DeserializeJSONStringToObject<TheEnergyData>(pMsg.Message.PLS);
                     if (tData != null)
                     {

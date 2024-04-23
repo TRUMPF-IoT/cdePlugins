@@ -45,7 +45,7 @@ namespace CDMyVThings
         EngineID = "{B9DBC881-0EA8-4FA6-98B8-2C646B6B848F}",
         AcceptsFilePush = true,
         Capabilities = new [] { eThingCaps.ConfigManagement, eThingCaps.SensorContainer },
-        CDEMinVersion = 4.2010
+        CDEMinVersion = 6.104
         )]
     [DeviceType(DeviceType = eVThings.eMemoryTag, Description = "Memory tag stores custom data", Capabilities = new eThingCaps[] { })]
     

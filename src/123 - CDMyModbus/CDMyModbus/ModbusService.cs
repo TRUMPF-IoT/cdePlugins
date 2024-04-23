@@ -36,6 +36,7 @@ namespace Modbus
             MyBaseEngine.GetEngineState().IsAcceptingFilePush = true;
             MyBaseEngine.AddCapability(eThingCaps.SensorProvider);
             MyBaseEngine.AddCapability(eThingCaps.ConfigManagement);
+            MyBaseEngine.SetCDEMinVersion(6.104);
             MyBaseEngine.SetDeviceTypes(new List<TheDeviceTypeInfo>
             {
                 new TheDeviceTypeInfo { Capabilities = new eThingCaps[] { eThingCaps.SensorProvider, eThingCaps.ConfigManagement }, DeviceType = eModbusType.ModbusTCPDevice, Description = "Modbus TCP Device" },

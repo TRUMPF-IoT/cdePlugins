@@ -372,7 +372,7 @@ namespace CDMyOPCUAClient.ViewModel
                             return null;
                         }
                     }
-                    else if (body is Range rangeInfo && property.Name == nameof(AnalogItemState.EURange))
+                    else if (body is Opc.Ua.Range rangeInfo && property.Name == nameof(AnalogItemState.EURange))
                     {
                         // Engineering unit range info: attach to the parent
                         var parentProp = cdeP.GetParentProperty(property);

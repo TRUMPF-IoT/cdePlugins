@@ -51,6 +51,7 @@ namespace CDMyLogger
             base.InitEngineAssets(pBase);
             MyBaseEngine.SetEngineID(guidEngineID);
             MyBaseEngine.SetFriendlyName(strFriendlyName);
+            MyBaseEngine.SetCDEMinVersion(6.104);
             MyBaseEngine.SetPluginInfo("This service will push C-DEngine logs to differnet loggin services",       // Describe plugin for Plugin Store
                                        0,                       // pPrice - retail price (default = 0)
                                        null,                    // Custom home page - default = /ServiceID
