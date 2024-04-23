@@ -99,7 +99,7 @@ jobs:
         name: CDEPlugins
         path: ./artifacts
     - name: Gather nuget artifacts
-      run: (robocopy .\nugets .\artifacts\ *.nupkg *.snupkg /s /np) ^& IF %ERRORLEVEL% LEQ 1 exit 0
+      run: (robocopy .\src\nugets .\artifacts\ *.nupkg *.snupkg /s /np) ^& IF %ERRORLEVEL% LEQ 1 exit 0
       shell: cmd
     - name: REUSE Compliance Check
       run: |
