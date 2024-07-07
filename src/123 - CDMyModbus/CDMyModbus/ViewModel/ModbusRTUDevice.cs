@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using CDMyModbus.ViewModel;
 using Modbus.Device;
 using Modbus.Serial;
 using NModbusExt.Config;
@@ -22,7 +23,7 @@ using System.Net.Sockets;
 namespace Modbus
 {
     [DeviceType(DeviceType = eModbusType.ModbusRTUDevice, Description = "Represents an Modbus RTU connection", Capabilities = new[] { eThingCaps.ConfigManagement })]
-    public class ModbusRTUDevice : TheThingBase
+    public class ModbusRTUDevice : ModbusBase
     {
         [ConfigProperty]
         bool AutoConnect
@@ -313,7 +314,7 @@ namespace Modbus
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.Number, 250, 2, 0, "Polling Interval", nameof(Interval), new nmiCtrlNumber() { TileWidth = 3, MinValue = 100, ParentFld = 200 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.SingleCheck, 260, 2, 0, "Keep Open", nameof(KeepOpen), new nmiCtrlSingleEnded() { TileWidth = 3, ParentFld = 200 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.ComboBox, 270, 2, 0, "Address Type", nameof(ConnectionType), new nmiCtrlComboBox() { Options = "Read Coils:1;Read Input:2;Holding Registers:3;Input Register:4;Read Multiple Register:23", DefaultValue = "3", ParentFld = 200 });
-
+            AddThingTarget(MyModConnectForm, 271, 200);
 
             ////METHODS Form
             MyFldMapperTable = new TheFormInfo(TheThing.GetSafeThingGuid(MyBaseThing, "FLDMAP"), eEngineName.NMIService, "Field Mapper", $"MBFLDS{MyBaseThing.ID}") { PropertyBag=new nmiCtrlTableView {ShowExportButton=true, ShowFilterField = true },  AddButtonText = "Add Tag",  AddACL = 128 };
@@ -325,6 +326,7 @@ namespace Modbus
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.Number, 75, 2, 0, "Scale Factor", "ScaleFactor", new nmiCtrlNumber() { TileWidth = 3, FldWidth = 1, DefaultValue = "1" });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.ComboBox, 80, 2, 0, "Source Type", "SourceType", new nmiCtrlComboBox() { DefaultValue="byte", Options = "float;double;int32;int64;float32;uint16;int16;utf8;byte;float-abcd;double-cdab", TileWidth = 2, FldWidth = 2 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.SingleCheck, 90, 2, 0, "Allow Write", "AllowWrite", new nmiCtrlSingleEnded() { TileWidth = 1, FldWidth = 1 });
+
             TheNMIEngine.AddTableButtons(MyFldMapperTable);
 
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.CollapsibleGroup, 500, 2, 0x0, "Modbus Tags", null, new nmiCtrlCollapsibleGroup() { IsSmall = true, DoClose = true, TileWidth = 6, ParentFld = 1 });
@@ -583,7 +585,7 @@ namespace Modbus
                                 TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.VERBOSE) ? null : new TSM(MyBaseThing.EngineName, String.Format("Setting properties for {0}", MyBaseThing.FriendlyName), eMsgLevel.l4_Message, String.Format("{0}: {1}", timestamp, dict.Aggregate("", (s, kv) => s + string.Format("{0}={1};", kv.Key, kv.Value)))));
                                 MyBaseThing.LastMessage = $"{timestamp} - {dict?.Count} tags read from Modbus Device";
                                 MyBaseThing.LastUpdate = timestamp;
-                                MyBaseThing.SetProperties(dict, timestamp);
+                                PushProperties(dict, timestamp);
                                 if (!KeepOpen)
                                 {
                                     CloseModBus();
@@ -622,6 +624,8 @@ namespace Modbus
                 Disconnect(null);
             }
         }
+
+
 
         //TcpClient tcpClient;
         //ModbusIpMaster MyModMaster;
