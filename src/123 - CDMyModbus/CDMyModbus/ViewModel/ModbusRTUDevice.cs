@@ -314,7 +314,7 @@ namespace Modbus
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.Number, 250, 2, 0, "Polling Interval", nameof(Interval), new nmiCtrlNumber() { TileWidth = 3, MinValue = 100, ParentFld = 200 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.SingleCheck, 260, 2, 0, "Keep Open", nameof(KeepOpen), new nmiCtrlSingleEnded() { TileWidth = 3, ParentFld = 200 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.ComboBox, 270, 2, 0, "Address Type", nameof(ConnectionType), new nmiCtrlComboBox() { Options = "Read Coils:1;Read Input:2;Holding Registers:3;Input Register:4;Read Multiple Register:23", DefaultValue = "3", ParentFld = 200 });
-            AddThingTarget(MyModConnectForm, 271, 200);
+            AddThingTarget(MyModConnectForm, 271, 200); 
 
             ////METHODS Form
             MyFldMapperTable = new TheFormInfo(TheThing.GetSafeThingGuid(MyBaseThing, "FLDMAP"), eEngineName.NMIService, "Field Mapper", $"MBFLDS{MyBaseThing.ID}") { PropertyBag=new nmiCtrlTableView {ShowExportButton=true, ShowFilterField = true },  AddButtonText = "Add Tag",  AddACL = 128 };
