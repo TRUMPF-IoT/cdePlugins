@@ -91,6 +91,13 @@ namespace Modbus
             MyBaseThing.AddCapability(eThingCaps.SensorProvider);
         }
 
+        public override cdeP SetProperty(string pName, object pValue)
+        {
+            var pr = base.SetProperty(pName, pValue);
+            sinkPChanged(pr);
+            return pr;
+        }
+
         public void sinkUpdated(StoreEventArgs e)
         {
             SetupModbusProperties(true, null);

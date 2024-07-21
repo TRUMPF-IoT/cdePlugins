@@ -100,6 +100,13 @@ namespace Modbus
             MyBaseThing.AddCapability(eThingCaps.SensorProvider);
         }
 
+        public override cdeP SetProperty(string pName, object pValue)
+        {
+            var pr = base.SetProperty(pName, pValue);
+            sinkPChanged(pr);
+            return pr;
+        }
+
         public void sinkUpdated(StoreEventArgs e)
         {
             SetupModbusProperties(true, null);
@@ -348,7 +355,11 @@ namespace Modbus
                         TheNMIEngine.DeleteFieldById(tInfo.cdeMID);
                 }
 
-                List<cdeP> props = MyBaseThing.GetPropertiesMetaStartingWith("MODPROP");
+                TheThing tTargetThing = null;
+                if (TargetThing != Guid.Empty)
+                    tTargetThing= TheThingRegistry.GetThingByMID(TargetThing);
+
+                    List<cdeP> props = MyBaseThing.GetPropertiesMetaStartingWith("MODPROP");
                 int fldCnt = 600;
                 foreach (var p in props)
                 {
@@ -356,6 +367,12 @@ namespace Modbus
                     if (field != null)
                     {
                         TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.SingleEnded, fldCnt++, field.AllowWrite ? 2 : 0, 0, p.Name, p.Name, new nmiCtrlSingleEnded() { TileWidth = 6, ParentFld = 500 });
+                        if (field.AllowWrite && tTargetThing!= null)
+                        {
+                            var tProp = tTargetThing.GetProperty(p.Name, true);
+                            tProp.UnregisterEvent(eThingEvents.PropertyChanged, sinkPChanged);
+                            tProp.RegisterEvent(eThingEvents.PropertyChanged, sinkPChanged);
+                        }
                     }
                 }
                 MyModConnectForm.Reload(pMsg, bReload);
