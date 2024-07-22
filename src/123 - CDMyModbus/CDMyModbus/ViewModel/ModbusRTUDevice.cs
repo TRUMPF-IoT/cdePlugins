@@ -212,6 +212,7 @@ namespace Modbus
                 {
                     var p = MyBaseThing.GetProperty(field.PropertyName, true);
                     p.cdeM = "MODPROP";
+                    p.Value = null;
                     p.UnregisterEvent(eThingEvents.PropertyChangedByUX, null);
                     p.RegisterEvent(eThingEvents.PropertyChangedByUX, sinkPChanged);
                 }
@@ -656,7 +657,8 @@ namespace Modbus
             try
             {
                 CloseModBus();
-                MyBaseThing.LastMessage = $"{DateTimeOffset.Now}: Opening modbus connection...";
+                if (KeepOpen)
+                    MyBaseThing.LastMessage = $"{DateTimeOffset.Now}: Opening modbus connection...";
 
                 slavePort = new SerialPort(MyBaseThing.Address); 
                 if (Baudrate == 0) Baudrate = 9600;
@@ -693,7 +695,8 @@ namespace Modbus
 
         public void CloseModBus()
         {
-            MyBaseThing.LastMessage = $"{DateTimeOffset.Now}: closing modbus...";
+            if (KeepOpen)
+                MyBaseThing.LastMessage = $"{DateTimeOffset.Now}: closing modbus...";
 
             try
             {
@@ -701,7 +704,8 @@ namespace Modbus
             }
             catch { }
             slavePort = null;
-            MyBaseThing.LastMessage = $"{DateTimeOffset.Now}: modbus closed";
+            if (KeepOpen)
+                MyBaseThing.LastMessage = $"{DateTimeOffset.Now}: modbus closed";
 
             try
             {
@@ -709,8 +713,11 @@ namespace Modbus
             }
             catch { }
             MyModMaster = null;
-            MyBaseThing.LastMessage = $"{DateTimeOffset.Now}: modbus master closed";
-            TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseThing.EngineName, MyBaseThing.LastMessage, eMsgLevel.l4_Message));
+            if (KeepOpen)
+            {
+                MyBaseThing.LastMessage = $"{DateTimeOffset.Now}: modbus master closed";
+                TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseThing.EngineName, MyBaseThing.LastMessage, eMsgLevel.l4_Message));
+            }
         }
 
         public Dictionary<string, object> ReadAll()
