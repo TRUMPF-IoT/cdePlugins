@@ -205,24 +205,35 @@ namespace Modbus
         }
 
         DateTimeOffset lastCheck= DateTimeOffset.MinValue;
+        bool InWatchdog = false;
         void sinkWatchDog(long tick)
         {
-            if (!IsConnected || WatchDog>0) return;
+            if (!IsConnected || WatchDog < Interval * 3) return;
 
-            if (lastCheck!=DateTimeOffset.MinValue && DateTimeOffset.Now.Subtract(lastCheck).TotalSeconds>WatchDog)
+            if (!InWatchdog && lastCheck != DateTimeOffset.MinValue && DateTimeOffset.Now.Subtract(lastCheck).TotalMilliseconds > WatchDog)
             {
+                InWatchdog = true;
+                SetMessage($"{DateTime.Now} - Watchdog triggered","Modbus Watchdog", 2, DateTimeOffset.Now, 123002, eMsgLevel.l2_Warning);
                 Disconnect(null);
-                TheCommonUtils.SleepOneEye((uint)WatchDog,300);
+                TheCommonUtils.SleepOneEye((uint)WatchDog, 300);
                 if (AutoConnect)
                 {
                     TheCommonUtils.cdeRunAsync("ModBusAutoConnect", true, async (o) =>
                     {
-                        while (AutoConnect && TheBaseAssets.MasterSwitch && !IsConnected && !Connect(null))
+                        try
                         {
-                            await TheCommonUtils.TaskDelayOneEye((int)Interval, 100);
+                            while (AutoConnect && TheBaseAssets.MasterSwitch && !IsConnected && !Connect(null))
+                            {
+                                await TheCommonUtils.TaskDelayOneEye((int)Interval, 100);
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            Disconnect(null);
                         }
                     });
                 }
+                InWatchdog = false;
             }
             lastCheck = MyBaseThing.LastUpdate;
 
@@ -350,8 +361,8 @@ namespace Modbus
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.ComboBox, 206, 2, 0, "Bit Format", nameof(BitFormat), new nmiCtrlComboBox() { TileWidth = 3, ParentFld = 200, Options = "8,N,1:0;8,E,1:1;8,O,1:2" });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.Number, 207, 2, 0, "Slave Address", nameof(SlaveAddress), new nmiCtrlNumber() { TileWidth = 3, ParentFld = 200, MaxValue = 255, MinValue = 0 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.Number, 240, 2, 0, "Base Offset", nameof(Offset), new nmiCtrlSingleEnded() { TileWidth = 3, ParentFld = 200 });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.Number, 250, 2, 0, "Polling Interval", nameof(Interval), new nmiCtrlNumber() { TileWidth = 3, MinValue = 100, ParentFld = 200 });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.SingleCheck, 260, 2, 0, "Keep Open", nameof(KeepOpen), new nmiCtrlSingleEnded() { TileWidth = 2, NoTE=true, ParentFld = 200 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.Number, 250, 2, 0, "Polling Interval", nameof(Interval), new nmiCtrlNumber() { TileWidth = 2, NoTE=true, MinValue = 100, ParentFld = 200 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.SingleCheck, 260, 2, 0, "Keep Open", nameof(KeepOpen), new nmiCtrlSingleCheck() { TileWidth = 1, Label="Keep Open", NoTE=true, ParentFld = 200 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.Number, 261, 2, 0, "Watch Dog", nameof(WatchDog), new nmiCtrlNumber() { TileWidth = 2, NoTE = true, ParentFld = 200 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.ComboBox, 270, 2, 0, "Address Type", nameof(ConnectionType), new nmiCtrlComboBox() { Options = "Read Coils:1;Read Input:2;Holding Registers:3;Input Register:4;Read Multiple Register:23", DefaultValue = "3", ParentFld = 200 });
             AddThingTarget(MyModConnectForm, 271, 200); 
