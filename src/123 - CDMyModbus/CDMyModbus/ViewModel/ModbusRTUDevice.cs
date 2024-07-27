@@ -180,7 +180,7 @@ namespace Modbus
             MyBaseThing.DeclareConfigProperty(new TheThing.TheConfigurationProperty { Name = nameof(ConnectionType), cdeT = ePropertyTypes.TNumber, DefaultValue = 3, Description = "Read Coils:1, Read Input:2, Holding Registers:3, Input Register:4, Read Multiple Register:23" });
 
             MyModFieldStore = new TheStorageMirror<FieldMapping>(TheCDEngines.MyIStorageService)
-            {
+            { 
                 IsRAMStore = true,
                 IsCachePersistent = true,
                 IsStoreIntervalInSeconds = true
