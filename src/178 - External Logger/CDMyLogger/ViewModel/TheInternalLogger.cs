@@ -57,7 +57,7 @@ namespace CDMyLogger.ViewModel
                     MyRuleEventLog.SetRecordExpiration(604800, null);
                     MyRuleEventLog.CacheStoreInterval = 15;
                     MyRuleEventLog.IsStoreIntervalInSeconds = true;
-                    MyRuleEventLog.AppendOnly = true;
+                    //MyRuleEventLog.AppendOnly = true;
 
                     if (!MyRuleEventLog.IsRAMStore)
                         MyRuleEventLog.CreateStore("The Event Log", "History of events fired by the RulesEngine", null, true, TheBaseAssets.MyServiceHostInfo.IsNewDevice);

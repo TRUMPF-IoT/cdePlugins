@@ -37,7 +37,7 @@
 
   <ItemGroup>
     <PackageReference Include="C-DEngine" Version="6.*-*" />
-    <PackageReference Include="System.IO.Ports" Version="8.0.0" />
+    <PackageReference Include="System.IO.Ports" Version="9.0.0" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using CDMyModbus.ViewModel;
 using Modbus.Device;
 using NModbusExt.Config;
 using NModbusExt.DataTypes;
@@ -21,7 +22,7 @@ using System.Net.Sockets;
 namespace Modbus
 {
     [DeviceType(DeviceType = eModbusType.ModbusTCPDevice, Description = "Represents an Modbus TCP connection", Capabilities = new[] { eThingCaps.ConfigManagement })]
-    public class ModbusTCPDevice : TheThingBase
+    public class ModbusTCPDevice : ModbusBase
     {
         [ConfigProperty]
         bool AutoConnect
@@ -88,6 +89,13 @@ namespace Modbus
             if (MyDevice != null && !String.IsNullOrEmpty(MyDevice.Name))
                 MyBaseThing.FriendlyName = MyDevice.Name;
             MyBaseThing.AddCapability(eThingCaps.SensorProvider);
+        }
+
+        public override cdeP SetProperty(string pName, object pValue)
+        {
+            var pr = base.SetProperty(pName, pValue);
+            sinkPChanged(pr);
+            return pr;
         }
 
         public void sinkUpdated(StoreEventArgs e)
@@ -296,7 +304,7 @@ namespace Modbus
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.Number, 250, 2, 0, "Polling Interval", nameof(Interval), new nmiCtrlNumber() { TileWidth = 3, MinValue = 100, ParentFld = 200 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.SingleCheck, 260, 2, 0, "Keep Open", nameof(KeepOpen), new nmiCtrlSingleEnded() { TileWidth = 3, ParentFld = 200 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.ComboBox, 270, 2, 0, "Address Type", nameof(ConnectionType), new nmiCtrlComboBox() { NoTE = true, Options = "Read Coils:1;Read Input:2;Holding Registers:3;Input Register:4;Read Multiple Register:23", DefaultValue = "3", TileWidth = 6, ParentFld = 200 });
-
+            AddThingTarget(MyModConnectForm, 280, 271);
 
             ////METHODS Form
             MyFldMapperTable = new TheFormInfo(TheThing.GetSafeThingGuid(MyBaseThing, "FLDMAP"), eEngineName.NMIService, "Field Mapper", $"MBFLDS{MyBaseThing.ID}") { AddButtonText = "Add Tag", AddACL = 128 };
@@ -552,7 +560,7 @@ namespace Modbus
                                     TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseThing.EngineName, MyBaseThing.LastMessage, eMsgLevel.l4_Message));
                                     bPreviousError = false;
                                 }
-                                else
+                                else 
                                 {
                                     if (MyBaseThing.StatusLevel != 1)
                                     {
@@ -564,7 +572,7 @@ namespace Modbus
                                 Dictionary<string, object> dict = ReadAll();
                                 var timestamp = DateTimeOffset.Now;
                                 TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.VERBOSE) ? null : new TSM(MyBaseThing.EngineName, String.Format("Setting properties for {0}", MyBaseThing.FriendlyName), eMsgLevel.l4_Message, String.Format("{0}: {1}", timestamp, dict.Aggregate("", (s, kv) => s + string.Format("{0}={1};", kv.Key, kv.Value)))));
-                                MyBaseThing.SetProperties(dict, timestamp);
+                                PushProperties(dict, timestamp);
                                 if (!KeepOpen)
                                 {
                                     CloseModBus();
