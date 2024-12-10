@@ -43,9 +43,9 @@
     <PackageReference Include="cdeCommonMessageContractsShared" Version="6.*-*" IncludeAssets="ContentFiles" />
     <PackageReference Include="cdeOPCUAClientContractsShared" Version="6.*-*" IncludeAssets="ContentFiles" />
     <PackageReference Include="cdeThingMatcherShared" Version="6.*-*" IncludeAssets="ContentFiles" />
-    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Client" Version="1.5.374.27" />
-    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Configuration" Version="1.5.374.27" />
-    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Core" Version="1.5.374.27" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Client" Version="1.5.374.158" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Configuration" Version="1.5.374.158" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Core" Version="1.5.374.158" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
