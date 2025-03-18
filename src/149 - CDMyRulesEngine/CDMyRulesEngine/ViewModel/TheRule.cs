@@ -526,11 +526,11 @@ namespace CDMyRulesEngine.ViewModel
                             if (IsRuleLogged)
                                 LogEvent(tActionValue);
                             if (TheThing.GetSafePropertyBool(MyBaseThing, "IsEVTLogged"))
-                                TheLoggerFactory.LogEvent(eLoggerCategory.RuleEvent, TheCommonUtils.GenerateFinalStr(MyBaseThing.FriendlyName, MyBaseThing), eMsgLevel.l4_Message,$"{TheBaseAssets.MyServiceHostInfo.GetPrimaryStationURL(false)}: Event Triggered", TriggerObject, tActionValue);
+                                TheLoggerFactory.LogEvent(eLoggerCategory.RuleEvent, $"{TheBaseAssets.MyServiceHostInfo.GetPrimaryStationURL(false)}: Event Triggered", eMsgLevel.l4_Message, TheCommonUtils.GenerateFinalStr(MyBaseThing.FriendlyName, MyBaseThing), TriggerObject, tActionValue);
                         }
                         catch (Exception ex)
                         {
-                            TheLoggerFactory.LogEvent(eLoggerCategory.RuleEvent, TheCommonUtils.GenerateFinalStr(MyBaseThing.FriendlyName, MyBaseThing), eMsgLevel.l4_Message,$"{TheBaseAssets.MyServiceHostInfo.GetPrimaryStationURL(false)}: Rule action failed with exception:{ex.Message}", TriggerObject, null);
+                            TheLoggerFactory.LogEvent(eLoggerCategory.RuleEvent, $"{TheBaseAssets.MyServiceHostInfo.GetPrimaryStationURL(false)}: Rule action failed with exception:{ex.Message}" , eMsgLevel.l4_Message,TheCommonUtils.GenerateFinalStr(MyBaseThing.FriendlyName, MyBaseThing), TriggerObject, null);
                         }
                     }
                     else
