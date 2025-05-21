@@ -551,7 +551,7 @@ namespace CDMyPrometheusExporter.ViewModel
                         {
                             Prometheus.Counter cs;
                             try
-                            {
+                            { 
                                 cs = Metrics.CreateCounter(s, "", labels);
                                 return cs;
                             }
