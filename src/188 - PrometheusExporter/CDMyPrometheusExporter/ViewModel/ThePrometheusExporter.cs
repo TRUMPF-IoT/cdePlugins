@@ -573,7 +573,7 @@ namespace CDMyPrometheusExporter.ViewModel
                                 }
                                 else if (valueInc < 0)
                                 {
-                                    TheBaseAssets.MySYSLOG.WriteToLog(95307, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(strPrometheusExporter, $"Error reporting metric {metricName} in '{this.MyBaseThing?.Address} {this.MyBaseThing}'. Counter value {valueToReport} smaller than reported {labelCounter.Value}", eMsgLevel.l1_Error));
+                                    TheBaseAssets.MySYSLOG.WriteToLog(95307, TSM.L(eDEBUG_LEVELS.VERBOSE) ? null : new TSM(strPrometheusExporter, $"Error reporting metric {metricName} in '{this.MyBaseThing?.Address} {this.MyBaseThing}'. Counter value {valueToReport} smaller than reported {labelCounter.Value}", eMsgLevel.l1_Error));
                                 }
                             }
                             else
