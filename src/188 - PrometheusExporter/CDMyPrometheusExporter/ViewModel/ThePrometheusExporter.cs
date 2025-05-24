@@ -533,7 +533,7 @@ namespace CDMyPrometheusExporter.ViewModel
                         }
                         catch (Exception e)
                         {
-                            TheBaseAssets.MySYSLOG.WriteToLog(95307, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(strPrometheusExporter, $"Error reporting metric {metricName} in server: {this.MyBaseThing?.Address}", eMsgLevel.l1_Error, e.ToString()));
+                            TheBaseAssets.MySYSLOG.WriteToLog(95307, TSM.L(eDEBUG_LEVELS.VERBOSE) ? null : new TSM(strPrometheusExporter, $"Error reporting metric {metricName} in server: {this.MyBaseThing?.Address}", eMsgLevel.l1_Error, e.ToString()));
                         }
                     }
                 }
@@ -557,7 +557,7 @@ namespace CDMyPrometheusExporter.ViewModel
                             }
                             catch (Exception e)
                             {
-                                TheBaseAssets.MySYSLOG.WriteToLog(95307, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(strPrometheusExporter, $"Error creating metric {s} in server: {this.MyBaseThing?.Address}", eMsgLevel.l1_Error, e.ToString()));
+                                TheBaseAssets.MySYSLOG.WriteToLog(95307, TSM.L(eDEBUG_LEVELS.VERBOSE) ? null : new TSM(strPrometheusExporter, $"Error creating metric {s} in server: {this.MyBaseThing?.Address}", eMsgLevel.l1_Error, e.ToString()));
                             }
                             return null;
                         });

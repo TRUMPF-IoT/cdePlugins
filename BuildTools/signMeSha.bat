@@ -9,7 +9,13 @@ echo Signing with Azure Vault Key
 AzureSignTool.exe sign -du "https://c-labs.com" -fd sha384 -kvu %CDE_KVU% -kvi %CDE_KVI% -kvt %CDE_KVT% -kvs %CDE_KVS% -kvc %CDE_KVC% -tr http://rfc3161timestamp.globalsign.com/advanced -td sha384 %1
 rem AzureSignTool.exe sign -du "https://c-labs.com" -fd sha384 -kvu %CDE_KVU% -kvi %CDE_KVI% -kvt %CDE_KVT% -kvs %CDE_KVS% -kvc %CDE_KVC% -tr http://timestamp.digicert.com -td sha384 %1
 rem AzureSignTool.exe sign -du "https://c-labs.com" -fd sha1 -kvu %CDE_KVU% -kvi %CDE_KVI% -kvt %CDE_KVT% -kvs %CDE_KVS% -kvc %CDE_KVC% -td sha1 %1
-goto exit
+
+if %errorlevel% EQU 0 goto exit
+
+echo Error encountered while running Azuresigntool Error code: %errorlevel%
+ping 127.0.0.1 -n 10 > nul
+goto noSecrets
+
 :noSign
 echo !!!!!!! Skipped signing: No "%~dp0\real.sign" file found - expected if not an official build.
 :exit
