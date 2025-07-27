@@ -95,7 +95,7 @@ namespace CDMyLogger.ViewModel
                         var embed = new EmbedBuilder
                         {
                             Description = pItem.EventName,
-                            Title = pItem.EventString.Length>254 ? pItem.EventString.Substring(0,254) : pItem.EventString,
+                            Title = pItem.EventString==null ? pItem.EventName : (pItem.EventString.Length>254 ? pItem.EventString.Substring(0,254) : pItem.EventString),
                             Color = tCol,
                             Timestamp = pItem.EventTime,
                         };
