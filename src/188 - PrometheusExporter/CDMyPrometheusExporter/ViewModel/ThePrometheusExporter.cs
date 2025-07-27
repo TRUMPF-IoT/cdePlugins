@@ -591,7 +591,7 @@ namespace CDMyPrometheusExporter.ViewModel
                         var gauge = myGaugesByMetricName.GetOrAdd(metricName, s => Metrics.CreateGauge(s, "", labels));
                         if (gauge != null)
                         {
-                            if (gauge.LabelNames.Length > 0)
+                            if (gauge.LabelNames.Length > 0 && labelValues.Length==gauge.LabelNames.Length)
                             {
                                 gauge.Labels(labelValues).Set(valueToReport);
                             }
@@ -698,6 +698,10 @@ namespace CDMyPrometheusExporter.ViewModel
             if (value is DateTime time)
             {
                 return new DateTimeOffset(time).ToUnixTimeSeconds();
+            }
+            if (value is Guid tg)
+            {
+                return 0;
             }
             return TheCommonUtils.CDbl(value);
         }
