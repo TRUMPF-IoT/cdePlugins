@@ -304,7 +304,6 @@ namespace Modbus
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.Number, 250, 2, 0, "Polling Interval", nameof(Interval), new nmiCtrlNumber() { TileWidth = 3, MinValue = 100, ParentFld = 200 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.SingleCheck, 260, 2, 0, "Keep Open", nameof(KeepOpen), new nmiCtrlSingleEnded() { TileWidth = 3, ParentFld = 200 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.ComboBox, 270, 2, 0, "Address Type", nameof(ConnectionType), new nmiCtrlComboBox() { NoTE = true, Options = "Read Coils:1;Read Input:2;Holding Registers:3;Input Register:4;Read Multiple Register:23", DefaultValue = "3", TileWidth = 6, ParentFld = 200 });
-            AddThingTarget(MyModConnectForm, 280, 271);
 
             ////METHODS Form
             MyFldMapperTable = new TheFormInfo(TheThing.GetSafeThingGuid(MyBaseThing, "FLDMAP"), eEngineName.NMIService, "Field Mapper", $"MBFLDS{MyBaseThing.ID}") { AddButtonText = "Add Tag", AddACL = 128 };
@@ -319,6 +318,7 @@ namespace Modbus
             TheNMIEngine.AddTableButtons(MyFldMapperTable);
 
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.CollapsibleGroup, 500, 2, 0x0, "Modbus Tags", null, new nmiCtrlCollapsibleGroup() { IsSmall = true, DoClose = true, TileWidth = 6, ParentFld = 1 });
+            AddThingTarget(MyModConnectForm, 501, 500);
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.TileButton, 510, 2, 0xF0, "Show Field Mapper", null, new nmiCtrlTileButton() { OnClick = $"TTS:{MyFldMapperTable.cdeMID}", TileWidth = 6, TileHeight = 1, NoTE = true, ParentFld = 500, Background = "blue", Foreground = "white" });
 
             SetupModbusProperties(false, null);
