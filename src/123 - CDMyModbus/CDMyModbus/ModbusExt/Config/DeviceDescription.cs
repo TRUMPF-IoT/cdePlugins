@@ -44,5 +44,6 @@ namespace NModbusExt.Config
         public object Value { get; set; }
 
         public bool AllowWrite { get; set; }
+        public int ConnectionType { get; set; }
     }
 }

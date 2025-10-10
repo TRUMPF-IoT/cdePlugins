@@ -315,6 +315,7 @@ namespace Modbus
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.Number, 75, 2, 0, "Scale Factor", "ScaleFactor", new nmiCtrlNumber() { TileWidth = 3, FldWidth = 1, DefaultValue = "1" });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.ComboBox, 80, 2, 0, "Source Type", "SourceType", new nmiCtrlComboBox() { Options = "float;double;int32;int64;float32;uint16;int16;utf8;byte;float-abcd;double-cdab", TileWidth = 2, FldWidth = 2 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.SingleCheck, 90, 2, 0, "Allow Write", "AllowWrite", new nmiCtrlSingleEnded() { TileWidth = 1, FldWidth = 1 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.ComboBox, 95, 2, 0, "Address Type", nameof(ConnectionType), new nmiCtrlComboBox() { NoTE = true, FldWidth=2, Options = "Connection:0;Read Coils:1;Read Input:2;Holding Registers:3;Input Register:4;Read Multiple Register:23", DefaultValue = "0", TileWidth = 6, ParentFld = 200 });
             TheNMIEngine.AddTableButtons(MyFldMapperTable);
 
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.CollapsibleGroup, 500, 2, 0x0, "Modbus Tags", null, new nmiCtrlCollapsibleGroup() { IsSmall = true, DoClose = true, TileWidth = 6, ParentFld = 1 });
@@ -669,7 +670,7 @@ namespace Modbus
             // Read configured data items via Modbus
             int tMainOffset = (int)TheThing.GetSafePropertyNumber(MyBaseThing, "Offset");
             int tSlaveAddress = (int)TheThing.GetSafePropertyNumber(MyBaseThing, "SlaveAddress");
-            int tReadWay = (int)TheThing.GetSafePropertyNumber(MyBaseThing, "ConnectionType");
+            int myReadWay = (int)TheThing.GetSafePropertyNumber(MyBaseThing, "ConnectionType");
             foreach (var field in MyModFieldStore.TheValues)
             {
                 try
@@ -680,7 +681,9 @@ namespace Modbus
 
                     float scale = field.ScaleFactor;
                     if (scale == 0) scale = 1.0f;
-
+                    var tReadWay = field.ConnectionType;
+                    if (tReadWay == 0) 
+                        tReadWay = myReadWay;
                     switch (tReadWay)
                     {
                         case 1:
