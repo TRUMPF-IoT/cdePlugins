@@ -9,6 +9,8 @@ namespace NModbusExt.DataTypes
 
         public static double Convert(ushort[] data, ByteOrder order)
         {
+            if (data.Length < 4)
+                return -1;
             UInt64 n = 0;
             switch (order)
             {

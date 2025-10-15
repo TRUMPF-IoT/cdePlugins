@@ -107,16 +107,16 @@ namespace NModbusExt.Config
 
         static void ReadDeviceDescription(ModbusConfiguration config, DeviceDescription dd, XmlNode node)
         {
-            dd.Name = node.Attributes["name"].Value;
-            dd.Id = node.Attributes["id"].Value;
+            dd.Properties["FriendlyName"] = node.Attributes["name"].Value;
+            dd.Properties["ID"] = node.Attributes["id"].Value;
             foreach (XmlNode child in node.ChildNodes)
             {
                 if (child.Name == "network")
                 {
-                    dd.IpAddress = child.Attributes["ipaddr"].Value;
+                    dd.Properties["Address"] = child.Attributes["ipaddr"].Value;
                     if (child.Attributes["port"] != null)
                     {
-                    dd.IpPort = ParseInt(child.Attributes["port"].Value, 502);
+                    dd.Properties["CustomPort"] = ParseInt(child.Attributes["port"].Value, 502);
                 }
                 }
                 else if (child.Name == "mapping")
@@ -125,7 +125,7 @@ namespace NModbusExt.Config
                 }
                 else if (child.Name == "slave")
                 {
-                    dd.SlaveAddress = ParseInt(child.Attributes["address"].Value, 126);
+                    dd.Properties["SlaveAddress"] = ParseInt(child.Attributes["address"].Value, 126);
                 }
             }
         }

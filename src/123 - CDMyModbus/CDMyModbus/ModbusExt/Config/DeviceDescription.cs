@@ -5,17 +5,11 @@ namespace NModbusExt.Config
 {
     public class DeviceDescription
     {
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public string IpAddress { get; set; }
-        public int IpPort { get; set; }
-        public int SlaveAddress { get; set; }
+        public Dictionary<string, object> Properties { get; set; }
         public DeviceTypeMapping Mapping { get; set; }
 
         public DeviceDescription()
         {
-            IpPort = 502;  // default value for Modbus
-            SlaveAddress = 126; // default for Siemens PAC3200
         }
     }
 

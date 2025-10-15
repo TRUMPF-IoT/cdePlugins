@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using CDMyModbus.ViewModel;
+using Modbus.Data;
 using Modbus.Device;
 using NModbusExt.Config;
 using NModbusExt.DataTypes;
@@ -42,12 +43,7 @@ namespace Modbus
             set { TheThing.SetSafePropertyBool(MyBaseThing, nameof(KeepOpen), value); }
         }
 
-        [ConfigProperty]
-        uint Interval
-        {
-            get { return (uint)TheThing.GetSafePropertyNumber(MyBaseThing, nameof(Interval)); }
-            set { TheThing.SetSafePropertyNumber(MyBaseThing, nameof(Interval), value); }
-        }
+
         [ConfigProperty]
         uint CustomPort
         {
@@ -73,7 +69,7 @@ namespace Modbus
             set { TheThing.SetSafePropertyNumber(MyBaseThing, nameof(ConnectionType), value); }
         }
 
-        private IBaseEngine MyBaseEngine;
+
 
         public ModbusTCPDevice(TheThing tBaseThing, ICDEPlugin pPluginBase, DeviceDescription pModDeviceDescription)
         {
@@ -81,13 +77,11 @@ namespace Modbus
                 MyBaseThing = tBaseThing;
             else
                 MyBaseThing = new TheThing();
-            MyBaseEngine = pPluginBase.GetBaseEngine();
+            MyBaseEngine = pPluginBase;
             MyBaseThing.DeviceType = eModbusType.ModbusTCPDevice;
-            MyBaseThing.EngineName = MyBaseEngine.GetEngineName();
+            MyBaseThing.EngineName = MyBaseEngine.GetBaseEngine().GetEngineName();
             MyBaseThing.SetIThingObject(this);
             MyDevice = pModDeviceDescription;
-            if (MyDevice != null && !String.IsNullOrEmpty(MyDevice.Name))
-                MyBaseThing.FriendlyName = MyDevice.Name;
             MyBaseThing.AddCapability(eThingCaps.SensorProvider);
         }
 
@@ -107,20 +101,15 @@ namespace Modbus
         {
             if (MyDevice != null)
             {
-                if (!string.IsNullOrEmpty(MyDevice.Name))
-                    MyBaseThing.FriendlyName = MyDevice.Name;
-                if (!string.IsNullOrEmpty(MyDevice.IpAddress))
-                    MyBaseThing.Address = MyDevice.IpAddress;
-                if (MyDevice.IpPort == 0)
-                    MyDevice.IpPort = 502;
+                if (MyDevice!=null && MyDevice.Properties?.Count>0)
+                    MyBaseThing.SetProperties(MyDevice.Properties, DateTimeOffset.Now);
                 if (ConnectionType == 0)
                     ConnectionType = 3;
-                TheThing.SetSafePropertyNumber(MyBaseThing, "CustomPort", MyDevice.IpPort);
-                TheThing.SetSafePropertyNumber(MyBaseThing, "SlaveAddress", MyDevice.SlaveAddress);
+                if (SlaveAddress == 0)
+                    SlaveAddress = 1;
                 if (MyDevice.Mapping != null)
                 {
                     TheThing.SetSafePropertyNumber(MyBaseThing, "Offset", MyDevice.Mapping.Offset);
-                    //TODO: Create Storage Mirror with Field Mapps
                     MyModFieldStore.FlushCache(true);
                     foreach (var tFld in MyDevice.Mapping.FieldList)
                     {
@@ -146,7 +135,7 @@ namespace Modbus
             FireEvent(eThingEvents.Initialized, this, true, true);
         }
 
-        TheStorageMirror<FieldMapping> MyModFieldStore;
+
         public override bool Init()
         {
             if (mIsInitCalled) return false;
@@ -173,8 +162,8 @@ namespace Modbus
             if (string.IsNullOrEmpty(MyBaseThing.ID))
             {
                 MyBaseThing.ID = Guid.NewGuid().ToString();
-                if (MyDevice != null && !string.IsNullOrEmpty(MyDevice.Id))
-                    MyBaseThing.ID = MyDevice.Id;
+                if (MyDevice != null && MyDevice.Properties.ContainsKey("ID"))
+                    MyBaseThing.ID = TheCommonUtils.CStr(MyDevice.Properties["ID"]);
                 if (GetProperty("CustomPort", false) == null)
                     TheThing.SetSafePropertyNumber(MyBaseThing, "CustomPort", 502);
                 if (GetProperty("SlaveAddress", false) == null)
@@ -233,7 +222,7 @@ namespace Modbus
 
         void sinkPChanged(cdeP prop)
         {
-            if (MyBaseEngine.GetEngineState().IsSimulated || !IsConnected) return;
+            if (MyBaseEngine.GetBaseEngine().GetEngineState().IsSimulated || !IsConnected) return;
             var field = MyModFieldStore.MyMirrorCache.GetEntryByFunc(s => s.PropertyName == prop.Name);
             if (field == null) return;
 
@@ -386,11 +375,14 @@ namespace Modbus
                             SensorId = TheCommonUtils.CStr(fld.cdeMID),
                             ExtensionData = new Dictionary<string, object>
                             {
-                                { nameof(FieldMapping.SourceOffset), fld.SourceOffset },
-                                { nameof(FieldMapping.SourceSize), fld.SourceSize },
-                                { nameof(FieldMapping.AllowWrite), fld.AllowWrite }
+                        { nameof(FieldMapping.SourceType), fld.SourceType },
+                        { nameof(FieldMapping.SourceOffset), fld.SourceOffset },
+                        { nameof(FieldMapping.ScaleFactor), fld.ScaleFactor},
+                        { nameof(FieldMapping.SourceSize), fld.SourceSize },
+                        { nameof(FieldMapping.ConnectionType), fld.ConnectionType},
+                        { nameof(FieldMapping.AllowWrite), fld.AllowWrite }
                             },
-                            DisplayNamePath = new string[] { MyBaseEngine.GetEngineName(), MyBaseThing.FriendlyName, fld.PropertyName }
+                            DisplayNamePath = new string[] { MyBaseEngine.GetBaseEngine().GetEngineName(), MyBaseThing.FriendlyName, fld.PropertyName }
                         });
                     }
                     browseResponse.Error = null;
@@ -403,42 +395,7 @@ namespace Modbus
                     {
                         MyModFieldStore.RemoveAllItems();
                     }
-                    var subscriptionStatus = new List<TheThing.TheSensorSubscriptionStatus>();
-                    foreach (TheThing.TheSensorSubscription sub in subscribeRequest.SubscriptionRequests)
-                    {
-                        FieldMapping fld = new FieldMapping()
-                        {
-                            PropertyName = sub.TargetProperty,
-                            cdeMID = TheCommonUtils.CGuid(sub.SensorId)
-                        };
-                        if (fld.cdeMID == Guid.Empty)
-                            fld.cdeMID = Guid.NewGuid();
-                        object sourceType;
-                        if (sub.ExtensionData != null)
-                        {
-                            if (sub.ExtensionData.TryGetValue(nameof(TheThing.TheSensorSourceInfo.SourceType), out sourceType))
-                                fld.SourceType = TheCommonUtils.CStr(sourceType);
-                            object offset;
-                            if (sub.ExtensionData.TryGetValue("SourceOffset", out offset))
-                                fld.SourceOffset = TheCommonUtils.CInt(offset);
-                            object size;
-                            if (sub.ExtensionData.TryGetValue("SourceSize", out size))
-                                fld.SourceSize = TheCommonUtils.CInt(size);
-                            object allowWrite;
-                            if (sub.ExtensionData.TryGetValue("AllowWrite", out allowWrite))
-                                fld.AllowWrite = TheCommonUtils.CBool(allowWrite);
-                            MyModFieldStore.AddAnItem(fld);
-                            subscriptionStatus.Add(CreateSubscriptionStatusFromFieldMapping(fld));
-                        }
-                        else
-                        {
-                            subscriptionStatus.Add(new TheThing.TheSensorSubscriptionStatus
-                            {
-                                Error = "Missing source info",
-                                Subscription = sub,
-                            });
-                        }
-                    }
+                    List<TheThing.TheSensorSubscriptionStatus> subscriptionStatus = CreateModbusTags(subscribeRequest);
                     subscribeResponse.SubscriptionStatus = subscriptionStatus;
                     subscribeResponse.Error = null;
                     TheCommRequestResponse.PublishResponseMessageJson(pMsg.Message, subscribeResponse);
@@ -488,28 +445,9 @@ namespace Modbus
                     break;
             }
 
-            TheThing.TheSensorSubscriptionStatus CreateSubscriptionStatusFromFieldMapping(FieldMapping fld)
-            {
-                return new TheThing.TheSensorSubscriptionStatus
-                {
-                    Subscription = new TheThing.TheSensorSubscription
-                    {
-                        TargetProperty = fld.PropertyName,
-                        SensorId = TheCommonUtils.CStr(fld.cdeMID),
-                        SubscriptionId = fld.cdeMID,
-                        ExtensionData = new Dictionary<string, object>
-                    {
-                        { nameof(FieldMapping.SourceType), fld.SourceType },
-                        { nameof(FieldMapping.SourceOffset), fld.SourceOffset },
-                        { nameof(FieldMapping.SourceSize), fld.SourceSize },
-                        { nameof(FieldMapping.AllowWrite), fld.AllowWrite }
-                    },
-                        TargetThing = new TheThingReference(MyBaseThing),
-                        SampleRate = (int?)this.Interval
-                    },
-                    Error = null,
-                };
-            }
+
+
+
         }
         #endregion
 
@@ -533,7 +471,7 @@ namespace Modbus
                 bool bPreviousError = false;
                 while (TheBaseAssets.MasterSwitch && IsConnected)
                 {
-                    if (!MyBaseEngine.GetEngineState().IsSimulated)
+                    if (!MyBaseEngine.GetBaseEngine().GetEngineState().IsSimulated)
                     {
                         var error = OpenModBus();
                         if (!string.IsNullOrEmpty(error))
@@ -736,9 +674,17 @@ namespace Modbus
                     }
                     else if (field.SourceType == "int32")
                     {
-                        var value = TypeInt32.Convert(data);
-                        var dblValue = Convert.ToDouble(value);
-                        dict[field.PropertyName] = dblValue / scale;
+                        if (data.Length == 1)
+                        {
+                            var value = data[0];
+                            dict[field.PropertyName] = value / scale;
+                        }
+                        else
+                        {
+                            var value = TypeInt32.Convert(data);
+                            var dblValue = Convert.ToDouble(value);
+                            dict[field.PropertyName] = dblValue / scale;
+                        }
                     }
                     else if (field.SourceType == "int64")
                     {

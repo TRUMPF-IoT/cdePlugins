@@ -51,13 +51,6 @@ namespace Modbus
         }
 
         [ConfigProperty]
-        uint Interval
-        {
-            get { return (uint)TheThing.GetSafePropertyNumber(MyBaseThing, nameof(Interval)); }
-            set { TheThing.SetSafePropertyNumber(MyBaseThing, nameof(Interval), value); }
-        }
-
-        [ConfigProperty]
         int Baudrate
         {
             get { return (int)TheThing.GetSafePropertyNumber(MyBaseThing, nameof(Baudrate)); }
@@ -89,21 +82,17 @@ namespace Modbus
             set { TheThing.SetSafePropertyNumber(MyBaseThing, nameof(ConnectionType), value); }
         }
 
-        private readonly IBaseEngine MyBaseEngine;
-
         public ModbusRTUDevice(TheThing tBaseThing, ICDEPlugin pPluginBase, DeviceDescription pModDeviceDescription)
         {
             if (tBaseThing != null)
                 MyBaseThing = tBaseThing;
             else
                 MyBaseThing = new TheThing();
-            MyBaseEngine = pPluginBase.GetBaseEngine();
+            MyBaseEngine = pPluginBase;
             MyBaseThing.DeviceType = eModbusType.ModbusRTUDevice;
-            MyBaseThing.EngineName = MyBaseEngine.GetEngineName();
+            MyBaseThing.EngineName = MyBaseEngine.GetBaseEngine().GetEngineName();
             MyBaseThing.SetIThingObject(this);
             MyDevice = pModDeviceDescription;
-            if (MyDevice != null && !String.IsNullOrEmpty(MyDevice.Name))
-                MyBaseThing.FriendlyName = MyDevice.Name;
             MyBaseThing.AddCapability(eThingCaps.SensorProvider);
         }
 
@@ -123,13 +112,12 @@ namespace Modbus
         {
             if (MyDevice != null)
             {
-                if (!string.IsNullOrEmpty(MyDevice.Name))
-                    MyBaseThing.FriendlyName = MyDevice.Name;
-                if (!string.IsNullOrEmpty(MyDevice.IpAddress))
-                    MyBaseThing.Address = MyDevice.IpAddress;
+                if (MyDevice != null && MyDevice.Properties?.Count > 0)
+                    MyBaseThing.SetProperties(MyDevice.Properties, DateTimeOffset.Now);
                 if (ConnectionType == 0)
                     ConnectionType = 3;
-                TheThing.SetSafePropertyNumber(MyBaseThing, "SlaveAddress", MyDevice.SlaveAddress);
+                if (SlaveAddress==0)
+                    SlaveAddress = 1;
                 if (MyDevice.Mapping != null)
                 {
                     TheThing.SetSafePropertyNumber(MyBaseThing, "Offset", MyDevice.Mapping.Offset);
@@ -158,7 +146,6 @@ namespace Modbus
             FireEvent(eThingEvents.Initialized, this, true, true);
         }
 
-        TheStorageMirror<FieldMapping> MyModFieldStore;
         public override bool Init()
         {
             if (mIsInitCalled) return false;
@@ -188,8 +175,8 @@ namespace Modbus
             if (string.IsNullOrEmpty(MyBaseThing.ID))
             {
                 MyBaseThing.ID = Guid.NewGuid().ToString();
-                if (MyDevice != null && !string.IsNullOrEmpty(MyDevice.Id))
-                    MyBaseThing.ID = MyDevice.Id;
+                if (MyDevice != null && MyDevice.Properties.ContainsKey("ID"))
+                    MyBaseThing.ID = TheCommonUtils.CStr(MyDevice.Properties["ID"]);
                 if (GetProperty("SlaveAddress", false) == null)
                     TheThing.SetSafePropertyNumber(MyBaseThing, "SlaveAddress", 1);
                 Interval = 1000;
@@ -284,7 +271,7 @@ namespace Modbus
 
         void sinkPChanged(cdeP prop)
         {
-            if (MyBaseEngine.GetEngineState().IsSimulated || !IsConnected) return;
+            if (MyBaseEngine.GetBaseEngine().GetEngineState().IsSimulated || !IsConnected) return;
             var field = MyModFieldStore.MyMirrorCache.GetEntryByFunc(s => s.PropertyName == prop.Name);
             if (field == null) return;
 
@@ -460,7 +447,7 @@ namespace Modbus
                                 { nameof(FieldMapping.SourceSize), fld.SourceSize },
                                 { nameof(FieldMapping.AllowWrite), fld.AllowWrite }
                             },
-                            DisplayNamePath = new string[] { MyBaseEngine.GetEngineName(), MyBaseThing.FriendlyName, fld.PropertyName }
+                            DisplayNamePath = new string[] { MyBaseEngine.GetBaseEngine().GetEngineName(), MyBaseThing.FriendlyName, fld.PropertyName }
                         });
                     }
                     browseResponse.Error = null;
@@ -602,7 +589,7 @@ namespace Modbus
                 bool bPreviousError = false;
                 while (TheBaseAssets.MasterSwitch && IsConnected)
                 {
-                    if (!MyBaseEngine.GetEngineState().IsSimulated)
+                    if (!MyBaseEngine.GetBaseEngine().GetEngineState().IsSimulated)
                     {
                         var error = OpenModBus();
                         if (!string.IsNullOrEmpty(error))
