@@ -15,12 +15,6 @@ using TT = nsCDEngine.Engines.ThingService.TheThing;
 
 namespace CDMyModbus.ViewModel
 {
-    public class ModbusTemplate
-    {
-        public string Owner { get; set; }
-        public Dictionary<string, object> Properties { get; set; }
-        public List<TT.TheSensorSubscriptionStatus> Tags { get; set; }
-    }
     public class ModbusBase : TheThingBase
     {
 
@@ -38,6 +32,13 @@ namespace CDMyModbus.ViewModel
             set { TT.SetSafePropertyNumber(MyBaseThing, nameof(Interval), value); }
         }
 
+        public string TemplateName
+        {
+            get { return TT.MemberGetSafePropertyString(MyBaseThing); }
+            set { TT.MemberSetSafePropertyString(MyBaseThing, value); }
+        }
+
+
         protected TheStorageMirror<FieldMapping> MyModFieldStore;
         protected ICDEPlugin MyBaseEngine;
 
@@ -45,7 +46,8 @@ namespace CDMyModbus.ViewModel
         {
             var lst = new List<TheFieldInfo>();
             lst.Add(NMI.AddSmartControl(MyBaseThing, pForm, eFieldType.ThingPicker, StartFld, 2, 0, "Target Thing", nameof(TargetThing), new nmiCtrlThingPicker() { ParentFld = ParentFld }));
-            var exp = NMI.AddSmartControl(MyBaseThing, pForm, eFieldType.TileButton, StartFld + 1, 2, 0, "Export Template", null, new nmiCtrlTileButton() { ParentFld = ParentFld, NoTE = true });
+            NMI.AddSmartControl(MyBaseThing, pForm, eFieldType.SingleEnded, StartFld + 1, 2, 0, "Template Name", nameof(TemplateName), new nmiCtrlSingleEnded() { ParentFld = ParentFld, NoTE = true, TileWidth=5 });
+            var exp = NMI.AddSmartControl(MyBaseThing, pForm, eFieldType.TileButton, StartFld + 2, 2, 0, "Export", null, new nmiCtrlTileButton() { ParentFld = ParentFld, NoTE = true, TileWidth=1 });
             lst.Add(exp);
             exp.RegisterUXEvent(MyBaseThing, eUXEvents.OnClick, "ExportTemplate", (thing, obj) =>
             {
@@ -55,12 +57,18 @@ namespace CDMyModbus.ViewModel
                 templ.Mapping = new DeviceTypeMapping { FieldList = MyModFieldStore.TheValues.ToList() };
                 string testJSON = CU.SerializeObjectToJSONString(templ);
 
+                var newFileName = CU.cdeFixupFileName($"/Templates/{TemplateName}.cdeTemplate");
+                CU.CreateDirectories(newFileName);
+                System.IO.File.WriteAllText(newFileName, testJSON);
+
+                //Move to Client Thing
                 var temp2 = CU.DeserializeJSONStringToObject<DeviceDescription>(testJSON);
                 var tt = TheThingRegistry.GetThingByProperty(MyBaseThing.EngineName, Guid.Empty, "Owner", $"{MyBaseThing.cdeMID}");
                 if (tt == null || tt.DeviceType != eModbusType.ModbusTCPDevice) //support for RTU?
                 {
                     temp2.Properties["FriendlyName"] = $"Owned by {MyBaseThing.FriendlyName}";
                     temp2.Properties["ID"] = Guid.NewGuid().ToString();
+                    temp2.Properties["FLDMAP_ID"] = Guid.NewGuid().ToString();
                     temp2.Properties["Owner"] = $"{MyBaseThing.cdeMID}";
                     var pm = new ModbusTCPDevice(tt, MyBaseEngine, temp2);
                     TheThingRegistry.RegisterThing(pm);

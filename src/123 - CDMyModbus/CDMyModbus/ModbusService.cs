@@ -14,6 +14,9 @@ using System.IO;
 using NModbusExt.Config;
 using nsCDEngine.Communication;
 using System.IO.Ports;
+using CU = nsCDEngine.BaseClasses.TheCommonUtils;
+using NMI = nsCDEngine.Engines.NMIService.TheNMIEngine;
+using TT = nsCDEngine.Engines.ThingService.TheThing;
 
 namespace Modbus
 {
@@ -262,6 +265,20 @@ namespace Modbus
                 case "REFFRESHME":
                     InitServices();
                     mMyDashboard.Reload(pMsg, false);
+                    break;
+                case "CDE_CBYT":
+                    {
+                        if (!string.IsNullOrEmpty(pMsg.Message.PLS))
+                        {
+                            var temp2 = CU.DeserializeJSONStringToObject<DeviceDescription>(pMsg.Message.PLS);
+                            var tt = TheThingRegistry.GetThingByProperty(MyBaseThing.EngineName, Guid.Empty, "Owner", $"{MyBaseThing.cdeMID}");
+                            if (tt == null || tt.DeviceType != eModbusType.ModbusTCPDevice) //support for RTU?
+                            {
+                                var pm = new ModbusTCPDevice(tt, this, temp2);
+                                TheThingRegistry.RegisterThing(pm);
+                            }
+                        }
+                    }
                     break;
             }
         }
