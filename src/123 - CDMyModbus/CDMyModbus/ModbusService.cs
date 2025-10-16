@@ -266,22 +266,31 @@ namespace Modbus
                     InitServices();
                     mMyDashboard.Reload(pMsg, false);
                     break;
-                case "CDE_CBYT":
+                default:
+                    var temp2 = TheDeviceDescription.CheckForTemplate(MyBaseThing, pMsg?.Message);
+                    if (temp2?.Properties?.ContainsKey("DeviceType") == true)
                     {
-                        if (!string.IsNullOrEmpty(pMsg.Message.PLS))
+                        switch (CU.CStr(temp2.Properties["DeviceType"]))
                         {
-                            var temp2 = CU.DeserializeJSONStringToObject<DeviceDescription>(pMsg.Message.PLS);
-                            var tt = TheThingRegistry.GetThingByProperty(MyBaseThing.EngineName, Guid.Empty, "Owner", $"{MyBaseThing.cdeMID}");
-                            if (tt == null || tt.DeviceType != eModbusType.ModbusTCPDevice) //support for RTU?
-                            {
-                                var pm = new ModbusTCPDevice(tt, this, temp2);
-                                TheThingRegistry.RegisterThing(pm);
-                            }
+                            case eModbusType.ModbusTCPDevice:
+                                {
+                                    var pm = new ModbusTCPDevice(null, this, temp2);
+                                    TheThingRegistry.RegisterThing(pm);
+                                }
+                                break;
+                            case eModbusType.ModbusRTUDevice:
+                                {
+                                    var pm = new ModbusRTUDevice(null, this, temp2);
+                                    TheThingRegistry.RegisterThing(pm);
+                                }
+                                break;
                         }
                     }
                     break;
             }
         }
+
+
         #endregion
 
         public void AddConnectionWizard()

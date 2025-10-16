@@ -5,6 +5,7 @@ using nsCDEngine.Engines;
 using nsCDEngine.Engines.NMIService;
 using nsCDEngine.Engines.StorageService;
 using nsCDEngine.Engines.ThingService;
+using nsCDEngine.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,31 +52,25 @@ namespace CDMyModbus.ViewModel
             lst.Add(exp);
             exp.RegisterUXEvent(MyBaseThing, eUXEvents.OnClick, "ExportTemplate", (thing, obj) =>
             {
-                var templ = new DeviceDescription { };
-                var l = MyBaseThing.GetAllProperties();
-                templ.Properties = l.ToDictionary(prop => prop.Name, prop => prop.Value);
-                templ.Mapping = new DeviceTypeMapping { FieldList = MyModFieldStore.TheValues.ToList() };
-                string testJSON = CU.SerializeObjectToJSONString(templ);
-
-                var newFileName = CU.cdeFixupFileName($"/Templates/{TemplateName}.cdeTemplate");
-                CU.CreateDirectories(newFileName);
-                System.IO.File.WriteAllText(newFileName, testJSON);
+                string testJSON = TheDeviceDescription.CreateDeviceTemplate(MyBaseThing, TemplateName, new Dictionary<string, TheStorageMirror<FieldMapping>> { { "FLDMAP_ID", MyModFieldStore } });
 
                 //Move to Client Thing
-                var temp2 = CU.DeserializeJSONStringToObject<DeviceDescription>(testJSON);
-                var tt = TheThingRegistry.GetThingByProperty(MyBaseThing.EngineName, Guid.Empty, "Owner", $"{MyBaseThing.cdeMID}");
-                if (tt == null || tt.DeviceType != eModbusType.ModbusTCPDevice) //support for RTU?
-                {
-                    temp2.Properties["FriendlyName"] = $"Owned by {MyBaseThing.FriendlyName}";
-                    temp2.Properties["ID"] = Guid.NewGuid().ToString();
-                    temp2.Properties["FLDMAP_ID"] = Guid.NewGuid().ToString();
-                    temp2.Properties["Owner"] = $"{MyBaseThing.cdeMID}";
-                    var pm = new ModbusTCPDevice(tt, MyBaseEngine, temp2);
-                    TheThingRegistry.RegisterThing(pm);
-                }
+                //var temp2 = CU.DeserializeJSONStringToObject<TheDeviceDescription>(testJSON);
+                //temp2.Properties["FriendlyName"] = $"Owned by {MyBaseThing.FriendlyName}";
+                //temp2.Properties["ID"] = Guid.NewGuid().ToString();
+                //temp2.Properties["FLDMAP_ID"] = Guid.NewGuid().ToString();
+                //temp2.Properties["Parent"] = $"{MyBaseThing.cdeMID}";
+                //TheDeviceDescription.SendTemplateToEngine(this, "Modbus.ModbusService", temp2);
             });
             return lst;
         }
+
+        // Fixes for CS0314, CS0310, IDE0060
+
+        // Update the generic constraint for T in CreateDeviceTemplate to match TheStorageMirror<T> requirements.
+        // Remove unused parameter 'pSubStore' (IDE0060) if not used in the method body.
+
+
 
         protected void PushProperties(Dictionary<string, object> dict, DateTimeOffset timestamp)
         {

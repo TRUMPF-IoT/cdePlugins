@@ -71,7 +71,7 @@ namespace Modbus
 
 
 
-        public ModbusTCPDevice(TheThing tBaseThing, ICDEPlugin pPluginBase, DeviceDescription pModDeviceDescription)
+        public ModbusTCPDevice(TheThing tBaseThing, ICDEPlugin pPluginBase, TheDeviceDescription pModDeviceDescription)
         {
             if (tBaseThing != null)
                 MyBaseThing = tBaseThing;
@@ -107,13 +107,12 @@ namespace Modbus
                     ConnectionType = 3;
                 if (SlaveAddress == 0)
                     SlaveAddress = 1;
-                if (MyDevice.Mapping != null)
+                if (MyDevice.TagMappings?.ContainsKey("FLDMAP_ID") == true)
                 {
-                    TheThing.SetSafePropertyNumber(MyBaseThing, "Offset", MyDevice.Mapping.Offset);
                     MyModFieldStore.FlushCache(true);
-                    foreach (var tFld in MyDevice.Mapping.FieldList)
+                    foreach (var tFld in MyDevice.TagMappings["FLDMAP_ID"].FieldList)
                     {
-                        MyModFieldStore.AddAnItem(tFld);
+                        MyModFieldStore.AddAnItem(TheDeviceTagMapping.BagToClass<FieldMapping>(tFld));
                     }
                 }
             }
@@ -263,8 +262,8 @@ namespace Modbus
         {
             CloseModBus();
             MyBaseThing.StatusLevel = 0;
-            if (MyBaseThing.LastMessage.Contains("- Device Connected"))
-                MyBaseThing.LastMessage = $"{DateTime.Now} - Device Disconnected";
+            if (MyBaseThing.LastMessage.Contains("Device connected"))
+                MyBaseThing.LastMessage = $"{DateTime.Now} Device disconnected";
             IsConnected = false;
             return true;
         }
@@ -452,7 +451,7 @@ namespace Modbus
         #endregion
 
         public ModbusConfiguration ModbusConfig { get; set; }
-        public DeviceDescription MyDevice { get; set; }
+        public TheDeviceDescription MyDevice { get; set; }
 
         bool bReaderLoopRunning;
         object readerLoopLock = new object();
@@ -727,7 +726,7 @@ namespace Modbus
                     {
                         // Future: convey per-tag status similar to OPC statuscode?
                         //dict[$"[{field.PropertyName}].[Status]"] = $"##cdeError: {e.Message}";
-                        TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(MyBaseThing.EngineName, $"Error reading property {field.PropertyName}", eMsgLevel.l2_Warning, e.ToString()));
+                        SetMessage(TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : $"Error reading tag {field.PropertyName}", DateTimeOffset.Now, 10000,eMsgLevel.l2_Warning);
                     }
                     catch { }
                 }

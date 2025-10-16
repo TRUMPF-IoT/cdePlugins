@@ -82,7 +82,7 @@ namespace Modbus
             set { TheThing.SetSafePropertyNumber(MyBaseThing, nameof(ConnectionType), value); }
         }
 
-        public ModbusRTUDevice(TheThing tBaseThing, ICDEPlugin pPluginBase, DeviceDescription pModDeviceDescription)
+        public ModbusRTUDevice(TheThing tBaseThing, ICDEPlugin pPluginBase, TheDeviceDescription pModDeviceDescription)
         {
             if (tBaseThing != null)
                 MyBaseThing = tBaseThing;
@@ -118,13 +118,12 @@ namespace Modbus
                     ConnectionType = 3;
                 if (SlaveAddress==0)
                     SlaveAddress = 1;
-                if (MyDevice.Mapping != null)
+                if (MyDevice.TagMappings?.ContainsKey("FLDMAP_ID")==true)
                 {
-                    TheThing.SetSafePropertyNumber(MyBaseThing, "Offset", MyDevice.Mapping.Offset);
                     MyModFieldStore.FlushCache(true);
-                    foreach (var tFld in MyDevice.Mapping.FieldList)
+                    foreach (var tFld in MyDevice.TagMappings["FLDMAP_ID"].FieldList)
                     {
-                        MyModFieldStore.AddAnItem(tFld);
+                        MyModFieldStore.AddAnItem(TheDeviceTagMapping.BagToClass<FieldMapping>(tFld));
                     }
                 }
             }
@@ -570,7 +569,7 @@ namespace Modbus
         #endregion
 
         public ModbusConfiguration ModbusConfig { get; set; }
-        public DeviceDescription MyDevice { get; set; }
+        public TheDeviceDescription MyDevice { get; set; }
 
         bool bReaderLoopRunning;
         readonly object readerLoopLock = new object();
