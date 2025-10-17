@@ -304,6 +304,7 @@ namespace Modbus
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.ComboBox, 80, 2, 0, "Source Type", "SourceType", new nmiCtrlComboBox() { Options = "float;double;int32;uint32;int64;float32;uint16;int16;utf8;byte;float-abcd;double-cdab", TileWidth = 2, FldWidth = 2 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.SingleCheck, 90, 2, 0, "Allow Write", "AllowWrite", new nmiCtrlSingleEnded() { TileWidth = 1, FldWidth = 1 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.ComboBox, 95, 2, 0, "Address Type", nameof(ConnectionType), new nmiCtrlComboBox() { NoTE = true, FldWidth=2, Options = "Connection:0;Read Coils:1;Read Input:2;Holding Registers:3;Input Register:4;Read Multiple Register:23", DefaultValue = "0", TileWidth = 6, ParentFld = 200 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.Number, 96, 2, 0, "Read Skip", "ReadEvery", new nmiCtrlNumber() { TileWidth = 1, FldWidth = 1, MinValue=-1 });
             TheNMIEngine.AddTableButtons(MyFldMapperTable);
 
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.CollapsibleGroup, 500, 2, 0x0, "Modbus Tags", null, new nmiCtrlCollapsibleGroup() { IsSmall = true, DoClose = true, TileWidth = 6, ParentFld = 1 });
@@ -468,6 +469,7 @@ namespace Modbus
             try
             {
                 bool bPreviousError = false;
+                long ticker = 0;
                 while (TheBaseAssets.MasterSwitch && IsConnected)
                 {
                     if (!MyBaseEngine.GetBaseEngine().GetEngineState().IsSimulated)
@@ -498,7 +500,7 @@ namespace Modbus
                                     TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseThing.EngineName, MyBaseThing.LastMessage, eMsgLevel.l4_Message));
                                     bPreviousError = false;
                                 }
-                                else 
+                                else
                                 {
                                     if (MyBaseThing.StatusLevel != 1)
                                     {
@@ -507,10 +509,13 @@ namespace Modbus
                                     }
                                 }
                                 MyBaseThing.StatusLevel = 1;
-                                Dictionary<string, object> dict = ReadAll();
+                                Dictionary<string, object> dict = ReadAll(ticker++);
                                 var timestamp = DateTimeOffset.Now;
-                                TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.VERBOSE) ? null : new TSM(MyBaseThing.EngineName, String.Format("Setting properties for {0}", MyBaseThing.FriendlyName), eMsgLevel.l4_Message, String.Format("{0}: {1}", timestamp, dict.Aggregate("", (s, kv) => s + string.Format("{0}={1};", kv.Key, kv.Value)))));
                                 PushProperties(dict, timestamp);
+                                if (TSM.L(eDEBUG_LEVELS.VERBOSE))
+                                    SetMessage($"Reading Tags done", timestamp);
+                                else
+                                    SetMessage($"Setting properties for {MyBaseThing.FriendlyName}: {dict.Aggregate("", (s, kv) => s + $"{kv.Key}={kv.Value}")}", timestamp, 123002, eMsgLevel.l4_Message);
                                 if (!KeepOpen)
                                 {
                                     CloseModBus();
@@ -597,7 +602,7 @@ namespace Modbus
             tcpClient = null;
         }
 
-        public Dictionary<string, object> ReadAll()
+        public Dictionary<string, object> ReadAll(long tick)
         {
             if (MyModFieldStore == null || MyModFieldStore.TheValues.Count == 0) return null;
             var timestamp = DateTimeOffset.Now;
@@ -612,6 +617,13 @@ namespace Modbus
             {
                 try
                 {
+                    if (!IsConnected)
+                        break;
+                    if (field.ReadEvery<0 || (field.ReadEvery > 1 && (tick % field.ReadEvery) != 0))
+                    {
+                        // Skip reading this time
+                        continue;
+                    }
                     int address = field.SourceOffset + tMainOffset;
 
                     ushort[] data = null;
@@ -726,7 +738,7 @@ namespace Modbus
                     {
                         // Future: convey per-tag status similar to OPC statuscode?
                         //dict[$"[{field.PropertyName}].[Status]"] = $"##cdeError: {e.Message}";
-                        SetMessage(TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : $"Error reading tag {field.PropertyName}", DateTimeOffset.Now, 10000,eMsgLevel.l2_Warning);
+                        SetMessage(TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : $"Error {e.Message} reading tag {field.PropertyName}", DateTimeOffset.Now, 10000,eMsgLevel.l2_Warning);
                     }
                     catch { }
                 }

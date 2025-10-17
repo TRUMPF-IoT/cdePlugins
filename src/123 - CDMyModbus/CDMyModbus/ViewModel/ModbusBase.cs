@@ -1,17 +1,14 @@
-﻿using Modbus;
-using NModbusExt.Config;
+﻿using NModbusExt.Config;
 using nsCDEngine.BaseClasses;
 using nsCDEngine.Engines;
 using nsCDEngine.Engines.NMIService;
 using nsCDEngine.Engines.StorageService;
 using nsCDEngine.Engines.ThingService;
-using nsCDEngine.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using CU = nsCDEngine.BaseClasses.TheCommonUtils;
 using NMI = nsCDEngine.Engines.NMIService.TheNMIEngine;
+using TCC = nsCDEngine.Communication.TheCommCore;
 using TT = nsCDEngine.Engines.ThingService.TheThing;
 
 namespace CDMyModbus.ViewModel
@@ -53,7 +50,7 @@ namespace CDMyModbus.ViewModel
             exp.RegisterUXEvent(MyBaseThing, eUXEvents.OnClick, "ExportTemplate", (thing, obj) =>
             {
                 string testJSON = TheDeviceDescription.CreateDeviceTemplate(MyBaseThing, TemplateName, new Dictionary<string, TheStorageMirror<FieldMapping>> { { "FLDMAP_ID", MyModFieldStore } });
-
+                TCC.PublishCentral(new TSM(eEngineName.NMIService, "NMI_TOAST", $"Template {TemplateName} exported"));
                 //Move to Client Thing
                 //var temp2 = CU.DeserializeJSONStringToObject<TheDeviceDescription>(testJSON);
                 //temp2.Properties["FriendlyName"] = $"Owned by {MyBaseThing.FriendlyName}";
