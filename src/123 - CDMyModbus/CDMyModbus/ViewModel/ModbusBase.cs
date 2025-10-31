@@ -17,13 +17,6 @@ namespace CDMyModbus.ViewModel
     {
 
         [ConfigProperty]
-        public Guid TargetThing
-        {
-            get { return TT.MemberGetSafePropertyGuid(MyBaseThing); }
-            set { TT.MemberSetSafePropertyGuid(MyBaseThing, value); }
-        }
-
-        [ConfigProperty]
         public uint Interval
         {
             get { return (uint)TT.GetSafePropertyNumber(MyBaseThing, nameof(Interval)); }
@@ -43,7 +36,7 @@ namespace CDMyModbus.ViewModel
         protected List<TheFieldInfo> AddThingTarget(TheFormInfo pForm, int StartFld, int ParentFld = 1)
         {
             var lst = new List<TheFieldInfo>();
-            lst.Add(NMI.AddSmartControl(MyBaseThing, pForm, eFieldType.ThingPicker, StartFld, 2, 0, "Target Thing", nameof(TargetThing), new nmiCtrlThingPicker() { ParentFld = ParentFld }));
+            lst.Add(NMI.AddSmartControl(MyBaseThing, pForm, eFieldType.ThingPicker, StartFld, 2, 0, "Parent Thing", nameof(MyBaseThing.Parent), new nmiCtrlThingPicker() { ParentFld = ParentFld }));
             NMI.AddSmartControl(MyBaseThing, pForm, eFieldType.SingleEnded, StartFld + 1, 2, 0, "Template Name", nameof(TemplateName), new nmiCtrlSingleEnded() { ParentFld = ParentFld, NoTE = true, TileWidth=5 });
             var exp = NMI.AddSmartControl(MyBaseThing, pForm, eFieldType.TileButton, StartFld + 2, 2, 0, "Export", null, new nmiCtrlTileButton() { ParentFld = ParentFld, NoTE = true, TileWidth=1 });
             lst.Add(exp);
@@ -69,19 +62,7 @@ namespace CDMyModbus.ViewModel
 
 
 
-        protected void PushProperties(Dictionary<string, object> dict, DateTimeOffset timestamp)
-        {
 
-            MyBaseThing.SetProperties(dict, timestamp);
-            if (TargetThing != Guid.Empty)
-            {
-                var t = TheThingRegistry.GetThingByMID(TargetThing);
-                if (t != null)
-                    t.SetProperties(dict, timestamp);
-                else
-                    SetMessage("Target Thing not found", DateTimeOffset.Now, 0, eMsgLevel.l2_Warning);
-            }
-        }
 
         protected List<TT.TheSensorSubscriptionStatus> CreateModbusTags(TT.MsgSubscribeSensors subscribeRequest)
         {
@@ -149,7 +130,7 @@ namespace CDMyModbus.ViewModel
                         { nameof(FieldMapping.ConnectionType), fld.ConnectionType},
                         { nameof(FieldMapping.AllowWrite), fld.AllowWrite }
                     },
-                    TargetThing = new TheThingReference(TargetThing != null ? TheThingRegistry.GetThingByMID(TargetThing) : MyBaseThing),
+                    TargetThing = new TheThingReference(MyBaseThing.Parent != null ? TheThingRegistry.GetThingByMID(CU.CGuid(MyBaseThing.Parent)) : MyBaseThing),
                     SampleRate = (int?)this.Interval
                 },
                 Error = null,

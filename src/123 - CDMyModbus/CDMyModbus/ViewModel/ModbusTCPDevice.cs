@@ -81,7 +81,7 @@ namespace Modbus
             MyBaseThing.DeviceType = eModbusType.ModbusTCPDevice;
             MyBaseThing.EngineName = MyBaseEngine.GetBaseEngine().GetEngineName();
             MyBaseThing.SetIThingObject(this);
-            MyDevice = pModDeviceDescription;
+            MyDeviceTemplate = pModDeviceDescription;
             MyBaseThing.AddCapability(eThingCaps.SensorProvider);
         }
 
@@ -99,18 +99,17 @@ namespace Modbus
 
         public void sinkStoreReady(StoreEventArgs e)
         {
-            if (MyDevice != null)
+            if (MyDeviceTemplate != null)
             {
-                if (MyDevice!=null && MyDevice.Properties?.Count>0)
-                    MyBaseThing.SetProperties(MyDevice.Properties, DateTimeOffset.Now);
+                DTApplyDeviceTemplate();
                 if (ConnectionType == 0)
                     ConnectionType = 3;
                 if (SlaveAddress == 0)
                     SlaveAddress = 1;
-                if (MyDevice.TagMappings?.ContainsKey("FLDMAP_ID") == true)
+                if (MyDeviceTemplate.TagMappings?.ContainsKey("FLDMAP_ID") == true)
                 {
                     MyModFieldStore.FlushCache(true);
-                    foreach (var tFld in MyDevice.TagMappings["FLDMAP_ID"].FieldList)
+                    foreach (var tFld in MyDeviceTemplate.TagMappings["FLDMAP_ID"].FieldList)
                     {
                         MyModFieldStore.AddAnItem(TheDeviceTagMapping.BagToClass<FieldMapping>(tFld));
                     }
@@ -161,8 +160,6 @@ namespace Modbus
             if (string.IsNullOrEmpty(MyBaseThing.ID))
             {
                 MyBaseThing.ID = Guid.NewGuid().ToString();
-                if (MyDevice != null && MyDevice.Properties.ContainsKey("ID"))
-                    MyBaseThing.ID = TheCommonUtils.CStr(MyDevice.Properties["ID"]);
                 if (GetProperty("CustomPort", false) == null)
                     TheThing.SetSafePropertyNumber(MyBaseThing, "CustomPort", 502);
                 if (GetProperty("SlaveAddress", false) == null)
@@ -452,7 +449,6 @@ namespace Modbus
         #endregion
 
         public ModbusConfiguration ModbusConfig { get; set; }
-        public TheDeviceDescription MyDevice { get; set; }
 
         bool bReaderLoopRunning;
         object readerLoopLock = new object();
@@ -511,7 +507,7 @@ namespace Modbus
                                 MyBaseThing.StatusLevel = 1;
                                 Dictionary<string, object> dict = ReadAll(ticker++);
                                 var timestamp = DateTimeOffset.Now;
-                                PushProperties(dict, timestamp);
+                                DTPushToParent(dict, timestamp, true);
                                 if (TSM.L(eDEBUG_LEVELS.VERBOSE))
                                     SetMessage($"Reading Tags done", timestamp);
                                 else
