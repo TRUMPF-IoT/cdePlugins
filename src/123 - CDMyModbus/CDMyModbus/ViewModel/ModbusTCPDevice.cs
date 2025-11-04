@@ -210,7 +210,7 @@ namespace Modbus
                 MyBaseThing.StatusLevel = 3;
                 string error = $"Error connecting: {e.Message}";
                 MyBaseThing.LastMessage = $"{DateTimeOffset.Now}: {error}";
-                TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseThing.EngineName, error, eMsgLevel.l1_Error, e.ToString()));
+                TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(MyBaseThing.EngineName, error, eMsgLevel.l1_Error, e.ToString()));
                 IsConnected = false;
             }
             return bSuccess;
@@ -226,7 +226,7 @@ namespace Modbus
             if (!string.IsNullOrEmpty(error))
             {
                 MyBaseThing.LastMessage = $"{DateTime.Now} - Modbus Device could not be opened: {error}";
-                TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseThing.EngineName, MyBaseThing.LastMessage, eMsgLevel.l1_Error));
+                TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(MyBaseThing.EngineName, MyBaseThing.LastMessage, eMsgLevel.l1_Error));
                 return;
             }
             try
@@ -476,7 +476,7 @@ namespace Modbus
                             MyBaseThing.LastMessage = $"{DateTime.Now} - Modbus Device could not be opened: {error}";
                             if (bPreviousError)
                             {
-                                TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseThing.EngineName, MyBaseThing.LastMessage, eMsgLevel.l1_Error));
+                                TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(MyBaseThing.EngineName, MyBaseThing.LastMessage, eMsgLevel.l1_Error));
                                 MyBaseThing.StatusLevel = 3;
                             }
                             else

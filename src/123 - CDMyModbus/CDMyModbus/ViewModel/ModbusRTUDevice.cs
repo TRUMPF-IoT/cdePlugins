@@ -275,7 +275,7 @@ namespace Modbus
             if (!string.IsNullOrEmpty(error))
             {
                 MyBaseThing.LastMessage = $"{DateTime.Now} - Modbus Device could not be opened: {error}";
-                TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseThing.EngineName, MyBaseThing.LastMessage, eMsgLevel.l1_Error));
+                TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(MyBaseThing.EngineName, MyBaseThing.LastMessage, eMsgLevel.l1_Error));
                 return;
             }
             try
@@ -326,6 +326,7 @@ namespace Modbus
 
             var tConnectBlock = TheNMIEngine.AddConnectivityBlock(MyBaseThing, MyModConnectForm, 200, sinkConnect);
             tConnectBlock["Group"].SetParent(1);
+            tConnectBlock["Group"].Flags=130;
             tConnectBlock["Group"].Header = "Modbus TCP Connectivity";
             tConnectBlock["ConnectButton"].FldOrder = 280;
             tConnectBlock["DisconnectButton"].FldOrder = 290;
@@ -363,7 +364,7 @@ namespace Modbus
 
             TheNMIEngine.AddTableButtons(MyFldMapperTable);
 
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.CollapsibleGroup, 500, 2, 0x0, "Modbus Tags", null, new nmiCtrlCollapsibleGroup() { IsSmall = true, DoClose = true, TileWidth = 6, ParentFld = 1 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.CollapsibleGroup, 500, 130, 0x0, "Modbus Tags", null, new nmiCtrlCollapsibleGroup() { IsSmall = true, DoClose = true, TileWidth = 6, ParentFld = 1 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.TileButton, 510, 2, 0xF0, "Show Field Mapper", null, new nmiCtrlTileButton() { OnClick = $"TTS:{MyFldMapperTable.cdeMID}", TileWidth = 6, TileHeight = 1, NoTE = true, ParentFld = 500, Background = "blue", Foreground = "white" });
 
             SetupModbusProperties(false, null);
@@ -592,7 +593,7 @@ namespace Modbus
                             MyBaseThing.LastMessage = $"{DateTime.Now} - Modbus Device could not be opened: {error}";
                             if (bPreviousError)
                             {
-                                TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseThing.EngineName, MyBaseThing.LastMessage, eMsgLevel.l1_Error));
+                                TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(MyBaseThing.EngineName, MyBaseThing.LastMessage, eMsgLevel.l1_Error));
                                 MyBaseThing.StatusLevel = 3;
                             }
                             else
