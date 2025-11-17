@@ -28,4 +28,8 @@
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="call &quot;$(ProjectDir)..\..\..\BuildTools\signandpackage.cmd&quot; &quot;$(ProjectDir)&quot; &quot;$(TargetDir)&quot; &quot;$(TargetFileName)&quot;&#xD;&#xA;" />
   </Target> <!-- Workaround for baseintermediatepath -->
+
+  <ItemGroup>
+    <PackageReference Update="GitVersion.MsBuild" Version="6.5.0" />
+  </ItemGroup>
 </Project>

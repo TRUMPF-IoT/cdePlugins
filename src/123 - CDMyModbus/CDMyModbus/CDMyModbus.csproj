@@ -37,7 +37,7 @@
 
   <ItemGroup>
     <PackageReference Include="C-DEngine" Version="6.*-*" />
-    <PackageReference Include="System.IO.Ports" Version="9.0.7" />
+    <PackageReference Include="System.IO.Ports" Version="10.0.0" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
@@ -45,4 +45,8 @@
   </Target>
 
   <Import Project="..\NModbus4Shared\NModbus4Shared.projitems" Label="Shared" />
+
+  <ItemGroup>
+    <PackageReference Update="GitVersion.MsBuild" Version="6.5.0" />
+  </ItemGroup>
 </Project>
