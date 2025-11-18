@@ -111,10 +111,23 @@ namespace Modbus
                     MyModFieldStore.FlushCache(true);
                     foreach (var tFld in MyDeviceTemplate.TagMappings["FLDMAP_ID"].FieldList)
                     {
-                        MyModFieldStore.AddAnItem(TheDeviceTagMapping.BagToClass<FieldMapping>(tFld));
+                        var rfld = TheDeviceTagMapping.BagToClass<FieldMapping>(tFld);
+                        MyModFieldStore.AddAnItem(rfld);
                     }
                 }
             }
+            var tParent = TheThingRegistry.GetThingByMID(TheCommonUtils.CGuid(MyBaseThing.Parent));
+            if (tParent != null)
+            {
+                foreach (var tfld in MyModFieldStore.TheValues)
+                {
+                    if (tfld.AllowWrite && tParent != null)
+                    {
+                        tParent.GetProperty(tfld.PropertyName, true).RegisterEvent(eThingEvents.PropertyChanged, sinkPChanged);
+                    }
+                }
+            }
+
             if (Interval < 100)
             {
                 Interval = 100;
@@ -188,12 +201,15 @@ namespace Modbus
             try
             {
                 MyBaseThing.StatusLevel = 4; // ReaderThread will set statuslevel to 1
-                foreach (var field in MyModFieldStore.TheValues)
+                foreach (var tfld in MyModFieldStore.TheValues)
                 {
-                    var p = MyBaseThing.GetProperty(field.PropertyName, true);
+                    var p = MyBaseThing.GetProperty(tfld.PropertyName, true);
                     p.cdeM = "MODPROP";
-                    p.UnregisterEvent(eThingEvents.PropertyChangedByUX, null);
-                    p.RegisterEvent(eThingEvents.PropertyChangedByUX, sinkPChanged);
+                    if (tfld.AllowWrite)
+                    {
+                        p.UnregisterEvent(eThingEvents.PropertyChangedByUX, null);
+                        p.RegisterEvent(eThingEvents.PropertyChangedByUX, sinkPChanged);
+                    }
                 }
                 SetupModbusProperties(true, pMsg);
                 IsConnected = true;
@@ -219,21 +235,23 @@ namespace Modbus
         void sinkPChanged(cdeP prop)
         {
             if (MyBaseEngine.GetBaseEngine().GetEngineState().IsSimulated || !IsConnected) return;
-            var field = MyModFieldStore.MyMirrorCache.GetEntryByFunc(s => s.PropertyName == prop.Name);
-            if (field == null) return;
+            var fld = MyModFieldStore.MyMirrorCache.GetEntryByFunc(s => s.PropertyName == prop.Name);
+            if (fld == null || fld.AllowWrite == false || $"{prop.GetValue()}" == $"{fld.Value}") return;
 
             var error = OpenModBus();
             if (!string.IsNullOrEmpty(error))
             {
                 MyBaseThing.LastMessage = $"{DateTime.Now} - Modbus Device could not be opened: {error}";
-                TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(MyBaseThing.EngineName, MyBaseThing.LastMessage, eMsgLevel.l1_Error));
+                TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseThing.EngineName, MyBaseThing.LastMessage, eMsgLevel.l1_Error));
                 return;
             }
             try
             {
-                ushort tMainOffset = (ushort)(TheThing.GetSafePropertyNumber(MyBaseThing, "Offset") + field.SourceOffset);
+                ushort tMainOffset = (ushort)(TheThing.GetSafePropertyNumber(MyBaseThing, "Offset") + fld.SourceOffset);
                 byte tSlaveAddress = (byte)TheThing.GetSafePropertyNumber(MyBaseThing, "SlaveAddress");
-                int tReadWay = (int)TheThing.GetSafePropertyNumber(MyBaseThing, "ConnectionType");
+                int tReadWay = fld.ConnectionType;
+                if (tReadWay == 0)
+                    tReadWay = (int)TheThing.GetSafePropertyNumber(MyBaseThing, "ConnectionType");
                 switch (tReadWay)
                 {
                     case 1:
