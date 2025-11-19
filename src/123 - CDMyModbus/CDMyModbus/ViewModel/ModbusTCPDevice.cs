@@ -309,8 +309,8 @@ namespace Modbus
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.ComboBox, 270, 2, 0, "Address Type", nameof(ConnectionType), new nmiCtrlComboBox() { NoTE = true, Options = "Read Coils:1;Read Input:2;Holding Registers:3;Input Register:4;Read Multiple Register:23", DefaultValue = "3", TileWidth = 6, ParentFld = 200 });
 
             ////METHODS Form
-            MyFldMapperTable = new TheFormInfo(TheThing.GetSafeThingGuid(MyBaseThing, "FLDMAP"), eEngineName.NMIService, "Field Mapper", $"MBFLDS{MyBaseThing.ID}") { AddButtonText = "Add Tag", AddACL = 128 };
-            TheNMIEngine.AddFormToThingUX(MyBaseThing, MyFldMapperTable, "CMyTable", "Field Mapper", 1, 3, 0xF0, null, null, new nmiCtrlTableView() { Visibility=false, ShowFilterField=true });
+            MyFldMapperTable = new TheFormInfo(TheThing.GetSafeThingGuid(MyBaseThing, "FLDMAP"), eEngineName.NMIService, "Field Mapper", $"MBFLDS{MyBaseThing.ID}") { PropertyBag=new nmiCtrlTableView { ShowExportButton = true, ShowFilterField = true }, AddButtonText = "Add Tag", AddACL = 128 };
+            TheNMIEngine.AddFormToThingUX(MyBaseThing, MyFldMapperTable, "CMyTable", "Field Mapper", 1, 3, 0xF0, null, null, new nmiCtrlTableView() { Visibility=false });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.SingleEnded, 50, 2, 0, "Property Name", "PropertyName", new nmiCtrlSingleEnded() { TileWidth = 4, FldWidth = 3 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.SingleEnded, 55, 2, 0, "Current Value", "Value", new nmiCtrlSingleEnded() { TileWidth = 4, FldWidth = 3, Disabled = true, GreyCondition = "cde.CBool('%AllowWrite%')==false" });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.Number, 60, 2, 0, "Source Offset", "SourceOffset", new nmiCtrlNumber() { TileWidth = 3, FldWidth = 1 });
