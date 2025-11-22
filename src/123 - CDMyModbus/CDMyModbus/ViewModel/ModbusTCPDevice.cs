@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using CDMyModbus.ViewModel;
+using Microsoft.Build.Utilities;
 using Modbus.Data;
 using Modbus.Device;
 using NModbusExt.Config;
@@ -316,7 +317,7 @@ namespace Modbus
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.Number, 60, 2, 0, "Source Offset", "SourceOffset", new nmiCtrlNumber() { TileWidth = 3, FldWidth = 1 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.Number, 70, 2, 0, "Source Size", "SourceSize", new nmiCtrlNumber() { TileWidth = 3, FldWidth = 1, DefaultValue = "1" });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.Number, 75, 2, 0, "Scale Factor", "ScaleFactor", new nmiCtrlNumber() { TileWidth = 3, FldWidth = 1, DefaultValue = "1" });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.ComboBox, 80, 2, 0, "Source Type", "SourceType", new nmiCtrlComboBox() { Options = "float;double;int32;uint32;int64;float32;uint16;int16;utf8;byte;float-abcd;double-cdab", TileWidth = 2, FldWidth = 2 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.ComboBox, 80, 2, 0, "Source Type", "SourceType", new nmiCtrlComboBox() { Options = "float;double;int32;uint32;int64;float32;uint16;int16;utf8;byte;hex;ihex;float-abcd;double-cdab", TileWidth = 2, FldWidth = 2 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.SingleCheck, 90, 2, 0, "Allow Write", "AllowWrite", new nmiCtrlSingleEnded() { TileWidth = 1, FldWidth = 1 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.ComboBox, 95, 2, 0, "Address Type", nameof(ConnectionType), new nmiCtrlComboBox() { NoTE = true, FldWidth=2, Options = "Connection:0;Read Coils:1;Read Input:2;Holding Registers:3;Input Register:4;Read Multiple Register:23", DefaultValue = "0", TileWidth = 6, ParentFld = 200 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.Number, 96, 2, 0, "Read Skip", "ReadEvery", new nmiCtrlNumber() { TileWidth = 1, FldWidth = 1, MinValue=-1 });
@@ -633,7 +634,7 @@ namespace Modbus
                 {
                     if (!IsConnected)
                         break;
-                    if (field.ReadEvery<0 || (field.ReadEvery > 1 && (tick % field.ReadEvery) != 0))
+                    if (field.ReadEvery < 0 || (field.ReadEvery > 1 && (tick % field.ReadEvery) != 0))
                     {
                         // Skip reading this time
                         continue;
@@ -645,7 +646,7 @@ namespace Modbus
                     float scale = field.ScaleFactor;
                     if (scale == 0) scale = 1.0f;
                     var tReadWay = field.ConnectionType;
-                    if (tReadWay == 0) 
+                    if (tReadWay == 0)
                         tReadWay = myReadWay;
                     switch (tReadWay)
                     {
@@ -670,14 +671,34 @@ namespace Modbus
                             }
                             continue;
                         case 4:
-                            data = MyModMaster.ReadInputRegisters((byte)tSlaveAddress, (ushort)address, (ushort)field.SourceSize);
+                            if (field.SourceType == "ihex")
+                            {
+                                try
+                                {
+                                    // special case for byte reading from Input Registers
+                                    ushort[] rawdata = MyModMaster.ReadInputRegisters((byte)tSlaveAddress, (ushort)address, (ushort)1);
+                                    int rlen = TypeUInt16.Convert(rawdata) + 1;
+                                    data = MyModMaster.ReadInputRegisters((byte)tSlaveAddress, (ushort)address, (ushort)rlen);
+                                }
+                                catch (Exception ex)
+                                {
+                                    field.Value = $"err: {ex.Message}";
+                                    continue;
+                                }
+                            }
+                            else
+                                data = MyModMaster.ReadInputRegisters((byte)tSlaveAddress, (ushort)address, (ushort)field.SourceSize);
                             break;
                         default:
                             data = MyModMaster.ReadHoldingRegisters((byte)tSlaveAddress, (ushort)address, (ushort)field.SourceSize);
                             break;
                     }
                     if (data == null) continue;
-                    if (field.SourceType == "float")
+                    if (field.SourceType == "hex" || field.SourceType == "ihex")
+                    {
+                        dict[field.PropertyName] = ToHex(data);
+                    }
+                    else if (field.SourceType == "float")
                     {
                         var value1 = TypeFloat.Convert(data, TypeFloat.ByteOrder.CDAB);
                         dict[field.PropertyName] = value1 / scale;
@@ -758,6 +779,24 @@ namespace Modbus
                 }
             }
             return dict;
+        }
+
+        private static string ToHex(ushort[] shorts)
+        {
+            if (shorts == null) return "<null>";
+            char[] c = new char[shorts.Length * 5];
+            string hex = "0123456789ABCDEF";
+            for (int i = 0; i < shorts.Length; i++)
+            {
+                int b = (shorts[i] >> 8) & 0xFF; 
+                c[i * 5] = hex[b >> 4];
+                c[i * 5 + 1] = hex[b & 0x0F];
+                b = shorts[i] & 0xFF;
+                c[i * 5 + 2] = hex[b >> 4];
+                c[i * 5 + 3] = hex[b & 0x0F];
+                c[i * 5 + 4] = ' ';
+            }
+            return new string(c);
         }
 
         #region Simulation
