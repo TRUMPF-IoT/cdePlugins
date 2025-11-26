@@ -112,7 +112,7 @@ namespace Modbus
         {
             if (MyDeviceTemplate != null)
             {
-                DTApplyDeviceTemplate();
+                DTApplyDeviceTemplate(3);
                 if (ConnectionType == 0)
                     ConnectionType = 3;
                 if (SlaveAddress==0)
