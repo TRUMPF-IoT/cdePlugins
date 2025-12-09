@@ -429,7 +429,7 @@ namespace CDMyThingProvisioning
                                         }
                                     }
                                 }
-                                TheBaseAssets.MySYSLOG.WriteToLog(175003, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseThing.EngineName, "Finished script step", eMsgLevel.l3_ImportantMessage, TheCommonUtils.SerializeObjectToJSONString(new Dictionary<String, object> {
+                                TheBaseAssets.MySYSLOG.WriteToLog(175003, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(MyBaseThing.EngineName, "Finished script step", eMsgLevel.l3_ImportantMessage, TheCommonUtils.SerializeObjectToJSONString(new Dictionary<String, object> {
                                     { "Script", script.Name },
                                     { "Step", stepNumber },
                                     { "Message", messageType },
@@ -442,7 +442,7 @@ namespace CDMyThingProvisioning
                             }
                             else
                             {
-                                TheBaseAssets.MySYSLOG.WriteToLog(175004, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseThing.EngineName, "Error in script step: no outputs found in response", eMsgLevel.l1_Error, TheCommonUtils.SerializeObjectToJSONString(new Dictionary<String, object> {
+                                TheBaseAssets.MySYSLOG.WriteToLog(175004, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(MyBaseThing.EngineName, "Error in script step: no outputs found in response", eMsgLevel.l1_Error, TheCommonUtils.SerializeObjectToJSONString(new Dictionary<String, object> {
                                     { "Script", script.Name },
                                     { "Step", stepNumber },
                                     { "Message", messageType },
