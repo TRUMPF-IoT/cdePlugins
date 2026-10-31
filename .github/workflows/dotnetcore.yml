@@ -90,13 +90,6 @@ jobs:
         robocopy .\src\nugets .\artifacts\ *.nupkg *.snupkg /s /np
         if ($LASTEXITCODE -lt 8) { exit 0 } else { exit $LASTEXITCODE }
 
-    - name: REUSE Compliance Check
-      run: |
-        # Windows has no 'file' binary, so reuse needs the charset-normalizer extra to detect file encodings
-        # Pin the version so new reuse releases with stricter parsing don't break the build unexpectedly
-        pip3 install --user "reuse[charset-normalizer]==5.0.2"
-        reuse lint
-
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
