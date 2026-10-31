@@ -97,7 +97,11 @@ jobs:
         path: ./artifacts
 
     - name: REUSE Compliance Check
-      uses: fsfe/reuse-action@v5
+      run: |
+        # Windows has no 'file' binary, so reuse needs the charset-normalizer extra to detect file encodings
+        # Pin the version so new reuse releases with stricter parsing don't break the build unexpectedly
+        pip3 install --user "reuse[charset-normalizer]==5.0.2"
+        reuse lint
 
     - name: Push NuGet Packages
       # Only publish if the commit was tagged
