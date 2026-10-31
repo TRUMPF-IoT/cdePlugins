@@ -83,12 +83,12 @@ jobs:
     - name: Gather artifacts
       run: |
         robocopy .\bin\ .\artifacts\ *.CDEX *.CDEP *.nupkg *.snupkg *.msi /s /np
-        if ($LASTEXITCODE -le 1) { exit 0 } else { exit $LASTEXITCODE }
+        if ($LASTEXITCODE -lt 8) { exit 0 } else { exit $LASTEXITCODE }
 
     - name: Gather nuget artifacts
       run: |
         robocopy .\src\nugets .\artifacts\ *.nupkg *.snupkg /s /np
-        if ($LASTEXITCODE -le 1) { exit 0 } else { exit $LASTEXITCODE }
+        if ($LASTEXITCODE -lt 8) { exit 0 } else { exit $LASTEXITCODE }
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
