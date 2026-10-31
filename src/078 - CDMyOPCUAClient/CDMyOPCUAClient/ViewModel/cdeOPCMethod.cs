@@ -9,6 +9,7 @@ using nsCDEngine.Engines.NMIService;
 using nsCDEngine.Engines.ThingService;
 using nsCDEngine.ViewModels;
 using Opc.Ua;
+using Opc.Ua.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -388,7 +389,7 @@ namespace CDMyOPCUAClient.ViewModel
 #if OLD_UA
                                     outputArguments = m_Method.MyOPCServer.m_session.CallWithTimeout(m_Method.ParentId, m_Method.TagRef, MethodCallTimeout, tArgs);
 #else
-                                    outputArguments = m_Method.MyOPCServer.m_session.Call(m_Method.ParentId, m_Method.TagRef, tArgs); //CM: C-labs extension: .CallWithTimeout(m_Method.ParentId, m_Method.TagRef, MethodCallTimeout, tArgs);
+                                    outputArguments = m_Method.MyOPCServer.m_session.CallAsync(m_Method.ParentId, m_Method.TagRef, System.Threading.CancellationToken.None, tArgs).GetAwaiter().GetResult(); //CM: C-labs extension: .CallWithTimeout(m_Method.ParentId, m_Method.TagRef, MethodCallTimeout, tArgs);
 #endif
                                     if (cmd[0] != nameof(MsgOPCUAMethodCall))
                                     {

@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using CDMyModbus.ViewModel;
-using Microsoft.Build.Utilities;
 using Modbus.Data;
 using Modbus.Device;
 using NModbusExt.Config;

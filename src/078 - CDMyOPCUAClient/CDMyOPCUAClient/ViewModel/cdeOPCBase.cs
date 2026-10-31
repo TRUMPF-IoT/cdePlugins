@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.IO;
+using System.Threading;
 using CDMyOPCUAClient.Contracts;
 
 namespace CDMyOPCUAClient.ViewModel
@@ -210,7 +211,7 @@ namespace CDMyOPCUAClient.ViewModel
                 subscription.RemoveItem(existingItem);
                 if (bApplyChanges)
                 {
-                    subscription.ApplyChanges();
+                    subscription.ApplyChangesAsync(CancellationToken.None).GetAwaiter().GetResult();
                 }
             }
         }
@@ -364,10 +365,10 @@ namespace CDMyOPCUAClient.ViewModel
             if (bApplySubscription)
             {
 #if OLD_UA
-                var items = subscription.ApplyChanges();
+                var items = subscription.ApplyChangesAsync(CancellationToken.None).GetAwaiter().GetResult();
                 if (!items.Contains(MyMonitoredItem))
 #else
-                subscription.ApplyChanges();
+                subscription.ApplyChangesAsync(CancellationToken.None).GetAwaiter().GetResult();
                 if (!subscription.MonitoredItems.Contains(MyMonitoredItem))
 #endif
                 {
@@ -435,7 +436,7 @@ namespace CDMyOPCUAClient.ViewModel
                 if (subscription != null)
                 {
                     subscription.RemoveItem(MyMonitoredItem);
-                    subscription.ApplyChanges(); // TODO Report any errors
+                    subscription.ApplyChangesAsync(CancellationToken.None).GetAwaiter().GetResult(); // TODO Report any errors
                 }
                 MyMonitoredItem = null;
                 return true;

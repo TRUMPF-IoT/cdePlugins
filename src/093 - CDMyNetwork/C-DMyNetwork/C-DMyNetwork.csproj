@@ -4,7 +4,7 @@
  SPDX-License-Identifier: MPL-2.0
  -->
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
         <Version>6.104.0</Version>
         <Authors>Chris Muench</Authors>
         <Company>C-Labs</Company>
@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-	  <PackageReference Include="C-DEngine" Version="6.*-*" />
+	  <PackageReference Include="C-DEngine" Version="7.*" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
@@ -30,6 +30,6 @@
   </Target> <!-- Workaround for baseintermediatepath -->
 
   <ItemGroup>
-    <PackageReference Update="GitVersion.MsBuild" Version="6.5.0" />
+    <PackageReference Update="GitVersion.MsBuild" Version="5.12.0" />
   </ItemGroup>
 </Project>

@@ -11,6 +11,7 @@ using Opc.Ua.Schema.Binary;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading;
 using System.Linq;
 using System.Text;
 
@@ -616,16 +617,14 @@ namespace CDMyOPCUAClient.ViewModel
                 //}
             }
             // read current value.
-            DataValueCollection results = null;
-            DiagnosticInfoCollection diagnosticInfos = null;
-
-            session.Read(
+            ReadResponse readResponse = session.ReadAsync(
                 null,
                 0,
                 TimestampsToReturn.Both,
                 nodesToRead,
-                out results,
-                out diagnosticInfos);
+                CancellationToken.None).GetAwaiter().GetResult();
+            DataValueCollection results = readResponse.Results;
+            DiagnosticInfoCollection diagnosticInfos = readResponse.DiagnosticInfos;
 
             ClientBase.ValidateResponse(results, nodesToRead);
             ClientBase.ValidateDiagnosticInfos(diagnosticInfos, nodesToRead);
@@ -656,14 +655,12 @@ namespace CDMyOPCUAClient.ViewModel
                 valuesToWrite.Add(valueToWrite);
 
                 // write current value.
-                StatusCodeCollection results = null;
-                DiagnosticInfoCollection diagnosticInfos = null;
-
-                MyOPCServer.m_session.Write(
+                WriteResponse writeResponse = MyOPCServer.m_session.WriteAsync(
                     null,
                     valuesToWrite,
-                    out results,
-                    out diagnosticInfos);
+                    CancellationToken.None).GetAwaiter().GetResult();
+                StatusCodeCollection results = writeResponse.Results;
+                DiagnosticInfoCollection diagnosticInfos = writeResponse.DiagnosticInfos;
 
                 ClientBase.ValidateResponse(results, valuesToWrite);
                 ClientBase.ValidateDiagnosticInfos(diagnosticInfos, valuesToWrite);
@@ -1169,17 +1166,16 @@ namespace CDMyOPCUAClient.ViewModel
                 //ReferenceDescriptionCollection descriptions = ClientUtils.Browse(MyOPCServer.m_session, new BrowseDescriptionCollection { new BrowseDescription { NodeId = (NodeId) binaryEncoding.NodeId } }, false);
 
                 ReferenceDescription description;
-                DataDictionary dataDictionary;
                 try
                 {
-                    description = m_session.FindDataDescription(typeNodeId);
+                    description = m_session.FindDataDescriptionAsync(typeNodeId).GetAwaiter().GetResult();
                     //var description = MyOPCServer.m_session.FindDataDescription((NodeId)binaryEncoding.NodeId);
 
                     ////var descriptionNode = MyOPCServer.m_session.ReadNode((NodeId) description.NodeId);
 
                     // This does all we need, jsut doesn't expose the validator
                     //var dataDictionary = MyOPCServer.m_session.FindDataDictionary(typeOrValueNodeId);
-                    dataDictionary = m_session.FindDataDictionary((NodeId)description.NodeId).Result;
+                    // OPC UA 1.5.378+: DataDictionary / ISession.FindDataDictionary were removed from the stack (only consumed below under #if OLD_UA).
                 }
                 catch
                 {

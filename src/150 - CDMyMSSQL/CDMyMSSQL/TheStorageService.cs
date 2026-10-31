@@ -947,7 +947,7 @@ namespace CDMyMSSQLStorage
 
         private string ConvertSFIToPropertyBagQuery(string SQLFilter, Type myType, long storeID)
         {
-            string NewFilter = string.Copy(SQLFilter);
+            string NewFilter = SQLFilter;
             if (!string.IsNullOrEmpty(SQLFilter) && myType == typeof(TheThing))
             {
                 NewFilter = "";

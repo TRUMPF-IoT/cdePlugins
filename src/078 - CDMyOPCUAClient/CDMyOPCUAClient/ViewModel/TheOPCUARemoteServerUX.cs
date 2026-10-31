@@ -338,13 +338,13 @@ namespace CDMyOPCUAClient.ViewModel
                                         if (count % 5000 == 0)
                                         {
                                             //results.AddRange( //CM: removed as Nothing is done with "results"
-                                            subscription.ApplyChanges();
+                                            subscription.ApplyChangesAsync(System.Threading.CancellationToken.None).GetAwaiter().GetResult();
                                         }
                                     }
                                 }
                             }
                             //CM: see above results.AddRange(
-                            subscription.ApplyChanges();
+                            subscription.ApplyChangesAsync(System.Threading.CancellationToken.None).GetAwaiter().GetResult();
                             LastMessage += $" - Subscribing of {count} tags done at {TheCommonUtils.GetDateTimeString(DateTimeOffset.Now, pMsg.CurrentUserID)}";
                             TheCommCore.PublishToOriginator(pMsg.Message, new TSM(eEngineName.NMIService, "NMI_TOAST", LastMessage));
                         }

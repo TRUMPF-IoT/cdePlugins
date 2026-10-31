@@ -298,7 +298,7 @@ namespace CDMyOPCUAClient.ViewModel
                 TheBaseAssets.MySYSLOG.WriteToLog(78102, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(serverForLogging.GetBaseThing()?.EngineName, $"Refreshing conditions for {serverForLogging.GetLogAddress()}", eMsgLevel.l6_Debug));
                 try
                 {
-                    subscription.ConditionRefresh();
+                    subscription.ConditionRefreshAsync(System.Threading.CancellationToken.None).GetAwaiter().GetResult();
                     TheBaseAssets.MySYSLOG.WriteToLog(78102, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(serverForLogging.GetBaseThing()?.EngineName, $"Requested condition refresh for {serverForLogging.GetLogAddress()}", eMsgLevel.l6_Debug));
                 }
                 catch (Exception e)

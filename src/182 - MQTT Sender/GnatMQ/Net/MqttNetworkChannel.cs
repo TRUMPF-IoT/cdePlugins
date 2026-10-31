@@ -437,11 +437,10 @@ namespace uPLibrary.Networking.M2Mqtt
                 case MqttSslProtocols.None:
                     return SslProtocols.None;
                 case MqttSslProtocols.SSLv3:
-                    return SslProtocols.Ssl3;
                 case MqttSslProtocols.TLSv1_0:
-                    return SslProtocols.Tls;
                 case MqttSslProtocols.TLSv1_1:
-                    return SslProtocols.Tls11;
+                    // SSL3/TLS1.0/TLS1.1 are deprecated and unsupported on modern .NET; defer to OS defaults (TLS1.2+)
+                    return SslProtocols.None;
                 case MqttSslProtocols.TLSv1_2:
                     return SslProtocols.Tls12;
                 default:

@@ -32,6 +32,7 @@ using System.Text;
 using System.Collections.Generic;
 using Opc.Ua;
 using Opc.Ua.Client;
+using System.Threading;
 
 namespace Opc.Ua.Client.Controls
 {
@@ -209,7 +210,7 @@ namespace Opc.Ua.Client.Controls
 
                 case Attributes.DataType:
                 {
-                    return session.NodeCache.GetDisplayText(value.Value as NodeId);
+                    return session.NodeCache.GetDisplayTextAsync(value.Value as NodeId).GetAwaiter().GetResult();
                 }
 
                 case Attributes.ValueRank:
@@ -275,9 +276,9 @@ namespace Opc.Ua.Client.Controls
             endpointConfiguration.OperationTimeout = 5000;
 
             // Connect to the local discovery server and find the available servers.
-            using (DiscoveryClient client = DiscoveryClient.Create(new Uri("opc.tcp://localhost:4840"), endpointConfiguration))
+            using (DiscoveryClient client = DiscoveryClient.CreateAsync(configuration, new Uri("opc.tcp://localhost:4840"), endpointConfiguration).GetAwaiter().GetResult())
             {
-                ApplicationDescriptionCollection servers = client.FindServers(null);
+                ApplicationDescriptionCollection servers = client.FindServersAsync(null).GetAwaiter().GetResult();
 
                 // populate the drop down list with the discovery URLs for the available servers.
                 for (int ii = 0; ii < servers.Count; ii++)
@@ -342,9 +343,9 @@ namespace Opc.Ua.Client.Controls
             EndpointDescription selectedEndpoint = null;
 
             // Connect to the server's discovery endpoint and find the available configuration.
-            using (DiscoveryClient client = DiscoveryClient.Create(uri, configuration))
+            using (DiscoveryClient client = DiscoveryClient.CreateAsync(uri, configuration, (ITelemetryContext)null).GetAwaiter().GetResult())
             {
-                EndpointDescriptionCollection endpoints = client.GetEndpoints(null);
+                EndpointDescriptionCollection endpoints = client.GetEndpointsAsync(null).GetAwaiter().GetResult();
 
                 // select the best endpoint to use based on the selected URL and the UseSecurity checkbox. 
                 for (int ii = 0; ii < endpoints.Count; ii++)
@@ -455,16 +456,14 @@ namespace Opc.Ua.Client.Controls
                 while (nodesToBrowse.Count > 0)
                 {
                     // start the browse operation.
-                    BrowseResultCollection results = null;
-                    DiagnosticInfoCollection diagnosticInfos = null;
-
-                    session.Browse(
+                    BrowseResponse browseResponse = session.BrowseAsync(
                         null,
                         view,
                         5000, // MarkusH 3/20/2015 - fails with Message Size exception others
                         nodesToBrowse,
-                        out results,
-                        out diagnosticInfos);
+                        CancellationToken.None).GetAwaiter().GetResult();
+                    BrowseResultCollection results = browseResponse.Results;
+                    DiagnosticInfoCollection diagnosticInfos = browseResponse.DiagnosticInfos;
 
                     ClientBase.ValidateResponse(results, nodesToBrowse);
                     ClientBase.ValidateDiagnosticInfos(diagnosticInfos, nodesToBrowse);
@@ -509,12 +508,13 @@ namespace Opc.Ua.Client.Controls
                     while (continuationPoints.Count > 0)
                     {
                         // continue browse operation.
-                        session.BrowseNext(
+                        BrowseNextResponse nextResponse = session.BrowseNextAsync(
                             null,
                             false,
                             continuationPoints,
-                            out results,
-                            out diagnosticInfos);
+                            CancellationToken.None).GetAwaiter().GetResult();
+                        results = nextResponse.Results;
+                        diagnosticInfos = nextResponse.DiagnosticInfos;
 
                         ClientBase.ValidateResponse(results, continuationPoints);
                         ClientBase.ValidateDiagnosticInfos(diagnosticInfos, continuationPoints);
@@ -596,16 +596,14 @@ namespace Opc.Ua.Client.Controls
                 nodesToBrowse.Add(nodeToBrowse);
 
                 // start the browse operation.
-                BrowseResultCollection results = null;
-                DiagnosticInfoCollection diagnosticInfos = null;
-
-                session.Browse(
+                BrowseResponse browseResponse = session.BrowseAsync(
                     null,
                     view,
                     0,
                     nodesToBrowse,
-                    out results,
-                    out diagnosticInfos);
+                    CancellationToken.None).GetAwaiter().GetResult();
+                BrowseResultCollection results = browseResponse.Results;
+                DiagnosticInfoCollection diagnosticInfos = browseResponse.DiagnosticInfos;
 
                 ClientBase.ValidateResponse(results, nodesToBrowse);
                 ClientBase.ValidateDiagnosticInfos(diagnosticInfos, nodesToBrowse);
@@ -635,12 +633,13 @@ namespace Opc.Ua.Client.Controls
                     ByteStringCollection continuationPoints = new ByteStringCollection();
                     continuationPoints.Add(results[0].ContinuationPoint);
 
-                    session.BrowseNext(
+                    BrowseNextResponse nextResponse = session.BrowseNextAsync(
                         null,
                         false,
                         continuationPoints,
-                        out results,
-                        out diagnosticInfos);
+                        CancellationToken.None).GetAwaiter().GetResult();
+                    results = nextResponse.Results;
+                    diagnosticInfos = nextResponse.DiagnosticInfos;
 
                     ClientBase.ValidateResponse(results, continuationPoints);
                     ClientBase.ValidateDiagnosticInfos(diagnosticInfos, continuationPoints);
@@ -761,14 +760,13 @@ namespace Opc.Ua.Client.Controls
             }
 
             // make the call to the server.
-            BrowsePathResultCollection results;
-            DiagnosticInfoCollection diagnosticInfos;
-
-            ResponseHeader responseHeader = session.TranslateBrowsePathsToNodeIds(
+            TranslateBrowsePathsToNodeIdsResponse translateResponse = session.TranslateBrowsePathsToNodeIdsAsync(
                 null,
                 browsePaths,
-                out results,
-                out diagnosticInfos);
+                CancellationToken.None).GetAwaiter().GetResult();
+            ResponseHeader responseHeader = translateResponse.ResponseHeader;
+            BrowsePathResultCollection results = translateResponse.Results;
+            DiagnosticInfoCollection diagnosticInfos = translateResponse.DiagnosticInfos;
 
             // ensure that the server returned valid results.
             Session.ValidateResponse(results, browsePaths);
@@ -1133,16 +1131,14 @@ namespace Opc.Ua.Client.Controls
                 }
 
                 // start the browse operation.
-                BrowseResultCollection results = null;
-                DiagnosticInfoCollection diagnosticInfos = null;
-
-                session.Browse(
+                BrowseResponse browseResponse = session.BrowseAsync(
                     null,
                     null,
                     1,
                     nodesToBrowse,
-                    out results,
-                    out diagnosticInfos);
+                    CancellationToken.None).GetAwaiter().GetResult();
+                BrowseResultCollection results = browseResponse.Results;
+                DiagnosticInfoCollection diagnosticInfos = browseResponse.DiagnosticInfos;
 
                 ClientBase.ValidateResponse(results, nodesToBrowse);
                 ClientBase.ValidateDiagnosticInfos(diagnosticInfos, nodesToBrowse);
@@ -1181,12 +1177,13 @@ namespace Opc.Ua.Client.Controls
                 // release continuation points.
                 if (continuationPoints.Count > 0)
                 {
-                    session.BrowseNext(
+                    BrowseNextResponse nextResponse = session.BrowseNextAsync(
                         null,
                         true,
                         continuationPoints,
-                        out results,
-                        out diagnosticInfos);
+                        CancellationToken.None).GetAwaiter().GetResult();
+                    results = nextResponse.Results;
+                    diagnosticInfos = nextResponse.DiagnosticInfos;
 
                     ClientBase.ValidateResponse(results, nodesToBrowse);
                     ClientBase.ValidateDiagnosticInfos(diagnosticInfos, nodesToBrowse);
@@ -1234,16 +1231,14 @@ namespace Opc.Ua.Client.Controls
                 }
 
                 // start the browse operation.
-                DataValueCollection results = null;
-                DiagnosticInfoCollection diagnosticInfos = null;
-
-                session.Read(
+                ReadResponse readResponse = session.ReadAsync(
                     null,
                     0,
                     TimestampsToReturn.Neither,
                     nodesToRead,
-                    out results,
-                    out diagnosticInfos);
+                    CancellationToken.None).GetAwaiter().GetResult();
+                DataValueCollection results = readResponse.Results;
+                DiagnosticInfoCollection diagnosticInfos = readResponse.DiagnosticInfos;
 
                 ClientBase.ValidateResponse(results, nodesToRead);
                 ClientBase.ValidateDiagnosticInfos(diagnosticInfos, nodesToRead);
@@ -1260,7 +1255,7 @@ namespace Opc.Ua.Client.Controls
                     if (!NodeId.IsNull(instance.DataType))
                     {
                         instance.BuiltInType = DataTypes.GetBuiltInType(instance.DataType, session.TypeTree);
-                        instance.DataTypeDisplayText = session.NodeCache.GetDisplayText(instance.DataType);
+                        instance.DataTypeDisplayText = session.NodeCache.GetDisplayTextAsync(instance.DataType).GetAwaiter().GetResult();
 
                         if (instance.ValueRank >= 0)
                         {

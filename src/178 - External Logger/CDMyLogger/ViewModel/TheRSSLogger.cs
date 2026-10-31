@@ -554,10 +554,10 @@ namespace CDMyLogger.ViewModel
                 if (!String.IsNullOrEmpty(_webMaster))
                     writer.WriteElementString("webMaster", _webMaster);
 
-                if (_pubDate != null && _pubDate != DateTimeOffset.MinValue && _pubDate != DateTimeOffset.MaxValue)
+                if (_pubDate != DateTimeOffset.MinValue && _pubDate != DateTimeOffset.MaxValue)
                     writer.WriteElementString("pubDate", _pubDate.ToString("r"));
 
-                if (_lastBuildDate != null && _lastBuildDate != DateTimeOffset.MinValue && _lastBuildDate != DateTimeOffset.MaxValue)
+                if (_lastBuildDate != DateTimeOffset.MinValue && _lastBuildDate != DateTimeOffset.MaxValue)
                     writer.WriteElementString("lastBuildDate", _lastBuildDate.ToString("r"));
 
                 if (!String.IsNullOrEmpty(_category))
@@ -658,7 +658,7 @@ namespace CDMyLogger.ViewModel
                     writer.WriteEndElement();
                 }
 
-                if (pubDate != null && pubDate != DateTimeOffset.MinValue && pubDate != DateTimeOffset.MaxValue)
+                if (pubDate != DateTimeOffset.MinValue && pubDate != DateTimeOffset.MaxValue)
                     writer.WriteElementString("pubDate", pubDate.ToUniversalTime().ToString("r"));
 
                 if (!String.IsNullOrEmpty(source))

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net10.0</TargetFrameworks>
     <AssemblyName>GnatMQ</AssemblyName>
     <RootNamespace>uPLibrary.Networking.M2Mqtt</RootNamespace>
     <PackageId>GnatMQ</PackageId>

@@ -4,7 +4,7 @@
  -->
 <Project Sdk="Microsoft.NET.Sdk" >
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Authors>Chris Muench</Authors>
     <Company>C-Labs</Company>
     <Description>Image management for ($(TargetFramework))</Description>
@@ -24,7 +24,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-	  <PackageReference Include="C-DEngine" Version="6.*-*" />
+	  <PackageReference Include="C-DEngine" Version="7.*" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

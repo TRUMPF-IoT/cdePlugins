@@ -5,7 +5,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>CDMyOPCUAClient</AssemblyName>
     <RootNamespace>CDMyOPCUAClient</RootNamespace>
     <PackageId>CDMyOPCUAClient</PackageId>
@@ -39,13 +39,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="C-DEngine" Version="6.*-*" />
+    <PackageReference Include="C-DEngine" Version="7.*" />
     <PackageReference Include="cdeCommonMessageContractsShared" Version="6.*-*" IncludeAssets="ContentFiles" />
     <PackageReference Include="cdeOPCUAClientContractsShared" Version="6.*-*" IncludeAssets="ContentFiles" />
     <PackageReference Include="cdeThingMatcherShared" Version="6.*-*" IncludeAssets="ContentFiles" />
-    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Client" Version="1.5.374.158" />
-    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Configuration" Version="1.5.374.158" />
-    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Core" Version="1.5.374.158" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Client" Version="1.5.378.182" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Configuration" Version="1.5.378.182" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Core" Version="1.5.378.182" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

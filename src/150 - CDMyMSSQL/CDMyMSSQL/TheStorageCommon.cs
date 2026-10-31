@@ -33,7 +33,7 @@ namespace CDMyMSSQLStorage
 
             MyBaseEngine.GetEngineState().IsAllowedUnscopedProcessing = true;
             MyBaseEngine.SetPluginInfo("Distributed Storage Service for MS-SQL", 0, null, "toplogo-150.png", "C-Labs", "http://www.c-labs.com", new List<string>() { "IStorageService", "Service" });
-            MyBaseEngine.AddManifestFiles(new List<string> { "System.Data.SqlClient.dll" });
+            MyBaseEngine.AddManifestFiles(new List<string> { "Microsoft.Data.SqlClient.dll" });
         }
         #endregion
 

@@ -12,6 +12,7 @@ using nsCDEngine.Engines.NMIService;
 using nsCDEngine.Engines.ThingService;
 using CDMyOPCUAClient.ViewModel;
 using Opc.Ua;
+using Microsoft.Extensions.Logging;
 using System.Globalization;
 
 namespace CDMyOPCUAClient
@@ -90,19 +91,11 @@ namespace CDMyOPCUAClient
             MyBaseEngine.RegisterEvent(eEngineEvents.ThingRegistered, sinkRegistered);
             MyBaseEngine.RegisterEvent(eEngineEvents.ThingDeleted, sinkRegistered);
 
-            if (EnableTracing)
-            {
-                Opc.Ua.Utils.SetTraceOutput(Utils.TraceOutput.FileOnly);
-                Opc.Ua.Utils.SetTraceLog("opcclient.log", false);
-            }
-            else
-            {
-                Opc.Ua.Utils.SetTraceOutput(Utils.TraceOutput.Off);
-            }
-            if (EnableTracingToLog)
-            {
-                Opc.Ua.Utils.Tracing.TraceEventHandler += OnOpcLibraryTrace;
-            }
+            // OPC UA 1.5.378+: Utils.SetTraceOutput/SetTraceLog/Tracing are obsolete; the stack logs through an ITelemetryContext (Microsoft.Extensions.Logging).
+            Microsoft.Extensions.Logging.ILogger stackLogger = (EnableTracing || EnableTracingToLog)
+                ? new OpcStackLogger(this, EnableTracing ? "opcclient.log" : null, EnableTracingToLog)
+                : Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance;
+            OpcTelemetry = DefaultTelemetry.Create(builder => builder.AddProvider(new OpcStackLoggerProvider(stackLogger)));
             TheCommonUtils.cdeRunAsync("Init OPC Servers", true, (a) =>
             {
                 InitServers();
@@ -113,39 +106,67 @@ namespace CDMyOPCUAClient
             return false;
         }
 
-        private void OnOpcLibraryTrace(object sender, TraceEventArgs e)
+        /// <summary>
+        /// Telemetry context handed to all OPC UA stack objects created by this plugin (sessions, validators, reconnect handlers).
+        /// </summary>
+        internal ITelemetryContext OpcTelemetry { get; private set; }
+
+        private sealed class OpcStackLoggerProvider : Microsoft.Extensions.Logging.ILoggerProvider
         {
-            try
+            private readonly Microsoft.Extensions.Logging.ILogger _logger;
+            public OpcStackLoggerProvider(Microsoft.Extensions.Logging.ILogger logger) { _logger = logger; }
+            public Microsoft.Extensions.Logging.ILogger CreateLogger(string categoryName) => _logger;
+            public void Dispose() { }
+        }
+
+        /// <summary>
+        /// Bridges OPC UA stack logging (Microsoft.Extensions.Logging) to the C-DEngine SYSLOG and/or a trace file.
+        /// The OPC UA stack passes its trace mask as the EventId, which keeps the OPCTraceMask filter semantics.
+        /// </summary>
+        private sealed class OpcStackLogger : Microsoft.Extensions.Logging.ILogger
+        {
+            private readonly cdeOPCUaClient _owner;
+            private readonly string _traceFile;
+            private readonly bool _toSysLog;
+            private readonly object _fileLock = new object();
+
+            public OpcStackLogger(cdeOPCUaClient owner, string traceFile, bool toSysLog)
             {
-                var mask = OPCTraceMask;
-                if (mask == 0 || ((e.TraceMask & mask) != 0))
-                {
-                    string output;
-                    if (e.Arguments != null)
-                    {
-                        try
-                        {
-                            output = String.Format(CultureInfo.InvariantCulture, e.Format, e.Arguments);
-                        }
-                        catch
-                        {
-                            output = e.Format;
-                        }
-                    }
-                    else
-                    {
-                        output = e.Format;
-                    }
-                    if (!string.IsNullOrEmpty(e.Message))
-                    {
-                        output = $"{e.Message}: {output}";
-                    }
-                    TheBaseAssets.MySYSLOG.WriteToLog(78008, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseThing.EngineName, $"OPC Trace: {e.TraceMask:X04} - {output}", e.Exception != null ? eMsgLevel.l1_Error : eMsgLevel.l6_Debug, e.Exception?.ToString()));
-                }
+                _owner = owner;
+                _traceFile = traceFile;
+                _toSysLog = toSysLog;
             }
-            catch (Exception ex)
+
+            public IDisposable BeginScope<TState>(TState state) where TState : notnull => null;
+
+            public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel) => logLevel != Microsoft.Extensions.Logging.LogLevel.None;
+
+            public void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel, Microsoft.Extensions.Logging.EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
             {
-                TheBaseAssets.MySYSLOG.WriteToLog(78008, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseThing.EngineName, $"OPC Client Library Trace: Error processing event", eMsgLevel.l1_Error, ex.ToString()));
+                try
+                {
+                    var mask = _owner.OPCTraceMask;
+                    if (mask != 0 && (eventId.Id & mask) == 0)
+                    {
+                        return;
+                    }
+                    string output = formatter != null ? formatter(state, exception) : state?.ToString();
+                    if (_toSysLog)
+                    {
+                        TheBaseAssets.MySYSLOG.WriteToLog(78008, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(_owner.MyBaseThing.EngineName, $"OPC Trace: {eventId.Id:X04} - {output}", exception != null || logLevel >= Microsoft.Extensions.Logging.LogLevel.Error ? eMsgLevel.l1_Error : eMsgLevel.l6_Debug, exception?.ToString()));
+                    }
+                    if (_traceFile != null)
+                    {
+                        lock (_fileLock)
+                        {
+                            System.IO.File.AppendAllText(_traceFile, $"{DateTime.UtcNow:O} [{logLevel}] {eventId.Id:X04} {output}{(exception != null ? Environment.NewLine + exception : string.Empty)}{Environment.NewLine}");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    TheBaseAssets.MySYSLOG.WriteToLog(78008, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(_owner.MyBaseThing.EngineName, $"OPC Client Library Trace: Error processing event", eMsgLevel.l1_Error, ex.ToString()));
+                }
             }
         }
 
@@ -197,9 +218,9 @@ namespace CDMyOPCUAClient
                 configuration.OperationTimeout = 20000;
 
                 // Connect to the local discovery server and find the available servers.
-                using (DiscoveryClient client = DiscoveryClient.Create(new Uri(Utils.Format("opc.tcp://{0}:4840", MyBaseThing.Address)), configuration))
+                using (DiscoveryClient client = DiscoveryClient.CreateAsync(new Uri(Utils.Format("opc.tcp://{0}:4840", MyBaseThing.Address)), configuration, OpcTelemetry).GetAwaiter().GetResult())
                 {
-                    ApplicationDescriptionCollection servers = client.FindServers(null);
+                    ApplicationDescriptionCollection servers = client.FindServersAsync(null).GetAwaiter().GetResult();
 
                     // populate the drop down list with the discovery URLs for the available servers.
                     for (int ii = 0; ii < servers.Count; ii++)
