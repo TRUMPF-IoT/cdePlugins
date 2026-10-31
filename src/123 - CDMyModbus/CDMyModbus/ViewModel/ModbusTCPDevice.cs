@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using CDMyModbus.ViewModel;
+using Modbus.Data;
 using Modbus.Device;
 using NModbusExt.Config;
 using NModbusExt.DataTypes;
@@ -42,12 +43,7 @@ namespace Modbus
             set { TheThing.SetSafePropertyBool(MyBaseThing, nameof(KeepOpen), value); }
         }
 
-        [ConfigProperty]
-        uint Interval
-        {
-            get { return (uint)TheThing.GetSafePropertyNumber(MyBaseThing, nameof(Interval)); }
-            set { TheThing.SetSafePropertyNumber(MyBaseThing, nameof(Interval), value); }
-        }
+
         [ConfigProperty]
         uint CustomPort
         {
@@ -73,21 +69,19 @@ namespace Modbus
             set { TheThing.SetSafePropertyNumber(MyBaseThing, nameof(ConnectionType), value); }
         }
 
-        private IBaseEngine MyBaseEngine;
 
-        public ModbusTCPDevice(TheThing tBaseThing, ICDEPlugin pPluginBase, DeviceDescription pModDeviceDescription)
+
+        public ModbusTCPDevice(TheThing tBaseThing, ICDEPlugin pPluginBase, TheDeviceDescription pModDeviceDescription)
         {
             if (tBaseThing != null)
                 MyBaseThing = tBaseThing;
             else
                 MyBaseThing = new TheThing();
-            MyBaseEngine = pPluginBase.GetBaseEngine();
+            MyBaseEngine = pPluginBase;
             MyBaseThing.DeviceType = eModbusType.ModbusTCPDevice;
-            MyBaseThing.EngineName = MyBaseEngine.GetEngineName();
+            MyBaseThing.EngineName = MyBaseEngine.GetBaseEngine().GetEngineName();
             MyBaseThing.SetIThingObject(this);
-            MyDevice = pModDeviceDescription;
-            if (MyDevice != null && !String.IsNullOrEmpty(MyDevice.Name))
-                MyBaseThing.FriendlyName = MyDevice.Name;
+            MyDeviceTemplate = pModDeviceDescription;
             MyBaseThing.AddCapability(eThingCaps.SensorProvider);
         }
 
@@ -105,29 +99,35 @@ namespace Modbus
 
         public void sinkStoreReady(StoreEventArgs e)
         {
-            if (MyDevice != null)
+            if (MyDeviceTemplate != null)
             {
-                if (!string.IsNullOrEmpty(MyDevice.Name))
-                    MyBaseThing.FriendlyName = MyDevice.Name;
-                if (!string.IsNullOrEmpty(MyDevice.IpAddress))
-                    MyBaseThing.Address = MyDevice.IpAddress;
-                if (MyDevice.IpPort == 0)
-                    MyDevice.IpPort = 502;
+                DTApplyDeviceTemplate(3);
                 if (ConnectionType == 0)
                     ConnectionType = 3;
-                TheThing.SetSafePropertyNumber(MyBaseThing, "CustomPort", MyDevice.IpPort);
-                TheThing.SetSafePropertyNumber(MyBaseThing, "SlaveAddress", MyDevice.SlaveAddress);
-                if (MyDevice.Mapping != null)
+                if (SlaveAddress == 0)
+                    SlaveAddress = 1;
+                if (MyDeviceTemplate.TagMappings?.ContainsKey("FLDMAP_ID") == true)
                 {
-                    TheThing.SetSafePropertyNumber(MyBaseThing, "Offset", MyDevice.Mapping.Offset);
-                    //TODO: Create Storage Mirror with Field Mapps
                     MyModFieldStore.FlushCache(true);
-                    foreach (var tFld in MyDevice.Mapping.FieldList)
+                    foreach (var tFld in MyDeviceTemplate.TagMappings["FLDMAP_ID"].FieldList)
                     {
-                        MyModFieldStore.AddAnItem(tFld);
+                        var rfld = TheDeviceTagMapping.BagToClass<FieldMapping>(tFld);
+                        MyModFieldStore.AddAnItem(rfld);
                     }
                 }
             }
+            var tParent = TheThingRegistry.GetThingByMID(TheCommonUtils.CGuid(MyBaseThing.Parent));
+            if (tParent != null)
+            {
+                foreach (var tfld in MyModFieldStore.TheValues)
+                {
+                    if (tfld.AllowWrite && tParent != null)
+                    {
+                        tParent.GetProperty(tfld.PropertyName, true).RegisterEvent(eThingEvents.PropertyChanged, sinkPChanged);
+                    }
+                }
+            }
+
             if (Interval < 100)
             {
                 Interval = 100;
@@ -146,7 +146,7 @@ namespace Modbus
             FireEvent(eThingEvents.Initialized, this, true, true);
         }
 
-        TheStorageMirror<FieldMapping> MyModFieldStore;
+
         public override bool Init()
         {
             if (mIsInitCalled) return false;
@@ -173,8 +173,6 @@ namespace Modbus
             if (string.IsNullOrEmpty(MyBaseThing.ID))
             {
                 MyBaseThing.ID = Guid.NewGuid().ToString();
-                if (MyDevice != null && !string.IsNullOrEmpty(MyDevice.Id))
-                    MyBaseThing.ID = MyDevice.Id;
                 if (GetProperty("CustomPort", false) == null)
                     TheThing.SetSafePropertyNumber(MyBaseThing, "CustomPort", 502);
                 if (GetProperty("SlaveAddress", false) == null)
@@ -203,12 +201,15 @@ namespace Modbus
             try
             {
                 MyBaseThing.StatusLevel = 4; // ReaderThread will set statuslevel to 1
-                foreach (var field in MyModFieldStore.TheValues)
+                foreach (var tfld in MyModFieldStore.TheValues)
                 {
-                    var p = MyBaseThing.GetProperty(field.PropertyName, true);
+                    var p = MyBaseThing.GetProperty(tfld.PropertyName, true);
                     p.cdeM = "MODPROP";
-                    p.UnregisterEvent(eThingEvents.PropertyChangedByUX, null);
-                    p.RegisterEvent(eThingEvents.PropertyChangedByUX, sinkPChanged);
+                    if (tfld.AllowWrite)
+                    {
+                        p.UnregisterEvent(eThingEvents.PropertyChangedByUX, null);
+                        p.RegisterEvent(eThingEvents.PropertyChangedByUX, sinkPChanged);
+                    }
                 }
                 SetupModbusProperties(true, pMsg);
                 IsConnected = true;
@@ -225,7 +226,7 @@ namespace Modbus
                 MyBaseThing.StatusLevel = 3;
                 string error = $"Error connecting: {e.Message}";
                 MyBaseThing.LastMessage = $"{DateTimeOffset.Now}: {error}";
-                TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseThing.EngineName, error, eMsgLevel.l1_Error, e.ToString()));
+                TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(MyBaseThing.EngineName, error, eMsgLevel.l1_Error, e.ToString()));
                 IsConnected = false;
             }
             return bSuccess;
@@ -233,9 +234,9 @@ namespace Modbus
 
         void sinkPChanged(cdeP prop)
         {
-            if (MyBaseEngine.GetEngineState().IsSimulated || !IsConnected) return;
-            var field = MyModFieldStore.MyMirrorCache.GetEntryByFunc(s => s.PropertyName == prop.Name);
-            if (field == null) return;
+            if (MyBaseEngine.GetBaseEngine().GetEngineState().IsSimulated || !IsConnected) return;
+            var fld = MyModFieldStore.MyMirrorCache.GetEntryByFunc(s => s.PropertyName == prop.Name);
+            if (fld == null || fld.AllowWrite == false || $"{prop.GetValue()}" == $"{fld.Value}") return;
 
             var error = OpenModBus();
             if (!string.IsNullOrEmpty(error))
@@ -246,9 +247,11 @@ namespace Modbus
             }
             try
             {
-                ushort tMainOffset = (ushort)(TheThing.GetSafePropertyNumber(MyBaseThing, "Offset") + field.SourceOffset);
+                ushort tMainOffset = (ushort)(TheThing.GetSafePropertyNumber(MyBaseThing, "Offset") + fld.SourceOffset);
                 byte tSlaveAddress = (byte)TheThing.GetSafePropertyNumber(MyBaseThing, "SlaveAddress");
-                int tReadWay = (int)TheThing.GetSafePropertyNumber(MyBaseThing, "ConnectionType");
+                int tReadWay = fld.ConnectionType;
+                if (tReadWay == 0)
+                    tReadWay = (int)TheThing.GetSafePropertyNumber(MyBaseThing, "ConnectionType");
                 switch (tReadWay)
                 {
                     case 1:
@@ -274,8 +277,8 @@ namespace Modbus
         {
             CloseModBus();
             MyBaseThing.StatusLevel = 0;
-            if (MyBaseThing.LastMessage.Contains("- Device Connected"))
-                MyBaseThing.LastMessage = $"{DateTime.Now} - Device Disconnected";
+            if (MyBaseThing.LastMessage.Contains("Device connected"))
+                MyBaseThing.LastMessage = $"{DateTime.Now} Device disconnected";
             IsConnected = false;
             return true;
         }
@@ -304,21 +307,23 @@ namespace Modbus
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.Number, 250, 2, 0, "Polling Interval", nameof(Interval), new nmiCtrlNumber() { TileWidth = 3, MinValue = 100, ParentFld = 200 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.SingleCheck, 260, 2, 0, "Keep Open", nameof(KeepOpen), new nmiCtrlSingleEnded() { TileWidth = 3, ParentFld = 200 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.ComboBox, 270, 2, 0, "Address Type", nameof(ConnectionType), new nmiCtrlComboBox() { NoTE = true, Options = "Read Coils:1;Read Input:2;Holding Registers:3;Input Register:4;Read Multiple Register:23", DefaultValue = "3", TileWidth = 6, ParentFld = 200 });
-            AddThingTarget(MyModConnectForm, 280, 271);
 
             ////METHODS Form
-            MyFldMapperTable = new TheFormInfo(TheThing.GetSafeThingGuid(MyBaseThing, "FLDMAP"), eEngineName.NMIService, "Field Mapper", $"MBFLDS{MyBaseThing.ID}") { AddButtonText = "Add Tag", AddACL = 128 };
-            TheNMIEngine.AddFormToThingUX(MyBaseThing, MyFldMapperTable, "CMyTable", "Field Mapper", 1, 3, 0xF0, null, null, new ThePropertyBag() { "Visibility=false" });
+            MyFldMapperTable = new TheFormInfo(TheThing.GetSafeThingGuid(MyBaseThing, "FLDMAP"), eEngineName.NMIService, "Field Mapper", $"MBFLDS{MyBaseThing.ID}") { PropertyBag=new nmiCtrlTableView { ShowExportButton = true, ShowFilterField = true }, AddButtonText = "Add Tag", AddACL = 128 };
+            TheNMIEngine.AddFormToThingUX(MyBaseThing, MyFldMapperTable, "CMyTable", "Field Mapper", 1, 3, 0xF0, null, null, new nmiCtrlTableView() { Visibility=false });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.SingleEnded, 50, 2, 0, "Property Name", "PropertyName", new nmiCtrlSingleEnded() { TileWidth = 4, FldWidth = 3 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.SingleEnded, 55, 2, 0, "Current Value", "Value", new nmiCtrlSingleEnded() { TileWidth = 4, FldWidth = 3, Disabled = true, GreyCondition = "cde.CBool('%AllowWrite%')==false" });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.Number, 60, 2, 0, "Source Offset", "SourceOffset", new nmiCtrlNumber() { TileWidth = 3, FldWidth = 1 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.Number, 70, 2, 0, "Source Size", "SourceSize", new nmiCtrlNumber() { TileWidth = 3, FldWidth = 1, DefaultValue = "1" });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.Number, 75, 2, 0, "Scale Factor", "ScaleFactor", new nmiCtrlNumber() { TileWidth = 3, FldWidth = 1, DefaultValue = "1" });
-            TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.ComboBox, 80, 2, 0, "Source Type", "SourceType", new nmiCtrlComboBox() { Options = "float;double;int32;int64;float32;uint16;int16;utf8;byte;float-abcd;double-cdab", TileWidth = 2, FldWidth = 2 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.ComboBox, 80, 2, 0, "Source Type", "SourceType", new nmiCtrlComboBox() { Options = "float;double;int32;uint32;int64;float32;uint16;int16;utf8;byte;hex;ihex;float-abcd;double-cdab", TileWidth = 2, FldWidth = 2 });
             TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.SingleCheck, 90, 2, 0, "Allow Write", "AllowWrite", new nmiCtrlSingleEnded() { TileWidth = 1, FldWidth = 1 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.ComboBox, 95, 2, 0, "Address Type", nameof(ConnectionType), new nmiCtrlComboBox() { NoTE = true, FldWidth=2, Options = "Connection:0;Read Coils:1;Read Input:2;Holding Registers:3;Input Register:4;Read Multiple Register:23", DefaultValue = "0", TileWidth = 6, ParentFld = 200 });
+            TheNMIEngine.AddSmartControl(MyBaseThing, MyFldMapperTable, eFieldType.Number, 96, 2, 0, "Read Skip", "ReadEvery", new nmiCtrlNumber() { TileWidth = 1, FldWidth = 1, MinValue=-1 });
             TheNMIEngine.AddTableButtons(MyFldMapperTable);
 
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.CollapsibleGroup, 500, 2, 0x0, "Modbus Tags", null, new nmiCtrlCollapsibleGroup() { IsSmall = true, DoClose = true, TileWidth = 6, ParentFld = 1 });
+            AddThingTarget(MyModConnectForm, 501, 500);
             TheNMIEngine.AddSmartControl(MyBaseThing, MyModConnectForm, eFieldType.TileButton, 510, 2, 0xF0, "Show Field Mapper", null, new nmiCtrlTileButton() { OnClick = $"TTS:{MyFldMapperTable.cdeMID}", TileWidth = 6, TileHeight = 1, NoTE = true, ParentFld = 500, Background = "blue", Foreground = "white" });
 
             SetupModbusProperties(false, null);
@@ -385,11 +390,14 @@ namespace Modbus
                             SensorId = TheCommonUtils.CStr(fld.cdeMID),
                             ExtensionData = new Dictionary<string, object>
                             {
-                                { nameof(FieldMapping.SourceOffset), fld.SourceOffset },
-                                { nameof(FieldMapping.SourceSize), fld.SourceSize },
-                                { nameof(FieldMapping.AllowWrite), fld.AllowWrite }
+                        { nameof(FieldMapping.SourceType), fld.SourceType },
+                        { nameof(FieldMapping.SourceOffset), fld.SourceOffset },
+                        { nameof(FieldMapping.ScaleFactor), fld.ScaleFactor},
+                        { nameof(FieldMapping.SourceSize), fld.SourceSize },
+                        { nameof(FieldMapping.ConnectionType), fld.ConnectionType},
+                        { nameof(FieldMapping.AllowWrite), fld.AllowWrite }
                             },
-                            DisplayNamePath = new string[] { MyBaseEngine.GetEngineName(), MyBaseThing.FriendlyName, fld.PropertyName }
+                            DisplayNamePath = new string[] { MyBaseEngine.GetBaseEngine().GetEngineName(), MyBaseThing.FriendlyName, fld.PropertyName }
                         });
                     }
                     browseResponse.Error = null;
@@ -402,42 +410,7 @@ namespace Modbus
                     {
                         MyModFieldStore.RemoveAllItems();
                     }
-                    var subscriptionStatus = new List<TheThing.TheSensorSubscriptionStatus>();
-                    foreach (TheThing.TheSensorSubscription sub in subscribeRequest.SubscriptionRequests)
-                    {
-                        FieldMapping fld = new FieldMapping()
-                        {
-                            PropertyName = sub.TargetProperty,
-                            cdeMID = TheCommonUtils.CGuid(sub.SensorId)
-                        };
-                        if (fld.cdeMID == Guid.Empty)
-                            fld.cdeMID = Guid.NewGuid();
-                        object sourceType;
-                        if (sub.ExtensionData != null)
-                        {
-                            if (sub.ExtensionData.TryGetValue(nameof(TheThing.TheSensorSourceInfo.SourceType), out sourceType))
-                                fld.SourceType = TheCommonUtils.CStr(sourceType);
-                            object offset;
-                            if (sub.ExtensionData.TryGetValue("SourceOffset", out offset))
-                                fld.SourceOffset = TheCommonUtils.CInt(offset);
-                            object size;
-                            if (sub.ExtensionData.TryGetValue("SourceSize", out size))
-                                fld.SourceSize = TheCommonUtils.CInt(size);
-                            object allowWrite;
-                            if (sub.ExtensionData.TryGetValue("AllowWrite", out allowWrite))
-                                fld.AllowWrite = TheCommonUtils.CBool(allowWrite);
-                            MyModFieldStore.AddAnItem(fld);
-                            subscriptionStatus.Add(CreateSubscriptionStatusFromFieldMapping(fld));
-                        }
-                        else
-                        {
-                            subscriptionStatus.Add(new TheThing.TheSensorSubscriptionStatus
-                            {
-                                Error = "Missing source info",
-                                Subscription = sub,
-                            });
-                        }
-                    }
+                    List<TheThing.TheSensorSubscriptionStatus> subscriptionStatus = CreateModbusTags(subscribeRequest);
                     subscribeResponse.SubscriptionStatus = subscriptionStatus;
                     subscribeResponse.Error = null;
                     TheCommRequestResponse.PublishResponseMessageJson(pMsg.Message, subscribeResponse);
@@ -487,33 +460,13 @@ namespace Modbus
                     break;
             }
 
-            TheThing.TheSensorSubscriptionStatus CreateSubscriptionStatusFromFieldMapping(FieldMapping fld)
-            {
-                return new TheThing.TheSensorSubscriptionStatus
-                {
-                    Subscription = new TheThing.TheSensorSubscription
-                    {
-                        TargetProperty = fld.PropertyName,
-                        SensorId = TheCommonUtils.CStr(fld.cdeMID),
-                        SubscriptionId = fld.cdeMID,
-                        ExtensionData = new Dictionary<string, object>
-                    {
-                        { nameof(FieldMapping.SourceType), fld.SourceType },
-                        { nameof(FieldMapping.SourceOffset), fld.SourceOffset },
-                        { nameof(FieldMapping.SourceSize), fld.SourceSize },
-                        { nameof(FieldMapping.AllowWrite), fld.AllowWrite }
-                    },
-                        TargetThing = new TheThingReference(MyBaseThing),
-                        SampleRate = (int?)this.Interval
-                    },
-                    Error = null,
-                };
-            }
+
+
+
         }
         #endregion
 
         public ModbusConfiguration ModbusConfig { get; set; }
-        public DeviceDescription MyDevice { get; set; }
 
         bool bReaderLoopRunning;
         object readerLoopLock = new object();
@@ -530,9 +483,10 @@ namespace Modbus
             try
             {
                 bool bPreviousError = false;
+                long ticker = 0;
                 while (TheBaseAssets.MasterSwitch && IsConnected)
                 {
-                    if (!MyBaseEngine.GetEngineState().IsSimulated)
+                    if (!MyBaseEngine.GetBaseEngine().GetEngineState().IsSimulated)
                     {
                         var error = OpenModBus();
                         if (!string.IsNullOrEmpty(error))
@@ -540,7 +494,7 @@ namespace Modbus
                             MyBaseThing.LastMessage = $"{DateTime.Now} - Modbus Device could not be opened: {error}";
                             if (bPreviousError)
                             {
-                                TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseThing.EngineName, MyBaseThing.LastMessage, eMsgLevel.l1_Error));
+                                TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(MyBaseThing.EngineName, MyBaseThing.LastMessage, eMsgLevel.l1_Error));
                                 MyBaseThing.StatusLevel = 3;
                             }
                             else
@@ -560,7 +514,7 @@ namespace Modbus
                                     TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseThing.EngineName, MyBaseThing.LastMessage, eMsgLevel.l4_Message));
                                     bPreviousError = false;
                                 }
-                                else 
+                                else
                                 {
                                     if (MyBaseThing.StatusLevel != 1)
                                     {
@@ -569,10 +523,13 @@ namespace Modbus
                                     }
                                 }
                                 MyBaseThing.StatusLevel = 1;
-                                Dictionary<string, object> dict = ReadAll();
+                                Dictionary<string, object> dict = ReadAll(ticker++);
                                 var timestamp = DateTimeOffset.Now;
-                                TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.VERBOSE) ? null : new TSM(MyBaseThing.EngineName, String.Format("Setting properties for {0}", MyBaseThing.FriendlyName), eMsgLevel.l4_Message, String.Format("{0}: {1}", timestamp, dict.Aggregate("", (s, kv) => s + string.Format("{0}={1};", kv.Key, kv.Value)))));
-                                PushProperties(dict, timestamp);
+                                DTPushToParent(dict, timestamp, true);
+                                if (TSM.L(eDEBUG_LEVELS.VERBOSE))
+                                    SetMessage($"Reading Tags done", timestamp);
+                                else
+                                    SetMessage($"Setting properties for {MyBaseThing.FriendlyName}: {dict.Aggregate("", (s, kv) => s + $"{kv.Key}={kv.Value}")}", timestamp, 123002, eMsgLevel.l4_Message);
                                 if (!KeepOpen)
                                 {
                                     CloseModBus();
@@ -659,7 +616,7 @@ namespace Modbus
             tcpClient = null;
         }
 
-        public Dictionary<string, object> ReadAll()
+        public Dictionary<string, object> ReadAll(long tick)
         {
             if (MyModFieldStore == null || MyModFieldStore.TheValues.Count == 0) return null;
             var timestamp = DateTimeOffset.Now;
@@ -669,18 +626,27 @@ namespace Modbus
             // Read configured data items via Modbus
             int tMainOffset = (int)TheThing.GetSafePropertyNumber(MyBaseThing, "Offset");
             int tSlaveAddress = (int)TheThing.GetSafePropertyNumber(MyBaseThing, "SlaveAddress");
-            int tReadWay = (int)TheThing.GetSafePropertyNumber(MyBaseThing, "ConnectionType");
+            int myReadWay = (int)TheThing.GetSafePropertyNumber(MyBaseThing, "ConnectionType");
             foreach (var field in MyModFieldStore.TheValues)
             {
                 try
                 {
+                    if (!IsConnected)
+                        break;
+                    if (field.ReadEvery < 0 || (field.ReadEvery > 1 && (tick % field.ReadEvery) != 0))
+                    {
+                        // Skip reading this time
+                        continue;
+                    }
                     int address = field.SourceOffset + tMainOffset;
 
                     ushort[] data = null;
 
                     float scale = field.ScaleFactor;
                     if (scale == 0) scale = 1.0f;
-
+                    var tReadWay = field.ConnectionType;
+                    if (tReadWay == 0)
+                        tReadWay = myReadWay;
                     switch (tReadWay)
                     {
                         case 1:
@@ -704,14 +670,34 @@ namespace Modbus
                             }
                             continue;
                         case 4:
-                            data = MyModMaster.ReadInputRegisters((byte)tSlaveAddress, (ushort)address, (ushort)field.SourceSize);
+                            if (field.SourceType == "ihex")
+                            {
+                                try
+                                {
+                                    // special case for byte reading from Input Registers
+                                    ushort[] rawdata = MyModMaster.ReadInputRegisters((byte)tSlaveAddress, (ushort)address, (ushort)1);
+                                    int rlen = TypeUInt16.Convert(rawdata) + 1;
+                                    data = MyModMaster.ReadInputRegisters((byte)tSlaveAddress, (ushort)address, (ushort)rlen);
+                                }
+                                catch (Exception ex)
+                                {
+                                    field.Value = $"err: {ex.Message}";
+                                    continue;
+                                }
+                            }
+                            else
+                                data = MyModMaster.ReadInputRegisters((byte)tSlaveAddress, (ushort)address, (ushort)field.SourceSize);
                             break;
                         default:
                             data = MyModMaster.ReadHoldingRegisters((byte)tSlaveAddress, (ushort)address, (ushort)field.SourceSize);
                             break;
                     }
                     if (data == null) continue;
-                    if (field.SourceType == "float")
+                    if (field.SourceType == "hex" || field.SourceType == "ihex")
+                    {
+                        dict[field.PropertyName] = ToHex(data);
+                    }
+                    else if (field.SourceType == "float")
                     {
                         var value1 = TypeFloat.Convert(data, TypeFloat.ByteOrder.CDAB);
                         dict[field.PropertyName] = value1 / scale;
@@ -731,11 +717,19 @@ namespace Modbus
                         var value1 = TypeDouble.Convert(data, TypeDouble.ByteOrder.CDAB);
                         dict[field.PropertyName] = value1 / scale;
                     }
-                    else if (field.SourceType == "int32")
+                    else if (field.SourceType == "int32" || field.SourceType == "uint32")
                     {
-                        var value = TypeInt32.Convert(data);
-                        var dblValue = Convert.ToDouble(value);
-                        dict[field.PropertyName] = dblValue / scale;
+                        if (data.Length == 1)
+                        {
+                            var value = data[0];
+                            dict[field.PropertyName] = value / scale;
+                        }
+                        else
+                        {
+                            var value = TypeInt32.Convert(data);
+                            var dblValue = Convert.ToDouble(value);
+                            dict[field.PropertyName] = dblValue / scale;
+                        }
                     }
                     else if (field.SourceType == "int64")
                     {
@@ -778,12 +772,30 @@ namespace Modbus
                     {
                         // Future: convey per-tag status similar to OPC statuscode?
                         //dict[$"[{field.PropertyName}].[Status]"] = $"##cdeError: {e.Message}";
-                        TheBaseAssets.MySYSLOG.WriteToLog(10000, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(MyBaseThing.EngineName, $"Error reading property {field.PropertyName}", eMsgLevel.l2_Warning, e.ToString()));
+                        SetMessage(TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : $"Error {e.Message} reading tag {field.PropertyName}", DateTimeOffset.Now, 10000,eMsgLevel.l2_Warning);
                     }
                     catch { }
                 }
             }
             return dict;
+        }
+
+        private static string ToHex(ushort[] shorts)
+        {
+            if (shorts == null) return "<null>";
+            char[] c = new char[shorts.Length * 5];
+            string hex = "0123456789ABCDEF";
+            for (int i = 0; i < shorts.Length; i++)
+            {
+                int b = (shorts[i] >> 8) & 0xFF; 
+                c[i * 5] = hex[b >> 4];
+                c[i * 5 + 1] = hex[b & 0x0F];
+                b = shorts[i] & 0xFF;
+                c[i * 5 + 2] = hex[b >> 4];
+                c[i * 5 + 3] = hex[b & 0x0F];
+                c[i * 5 + 4] = ' ';
+            }
+            return new string(c);
         }
 
         #region Simulation

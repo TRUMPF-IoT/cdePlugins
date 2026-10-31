@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
+// SPDX-FileCopyrightText: 2009-2020 TRUMPF Laser GmbH, authors: C-Labs
 //
 // SPDX-License-Identifier: MPL-2.0
 using System;
@@ -27,6 +27,7 @@ using System.Web;
 #if ENABLE_CSVIMPORT
 using nsTheCSVParser;
 #endif
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CDMyOPCUAClient.ViewModel
@@ -642,10 +643,10 @@ namespace CDMyOPCUAClient.ViewModel
                 if (subscription != null)
                 {
 #if OLD_UA
-                    var items = subscription.ApplyChanges();
+                    var items = subscription.ApplyChangesAsync(CancellationToken.None).GetAwaiter().GetResult();
                     foreach (var item in items)
 #else                    
-                    subscription.ApplyChanges();
+                    subscription.ApplyChangesAsync(CancellationToken.None).GetAwaiter().GetResult();
                     foreach (var item in subscription.MonitoredItems)
 #endif
                     {
@@ -750,7 +751,7 @@ namespace CDMyOPCUAClient.ViewModel
                     if (request.ReplaceAllTags)
                     {
                         // TODO Remove monitored items only rather than recreating the entire subscription? We may want to use separate subscriptions for tags in properties vs. things?
-                        m_session.RemoveSubscription(subscription);
+                        m_session.RemoveSubscriptionAsync(subscription, CancellationToken.None).GetAwaiter().GetResult();
                         UnsubscribeTagsInAllHostThings();
                         LiveTagCnt = 0;
                         subscription = GetOrCreateSubscription(DefSampleRate);
@@ -853,10 +854,10 @@ namespace CDMyOPCUAClient.ViewModel
                         if (subscription != null && request.BulkApply)
                         {
 #if OLD_UA
-                            var items = subscription.ApplyChanges();
+                            var items = subscription.ApplyChangesAsync(CancellationToken.None).GetAwaiter().GetResult();
                             foreach (var item in items)
 #else
-                            subscription.ApplyChanges();
+                            subscription.ApplyChangesAsync(CancellationToken.None).GetAwaiter().GetResult();
                             foreach (var item in subscription.MonitoredItems)
 #endif
                             {
@@ -951,10 +952,10 @@ namespace CDMyOPCUAClient.ViewModel
                         if (subscription != null && request.BulkApply)
                         {
 #if OLD_UA
-                            var items = subscription.ApplyChanges();
+                            var items = subscription.ApplyChangesAsync(CancellationToken.None).GetAwaiter().GetResult();
                             foreach (var item in items)
 #else
-                            subscription.ApplyChanges();
+                            subscription.ApplyChangesAsync(CancellationToken.None).GetAwaiter().GetResult();
                             foreach (var item in subscription.MonitoredItems)
 #endif
                             {
@@ -1372,8 +1373,12 @@ namespace CDMyOPCUAClient.ViewModel
 
         string DiscoUrl = null;
         IBaseEngine MyBaseEngine;
+        private readonly cdeOPCUaClient MyPlugin;
+        /// <summary>OPC UA stack telemetry context owned by the plugin engine.</summary>
+        internal ITelemetryContext Telemetry => MyPlugin?.OpcTelemetry;
         public TheOPCUARemoteServer(TheThing pThing, ICDEPlugin pPluginBase, string pUrl)
         {
+            MyPlugin = pPluginBase as cdeOPCUaClient;
             if (pThing != null)
                 MyBaseThing = pThing;
             else
@@ -2061,7 +2066,7 @@ namespace CDMyOPCUAClient.ViewModel
                                 try
                                 {
                                     subscription.RemoveItem(existingItem);
-                                    subscription.ApplyChanges();
+                                    subscription.ApplyChangesAsync(CancellationToken.None).GetAwaiter().GetResult();
                                 }
                                 catch { }
                             }
@@ -2082,10 +2087,10 @@ namespace CDMyOPCUAClient.ViewModel
                 if (subscription != null)
                 {
 #if OLD_UA
-                            var items = subscription.ApplyChanges();
+                            var items = subscription.ApplyChangesAsync(CancellationToken.None).GetAwaiter().GetResult();
                             foreach (var item in items)
 #else
-                    subscription.ApplyChanges();
+                    subscription.ApplyChangesAsync(CancellationToken.None).GetAwaiter().GetResult();
                     foreach (var item in subscription.MonitoredItems)
 #endif
                     {
@@ -2156,7 +2161,7 @@ namespace CDMyOPCUAClient.ViewModel
             }
             if (bChanges && subscription != null)
             {
-                subscription.ApplyChanges(); // TODO Report any errors
+                subscription.ApplyChangesAsync(CancellationToken.None).GetAwaiter().GetResult(); // TODO Report any errors
             }
         }
 
@@ -2657,7 +2662,7 @@ namespace CDMyOPCUAClient.ViewModel
                 //m_session.SubscriptionsChanged += OnSubscriptionsChanged;
                 try
                 {
-                    mySubscription.Create();
+                    mySubscription.CreateAsync(CancellationToken.None).GetAwaiter().GetResult();
                     TheBaseAssets.MySYSLOG.WriteToLog(78102, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(MyBaseThing.EngineName, String.Format("[{0}] Created subscription", GetLogAddress()), eMsgLevel.l4_Message, mySubscription.ToString()));
                     return mySubscription;
                 }
@@ -2666,7 +2671,7 @@ namespace CDMyOPCUAClient.ViewModel
                     try
                     {
                         TheBaseAssets.MySYSLOG.WriteToLog(78102, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(MyBaseThing.EngineName, String.Format("[{0}] Error while creating subscription", GetLogAddress()), eMsgLevel.l1_Error, e1.ToString()));
-                        m_session.RemoveSubscription(mySubscription);
+                        m_session.RemoveSubscriptionAsync(mySubscription, CancellationToken.None).GetAwaiter().GetResult();
                         mySubscription.Dispose();
                     }
                     catch (Exception e2)
@@ -2792,17 +2797,17 @@ namespace CDMyOPCUAClient.ViewModel
         class MyCertificateValidator : CertificateValidator
         {
             private TheOPCUARemoteServer _server;
-            public MyCertificateValidator(TheOPCUARemoteServer server) : base()
+            public MyCertificateValidator(TheOPCUARemoteServer server) : base(server.Telemetry)
             {
                 _server = server;
             }
-            public override void Validate(X509Certificate2Collection chain)
+            protected override Task InternalValidateAsync(X509Certificate2Collection certificates, ConfiguredEndpoint endpoint, CancellationToken ct)
             {
                 if (_server.AcceptInvalidCertificate)
                 {
-                    return;
+                    return Task.CompletedTask;
                 }
-                base.Validate(chain);
+                return base.InternalValidateAsync(certificates, endpoint, ct);
             }
         }
 
@@ -2914,16 +2919,15 @@ namespace CDMyOPCUAClient.ViewModel
 
                 //m_configuration.TransportQuotas.MaxByteStringLength = 2097152;
 
-                m_configuration.Validate(ApplicationType.Client).Wait();
+                m_configuration.ValidateAsync(ApplicationType.Client, CancellationToken.None).Wait();
                 m_configuration.CertificateValidator.CertificateValidation += m_CertificateValidation;
 
                 // check the application certificate. Create if it doesn't exist and Opc.Ua.CertificateGenerator.exe is installed
-                ApplicationInstance application = new ApplicationInstance();
+                ApplicationInstance application = new ApplicationInstance(m_configuration, Telemetry);
                 application.ApplicationType = ApplicationType.Client;
-                application.ApplicationConfiguration = m_configuration;
                 if (!DisableSecurity)
                 { 
-                    application.CheckApplicationInstanceCertificate(true, 0).Wait();
+                    application.CheckApplicationInstanceCertificatesAsync(true, null, CancellationToken.None).AsTask().Wait();
                 }
 
                 EndpointConfiguration endpointConfiguration = EndpointConfiguration.Create(m_configuration);
@@ -2936,7 +2940,7 @@ namespace CDMyOPCUAClient.ViewModel
                 }
                 else if (!string.IsNullOrEmpty(UserName))
                 {
-                    tIDent = new UserIdentity(UserName, Password);
+                    tIDent = new UserIdentity(UserName, System.Text.Encoding.UTF8.GetBytes(Password ?? string.Empty));
                     //tIDent.PolicyId = "UsernamePassword";
                     //endpoint.SelectedUserTokenPolicy = endpoint.Description.FindUserTokenPolicy(tIDent.TokenType, tIDent.IssuedTokenType);
                 }
@@ -2952,7 +2956,7 @@ namespace CDMyOPCUAClient.ViewModel
                 }
                 //TheBaseAssets.MySYSLOG.WriteToLog(78101, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseThing.EngineName, String.Format("[{0}] Creating session", GetLogAddress()), eMsgLevel.l4_Message, ""));
 
-                m_session = Session.Create(
+                m_session = new DefaultSessionFactory(Telemetry).CreateAsync(
                     m_configuration,
                     endpoint,
                     false,
@@ -2960,7 +2964,8 @@ namespace CDMyOPCUAClient.ViewModel
                     (String.IsNullOrEmpty(SessionName)) ? m_configuration.ApplicationName : SessionName,
                     (uint)SessionTimeout, //10000,
                     tIDent != null ? tIDent : UserIdentity,
-                    preferredLocales).Result;
+                    preferredLocales,
+                    CancellationToken.None).Result;
                 //TheBaseAssets.MySYSLOG.WriteToLog(78101, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseThing.EngineName, String.Format("[{0}] Created session", GetLogAddress()), eMsgLevel.l4_Message, ""));
 
                 if (m_session.SessionTimeout / 2  < KeepAliveInterval)
@@ -2991,7 +2996,7 @@ namespace CDMyOPCUAClient.ViewModel
                 if (m_session != null)
                 {
                     //TheBaseAssets.MySYSLOG.WriteToLog(78101, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(MyBaseThing.EngineName, String.Format("[{0}] Finding root node", GetLogAddress()), eMsgLevel.l4_Message, ""));
-                    INode node = m_session.NodeCache.Find(m_rootId);
+                    INode node = m_session.NodeCache.FindAsync(m_rootId, CancellationToken.None).GetAwaiter().GetResult();
 
                     if (node != null)
                     {
@@ -3164,7 +3169,7 @@ namespace CDMyOPCUAClient.ViewModel
             {
                 try
                 {
-                    subscription.ApplyChanges(); // TODO Report any errors
+                    subscription.ApplyChangesAsync(CancellationToken.None).GetAwaiter().GetResult(); // TODO Report any errors
                 }
                 catch (Exception e)
                 {
@@ -3407,7 +3412,7 @@ namespace CDMyOPCUAClient.ViewModel
                 }
                 LiveTagCnt += tagCount;
                 if (subscription != null)
-                    subscription.ApplyChanges(); // TODO Report any errors
+                    subscription.ApplyChangesAsync(CancellationToken.None).GetAwaiter().GetResult(); // TODO Report any errors
             }
 
             // Any host things are now tracked in the TagHostsThings property. TagHostThingForSubscribeAll is is only used temporarily for Subscribe All In Properties functionality
@@ -3534,7 +3539,7 @@ namespace CDMyOPCUAClient.ViewModel
                         {
                             // Flush every 5000 tags or we'll exceed maximum message sizes
                             if (subscription != null)
-                                subscription.ApplyChanges();
+                                subscription.ApplyChangesAsync(CancellationToken.None).GetAwaiter().GetResult();
 
                             previousTagCount = previousTagCount + cntTags;
                             LiveTagCnt = previousTagCount;
@@ -3556,10 +3561,10 @@ namespace CDMyOPCUAClient.ViewModel
             if (subscription != null)
             {
 #if OLD_UA
-                            var items = subscription.ApplyChanges();
+                            var items = subscription.ApplyChangesAsync(CancellationToken.None).GetAwaiter().GetResult();
                             foreach (var item in items)
 #else
-                subscription.ApplyChanges();
+                subscription.ApplyChangesAsync(CancellationToken.None).GetAwaiter().GetResult();
                 foreach (var item in subscription.MonitoredItems)
 #endif
                 {
@@ -3690,7 +3695,7 @@ namespace CDMyOPCUAClient.ViewModel
             {
                 try
                 {
-                    subscription.Delete(false);
+                    subscription.DeleteAsync(false, CancellationToken.None).GetAwaiter().GetResult();
                 }
                 catch (Opc.Ua.ServiceResultException se)
                 {
@@ -3717,7 +3722,7 @@ namespace CDMyOPCUAClient.ViewModel
             {
                 try
                 {
-                    var status = session.Close();
+                    var status = session.CloseAsync(CancellationToken.None).GetAwaiter().GetResult();
                 }
                 catch (Exception e)
                 {
@@ -3821,7 +3826,7 @@ namespace CDMyOPCUAClient.ViewModel
                                 //if (m_ReconnectStarting != null)
                                 //  m_ReconnectStarting(this, e);
                                 MyBaseThing.StatusLevel = 2;
-                                m_reconnectHandler = new SessionReconnectHandler();
+                                m_reconnectHandler = new SessionReconnectHandler(m_session?.SessionFactory?.Telemetry, false, -1);
                                 m_reconnectHandler.BeginReconnect(m_session, ReconnectPeriod, Server_ReconnectComplete); //CM: , ReconnectCount);
                             }
                             else
@@ -3952,7 +3957,7 @@ namespace CDMyOPCUAClient.ViewModel
                         }
                     }
                     catch { }
-                    m_reconnectHandler = new SessionReconnectHandler();
+                    m_reconnectHandler = new SessionReconnectHandler(m_session?.SessionFactory?.Telemetry, false, -1);
                     m_reconnectHandler.BeginReconnect(m_session, ReconnectPeriod, Server_ReconnectComplete); //CM: , ReconnectCount);
                 }
             }
@@ -4244,7 +4249,7 @@ namespace CDMyOPCUAClient.ViewModel
                                             if (liveTags > 5000 && subscription != null)
                                             {
                                                 // Flush every 5000 tags or we'll exceed maximum message sizes
-                                                subscription.ApplyChanges(); // TODO Report any errors
+                                                subscription.ApplyChangesAsync(CancellationToken.None).GetAwaiter().GetResult(); // TODO Report any errors
                                                 currentLiveTags = currentLiveTags + liveTags;
                                                 LiveTagCnt = currentLiveTags;
                                                 liveTags = 0;
@@ -4282,7 +4287,7 @@ namespace CDMyOPCUAClient.ViewModel
 
                 if (SubscribeToAll && subscription != null)
                 {
-                    subscription.ApplyChanges(); // TODO Report any errors
+                    subscription.ApplyChangesAsync(CancellationToken.None).GetAwaiter().GetResult(); // TODO Report any errors
                 }
             }
             catch (Exception exception)
@@ -4424,7 +4429,7 @@ namespace CDMyOPCUAClient.ViewModel
             // build list of attributes to read.
             ReadValueIdCollection nodesToRead = new ReadValueIdCollection();
 
-            foreach (uint attributeId in Attributes.GetIdentifiers())
+            foreach (uint attributeId in Attributes.Identifiers)
             {
                 ReadValueId nodeToRead = new ReadValueId();
                 nodeToRead.NodeId = nodeId;
@@ -4433,16 +4438,14 @@ namespace CDMyOPCUAClient.ViewModel
             }
 
             // read the attributes.
-            DataValueCollection results = null;
-            DiagnosticInfoCollection diagnosticInfos = null;
-
-            m_session.Read(
+            ReadResponse readResponse = m_session.ReadAsync(
                 null,
                 0,
                 TimestampsToReturn.Neither,
                 nodesToRead,
-                out results,
-                out diagnosticInfos);
+                CancellationToken.None).GetAwaiter().GetResult();
+            DataValueCollection results = readResponse.Results;
+            DiagnosticInfoCollection diagnosticInfos = readResponse.DiagnosticInfos;
 
             ClientBase.ValidateResponse(results, nodesToRead);
             ClientBase.ValidateDiagnosticInfos(diagnosticInfos, nodesToRead);
@@ -4566,16 +4569,14 @@ namespace CDMyOPCUAClient.ViewModel
             }
 
             // read the properties.
-            DataValueCollection results = null;
-            DiagnosticInfoCollection diagnosticInfos = null;
-
-            m_session.Read(
+            ReadResponse readResponse = m_session.ReadAsync(
                 null,
                 0,
                 TimestampsToReturn.Neither,
                 nodesToRead,
-                out results,
-                out diagnosticInfos);
+                CancellationToken.None).GetAwaiter().GetResult();
+            DataValueCollection results = readResponse.Results;
+            DiagnosticInfoCollection diagnosticInfos = readResponse.DiagnosticInfos;
 
             ClientBase.ValidateResponse(results, nodesToRead);
             ClientBase.ValidateDiagnosticInfos(diagnosticInfos, nodesToRead);

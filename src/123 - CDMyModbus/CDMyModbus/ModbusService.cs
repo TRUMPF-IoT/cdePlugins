@@ -14,6 +14,9 @@ using System.IO;
 using NModbusExt.Config;
 using nsCDEngine.Communication;
 using System.IO.Ports;
+using CU = nsCDEngine.BaseClasses.TheCommonUtils;
+using NMI = nsCDEngine.Engines.NMIService.TheNMIEngine;
+using TT = nsCDEngine.Engines.ThingService.TheThing;
 
 namespace Modbus
 {
@@ -167,10 +170,10 @@ namespace Modbus
 
             foreach (var dd in config.Devices)
             {
-                var tDev = tDevList.Find((t) => t.FriendlyName == dd.Name);
+                var tDev = tDevList.Find((t) => dd.Properties.ContainsKey("FriendlyName") && t.FriendlyName == $"{dd.Properties["FriendlyName"]}");
                 if (tDev==null || !tDev.HasLiveObject)
                 {
-                    TheBaseAssets.MySYSLOG.WriteToLog(500, new TSM(MyBaseEngine.GetEngineName(), $"Adding Modbus Device {dd.Name}"));
+                    TheBaseAssets.MySYSLOG.WriteToLog(500, new TSM(MyBaseEngine.GetEngineName(), $"Adding Modbus Device {dd.Properties["FriendlyName"]}"));
                     var pm = new ModbusTCPDevice(tDev, this, dd);
                     TheThingRegistry.RegisterThing(pm);
                 }
@@ -263,8 +266,31 @@ namespace Modbus
                     InitServices();
                     mMyDashboard.Reload(pMsg, false);
                     break;
+                default:
+                    var temp2 = TheDeviceDescription.CheckForTemplate(MyBaseThing, pMsg?.Message);
+                    if (temp2?.Properties?.ContainsKey("DeviceType") == true)
+                    {
+                        switch (CU.CStr(temp2.Properties["DeviceType"]))
+                        {
+                            case eModbusType.ModbusTCPDevice:
+                                {
+                                    var pm = new ModbusTCPDevice(null, this, temp2);
+                                    TheThingRegistry.RegisterThing(pm);
+                                }
+                                break;
+                            case eModbusType.ModbusRTUDevice:
+                                {
+                                    var pm = new ModbusRTUDevice(null, this, temp2);
+                                    TheThingRegistry.RegisterThing(pm);
+                                }
+                                break;
+                        }
+                    }
+                    break;
             }
         }
+
+
         #endregion
 
         public void AddConnectionWizard()
@@ -306,7 +332,7 @@ namespace Modbus
                 InstanceId = Guid.NewGuid().ToString(),
                 Address = myClass.Address,
                 Properties = new Dictionary<string, object> {
-                    { "IpPort", myClass.Port },
+                    { "CustomPort", myClass.Port },
                     { "AutoConnect", myClass.AutoConnect },
                     { "SlaveAddress", myClass.SlaveAddress },
                 },

@@ -391,7 +391,7 @@ namespace CDMyMqttSender.ViewModel
             MqttClient client = null;
             if (!string.IsNullOrEmpty(MqttSslCertificate))
             {
-                var caCertificate = new X509Certificate(Convert.FromBase64String(MqttSslCertificate)); 
+                var caCertificate = X509CertificateLoader.LoadCertificate(Convert.FromBase64String(MqttSslCertificate));
                 client = new MqttClient(MqttHostName, MqttPort, MqttSecure, caCertificate, null, MqttSslProtocols.TLSv1_2);
             }
             else

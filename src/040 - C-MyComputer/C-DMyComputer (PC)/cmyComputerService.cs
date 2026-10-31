@@ -40,7 +40,7 @@ namespace CDMyComputer
                     TheCommCore.MyHttpService.RegisterStatusRequest(sinkGetStatus);
                 }
             }
-            TheCDEngines.eventAllEnginesStarted += sinkRegisterIsos;
+            TheBaseEngine.WaitForEnginesStarted((t, o) => sinkRegisterIsos());
 
             MyBaseEngine.ProcessInitialized();
             MyBaseEngine.SetStatusLevel(1);

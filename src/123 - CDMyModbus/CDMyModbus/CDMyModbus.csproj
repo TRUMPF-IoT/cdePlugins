@@ -1,16 +1,16 @@
 ﻿<!--
- SPDX-FileCopyrightText: 2009-2024 TRUMPF Laser GmbH, authors: C-Labs
+ SPDX-FileCopyrightText: 2009-2026 TRUMPF Laser GmbH, authors: C-Labs, Hyviva
  SPDX-License-Identifier: MPL-2.0
  -->
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>net10.0</TargetFrameworks>
       <!-- Does NOT work on net4 due to missing Sync Lib -->
     <Authors>Chris Muench</Authors>
     <Company>C-Labs</Company>
     <Product>CDMyModbus</Product>
     <Description>Modbus support for ($(TargetFramework))</Description>
-    <Copyright>Copyright © 2017-2024 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <Copyright>Copyright © 2017-2026 TRUMPF Laser GmbH, authors: C-Labs, Hyviva</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Version>6.104.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -36,8 +36,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="C-DEngine" Version="6.*-*" />
-    <PackageReference Include="System.IO.Ports" Version="9.0.0" />
+    <PackageReference Include="C-DEngine" Version="7.*" />
+    <PackageReference Include="System.IO.Ports" Version="10.0.14" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
@@ -45,4 +45,5 @@
   </Target>
 
   <Import Project="..\NModbus4Shared\NModbus4Shared.projitems" Label="Shared" />
+
 </Project>

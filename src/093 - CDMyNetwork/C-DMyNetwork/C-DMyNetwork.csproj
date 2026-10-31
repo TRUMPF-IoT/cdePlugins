@@ -1,17 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <!--
- SPDX-FileCopyrightText: 2009-2024 TRUMPF Laser GmbH, authors: C-Labs
+ SPDX-FileCopyrightText: 2009-2026 TRUMPF Laser GmbH, authors: C-Labs, Hyviva
  SPDX-License-Identifier: MPL-2.0
  -->
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
         <Version>6.104.0</Version>
         <Authors>Chris Muench</Authors>
         <Company>C-Labs</Company>
         <Product>C-DMyNetwork</Product>
 	  <LangVersion>preview</LangVersion>
         <Description>Network Services</Description>
-        <Copyright>Copyright © 2017-2024 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+        <Copyright>Copyright © 2017-2026 TRUMPF Laser GmbH, authors: C-Labs, Hyviva</Copyright>
         <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	  <PackageOutputPath>$(SolutionDir)Nugets</PackageOutputPath>
@@ -22,10 +22,14 @@
   </ItemGroup>
 
   <ItemGroup>
-	  <PackageReference Include="C-DEngine" Version="6.*-*" />
+	  <PackageReference Include="C-DEngine" Version="7.*" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="call &quot;$(ProjectDir)..\..\..\BuildTools\signandpackage.cmd&quot; &quot;$(ProjectDir)&quot; &quot;$(TargetDir)&quot; &quot;$(TargetFileName)&quot;&#xD;&#xA;" />
   </Target> <!-- Workaround for baseintermediatepath -->
+
+  <ItemGroup>
+    <PackageReference Update="GitVersion.MsBuild" Version="5.12.0" />
+  </ItemGroup>
 </Project>

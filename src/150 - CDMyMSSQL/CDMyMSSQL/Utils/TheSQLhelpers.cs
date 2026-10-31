@@ -4,7 +4,7 @@
 
 using System;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
 using nsCDEngine.BaseClasses;
 using System.Threading;
@@ -36,7 +36,7 @@ namespace CDMyMSSQLStorage
 	{
         public TheSQLHelper(string pSQLUID, string sqlpwd, string pSQLAddress, string pDBName,int RetrySeconds,int Retries)
         {
-            MyBlobCache = new TheMirrorCache<TheBlobData>(TheBaseAssets.MyServiceHostInfo.TO.StorageCleanCycle);
+            MyBlobCache = new TheMirrorCacheCore<TheBlobData>(TheBaseAssets.MyServiceHostInfo.TO.StorageCleanCycle);
             if (string.IsNullOrEmpty(pSQLAddress)) return;
             if (pSQLAddress.StartsWith("AZURE:"))
             {
@@ -251,7 +251,7 @@ int a=System.DateTime.Compare(System.DateTime.Parse(dateA),System.DateTime.Parse
         //}
         #endregion
 
-        private readonly TheMirrorCache<TheBlobData> MyBlobCache=null;
+        private readonly TheMirrorCacheCore<TheBlobData> MyBlobCache=null;
         public string MyConnectionString;
         public string[] SQLTypeNames = { "[nvarchar](4000)", "[nvarchar](512)", "[int]", "[float]", "[datetime2]", "[bit]", "[uniqueidentifier]", "[float]", "[bigint]", "[tinyint]", "[nvarchar](1)", "[nvarchar](max)", "[varbinary](max)", "[int]", "[smallint]" };
         internal string thingStoreUniqueID = TheStorageUtilities.GenerateUniqueIDFromType(typeof(TheThingStore), null);

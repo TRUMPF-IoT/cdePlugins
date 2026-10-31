@@ -533,7 +533,7 @@ namespace CDMyPrometheusExporter.ViewModel
                         }
                         catch (Exception e)
                         {
-                            TheBaseAssets.MySYSLOG.WriteToLog(95307, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(strPrometheusExporter, $"Error reporting metric {metricName} in server: {this.MyBaseThing?.Address}", eMsgLevel.l1_Error, e.ToString()));
+                            TheBaseAssets.MySYSLOG.WriteToLog(95307, TSM.L(eDEBUG_LEVELS.VERBOSE) ? null : new TSM(strPrometheusExporter, $"Error reporting metric {metricName} in server: {this.MyBaseThing?.Address}", eMsgLevel.l1_Error, e.ToString()));
                         }
                     }
                 }
@@ -551,13 +551,13 @@ namespace CDMyPrometheusExporter.ViewModel
                         {
                             Prometheus.Counter cs;
                             try
-                            {
+                            { 
                                 cs = Metrics.CreateCounter(s, "", labels);
                                 return cs;
                             }
                             catch (Exception e)
                             {
-                                TheBaseAssets.MySYSLOG.WriteToLog(95307, TSM.L(eDEBUG_LEVELS.OFF) ? null : new TSM(strPrometheusExporter, $"Error creating metric {s} in server: {this.MyBaseThing?.Address}", eMsgLevel.l1_Error, e.ToString()));
+                                TheBaseAssets.MySYSLOG.WriteToLog(95307, TSM.L(eDEBUG_LEVELS.VERBOSE) ? null : new TSM(strPrometheusExporter, $"Error creating metric {s} in server: {this.MyBaseThing?.Address}", eMsgLevel.l1_Error, e.ToString()));
                             }
                             return null;
                         });
@@ -573,7 +573,7 @@ namespace CDMyPrometheusExporter.ViewModel
                                 }
                                 else if (valueInc < 0)
                                 {
-                                    TheBaseAssets.MySYSLOG.WriteToLog(95307, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(strPrometheusExporter, $"Error reporting metric {metricName} in '{this.MyBaseThing?.Address} {this.MyBaseThing}'. Counter value {valueToReport} smaller than reported {labelCounter.Value}", eMsgLevel.l1_Error));
+                                    TheBaseAssets.MySYSLOG.WriteToLog(95307, TSM.L(eDEBUG_LEVELS.VERBOSE) ? null : new TSM(strPrometheusExporter, $"Error reporting metric {metricName} in '{this.MyBaseThing?.Address} {this.MyBaseThing}'. Counter value {valueToReport} smaller than reported {labelCounter.Value}", eMsgLevel.l1_Error));
                                 }
                             }
                             else
@@ -591,7 +591,7 @@ namespace CDMyPrometheusExporter.ViewModel
                         var gauge = myGaugesByMetricName.GetOrAdd(metricName, s => Metrics.CreateGauge(s, "", labels));
                         if (gauge != null)
                         {
-                            if (gauge.LabelNames.Length > 0)
+                            if (gauge.LabelNames.Length > 0 && labelValues.Length==gauge.LabelNames.Length)
                             {
                                 gauge.Labels(labelValues).Set(valueToReport);
                             }
@@ -698,6 +698,10 @@ namespace CDMyPrometheusExporter.ViewModel
             if (value is DateTime time)
             {
                 return new DateTimeOffset(time).ToUnixTimeSeconds();
+            }
+            if (value is Guid tg)
+            {
+                return 0;
             }
             return TheCommonUtils.CDbl(value);
         }

@@ -1,16 +1,16 @@
-<!--
- SPDX-FileCopyrightText: 2009-2024 TRUMPF Laser GmbH, authors: C-Labs
+﻿<!--
+ SPDX-FileCopyrightText: 2009-2026 TRUMPF Laser GmbH, authors: C-Labs, Hyviva
  SPDX-License-Identifier: MPL-2.0
  -->
 <Project Sdk="Microsoft.NET.Sdk"> 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Version>6.104.0</Version>
     <Authors>Chris Muench</Authors>
     <Company>C-Labs</Company>
     <Product>C-DMyVThings</Product>
     <Description>Virtual Things for the C-DEngine</Description>
-    <Copyright>Copyright © 2017-2024 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <Copyright>Copyright © 2017-2026 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
     <DefineConstants>CDE_SYSLOG;TRACE;$(DefineConstants)</DefineConstants>
@@ -39,13 +39,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="C-DEngine" Version="6.*-*" />
-    <PackageReference Include="cdeCSVFileParserShared" Version="6.*-*"  />
-    <PackageReference Include="cdeEnergyContractsShared" Version="6.*-*"/>
-    <PackageReference Include="cdeEventConvertersShared" Version="6.*-*" />
-    <PackageReference Include="cdeMeshManagerContractsShared" Version="6.*-*" />
-    <PackageReference Include="cdeOPCUAClientContractsShared" Version="6.*-*" />
-    <PackageReference Include="cdeSensorTemplateShared" Version="6.*-*" />
+    <PackageReference Include="C-DEngine" Version="7.*" />
+    <PackageReference Include="cdeCSVFileParserShared" Version="6.*-*" IncludeAssets="ContentFiles" />
+    <PackageReference Include="cdeEnergyContractsShared" Version="6.*-*" IncludeAssets="ContentFiles" />
+    <PackageReference Include="cdeEventConvertersShared" Version="6.*-*" IncludeAssets="ContentFiles" />
+    <PackageReference Include="cdeMeshManagerContractsShared" Version="6.*-*" IncludeAssets="ContentFiles" />
+    <PackageReference Include="cdeOPCUAClientContractsShared" Version="6.*-*" IncludeAssets="ContentFiles" />
+    <PackageReference Include="cdeSensorTemplateShared" Version="6.*-*" IncludeAssets="ContentFiles" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

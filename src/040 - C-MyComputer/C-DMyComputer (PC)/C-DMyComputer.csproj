@@ -1,16 +1,16 @@
-<!--
- SPDX-FileCopyrightText: 2009-2024 TRUMPF Laser GmbH, authors: C-Labs
+﻿<!--
+ SPDX-FileCopyrightText: 2009-2026 TRUMPF Laser GmbH, authors: C-Labs, Hyviva
  SPDX-License-Identifier: MPL-2.0
  -->
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.1</TargetFrameworks>
+		<TargetFrameworks>net10.0</TargetFrameworks>
 		<Version>6.104.0</Version>
 		<Authors>Chris Muench</Authors>
 		<Company>C-Labs</Company>
 		<Product>C-DMyComputer</Product>
 		<Description>Computer Vitals for the C-DEngine</Description>
-		<Copyright>Copyright © 2017-2024 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+		<Copyright>Copyright © 2017-2026 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
 		<PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
@@ -31,14 +31,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="C-DEngine" Version="6.*-*" />
+		<PackageReference Include="C-DEngine" Version="7.*" />
 		<PackageReference Include="cdeEnergyContractsShared" Version="6.*-*" />
 		<PackageReference Include="cdeSensorTemplateShared" Version="6.*-*" />
 		<PackageReference Include="System.Management">
-			<Version>9.0.0</Version>
+			<Version>10.0.14</Version>
 		</PackageReference>
 		<PackageReference Include="System.Diagnostics.PerformanceCounter">
-			<Version>9.0.0</Version>
+			<Version>10.0.14</Version>
 		</PackageReference>
 	</ItemGroup>
 

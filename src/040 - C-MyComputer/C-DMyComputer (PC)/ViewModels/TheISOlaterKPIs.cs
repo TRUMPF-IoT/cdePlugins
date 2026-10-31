@@ -13,9 +13,11 @@ using nsCDEngine.ViewModels;
 using System;
 using System.Diagnostics;
 using System.Management;
+using System.Runtime.Versioning;
 
 namespace CDMyComputer.ViewModels
 {
+    [SupportedOSPlatform("windows")]
     class TheISOlaterKPIs : TheThingBase
     {
         public const string eDeviceType = "ISOLater KPIs";

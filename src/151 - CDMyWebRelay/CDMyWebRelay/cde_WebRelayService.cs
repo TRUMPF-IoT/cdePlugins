@@ -126,7 +126,7 @@ namespace CDMyWebRelay
 
                         if (!string.IsNullOrEmpty(pRequest.ResponseBufferStr) && (pRequest.ResponseMimeType.StartsWith("text/html") || pRequest.ResponseMimeType.Contains("javascript")) && pRequest.ResponseBufferStr.IndexOf(tReqUri, StringComparison.CurrentCultureIgnoreCase) >= 0)
                         {
-                            if (pRequest.SessionState.ARApp != null && pRequest.SessionState.ARApp != Guid.Empty)
+                            if (pRequest.SessionState.ARApp != Guid.Empty)
                             {
                                 TheRelayAppInfo tMyApp = TheThingRegistry.GetThingObjectByMID(MyBaseEngine.GetEngineName(), pRequest.SessionState.ARApp) as TheRelayAppInfo;
                                 //MyRelayApps.MyMirrorCache.GetEntryByFunc(s => s.cdeMID.Equals(pRequest.SessionState.ARApp));
@@ -148,10 +148,7 @@ namespace CDMyWebRelay
                     MyMRE.WaitOne(50);
                     SyncFailCount++; if (SyncFailCount > (pRequestTimeout * 20))
                     {
-                        if (TheCommonUtils.IsMono())
-                            TheBaseAssets.MySYSLOG.WriteToLog(400, new TSM(MyBaseEngine.GetEngineName(), string.Format("Requesting Page:{0} FAILED", pRequest.cdeRealPage), eMsgLevel.l1_Error));
-                        else
-                            TheBaseAssets.MySYSLOG.WriteToLog(400, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(MyBaseEngine.GetEngineName(), string.Format("Requesting Page:{0} FAILED", pRequest.cdeRealPage), eMsgLevel.l1_Error));
+                        TheBaseAssets.MySYSLOG.WriteToLog(400, TSM.L(eDEBUG_LEVELS.ESSENTIALS) ? null : new TSM(MyBaseEngine.GetEngineName(), string.Format("Requesting Page:{0} FAILED", pRequest.cdeRealPage), eMsgLevel.l1_Error));
                         break;
                     }
                 }

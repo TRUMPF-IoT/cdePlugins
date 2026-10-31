@@ -17,18 +17,21 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Management;
+using System.Runtime.Versioning;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace CDMyComputer
 {
+    [SupportedOSPlatform("windows")]
     public class ThePerfCounter
     {
         public PerformanceCounter PerfCounter;
         public string PropertyName;
     }
 
+    [SupportedOSPlatform("windows")]
     public class ProcessCpuCounter
     {
         public static PerformanceCounter GetPerfCounterForProcessId(int processId, string processCounterName = "% Processor Time")
@@ -66,6 +69,7 @@ namespace CDMyComputer
         }
     }
 
+    [SupportedOSPlatform("windows")]
     public class TheHealthMonitor
     {
         public TheHealthMonitor(int pHealthCycle, TheCDMyComputerEngine pEngineName, bool DisableCollection, bool DisableHistorian)

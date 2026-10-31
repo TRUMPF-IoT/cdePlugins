@@ -14,10 +14,15 @@ using nsCDEngine.Engines.ThingService;
 using nsCDEngine.Security;
 using nsCDEngine.Communication;
 using System.IO;
+using System.Runtime.Versioning;
 using nsCDEngine.Engines.StorageService;
 
 namespace CDMyComputer
 {
+    /// <summary>
+    /// Computer vitals plugin. Relies on WMI (System.Management) and PerformanceCounter, which are Windows-only.
+    /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class TheCDMyComputerEngine : ThePluginBase
     {
         public override void InitEngineAssets(IBaseEngine pBase)
