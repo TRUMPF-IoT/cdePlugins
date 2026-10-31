@@ -12,7 +12,7 @@ rem AzureSignTool.exe sign -du "https://c-labs.com" -fd sha1 -kvu %CDE_KVU% -kvi
 
 if %errorlevel% EQU 0 goto exit
 
-echo Error encountered while running Azuresigntool Error code: %errorlevel%
+echo AzureSignTool returned status %errorlevel%; retrying signing.
 ping 127.0.0.1 -n 10 > nul
 goto noSecrets
 
