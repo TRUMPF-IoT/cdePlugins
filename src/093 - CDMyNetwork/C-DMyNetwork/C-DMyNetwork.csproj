@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <!--
- SPDX-FileCopyrightText: 2009-2024 TRUMPF Laser GmbH, authors: C-Labs
+ SPDX-FileCopyrightText: 2009-2026 TRUMPF Laser GmbH, authors: C-Labs, Hyviva
  SPDX-License-Identifier: MPL-2.0
  -->
   <PropertyGroup>
@@ -11,7 +11,7 @@
         <Product>C-DMyNetwork</Product>
 	  <LangVersion>preview</LangVersion>
         <Description>Network Services</Description>
-        <Copyright>Copyright © 2017-2024 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+        <Copyright>Copyright © 2017-2026 TRUMPF Laser GmbH, authors: C-Labs, Hyviva</Copyright>
         <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	  <PackageOutputPath>$(SolutionDir)Nugets</PackageOutputPath>

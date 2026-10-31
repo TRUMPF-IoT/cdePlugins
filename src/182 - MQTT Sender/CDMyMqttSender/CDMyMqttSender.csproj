@@ -1,5 +1,5 @@
 ﻿<!--
- SPDX-FileCopyrightText: 2009-2024 TRUMPF Laser GmbH, authors: C-Labs
+ SPDX-FileCopyrightText: 2009-2026 TRUMPF Laser GmbH, authors: C-Labs, Hyviva
  SPDX-License-Identifier: MPL-2.0
  -->
 <Project Sdk="Microsoft.NET.Sdk">
@@ -14,7 +14,7 @@
     <Authors>Markus Horstmann</Authors>
     <Company>C-Labs</Company>
     <Product>CDMyMqttSender for $(TargetFramework)</Product>
-    <Copyright>Copyright © 2015-2024 C-Labs Corporation and its licensors. All rights reserved.</Copyright>
+    <Copyright>Copyright © 2015-2026 TRUMPF Laser GmbH, authors: C-Labs, Hyviva</Copyright>
 	<PackageLicenseExpression>MPL-2.0 AND EPL-1.0</PackageLicenseExpression>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>

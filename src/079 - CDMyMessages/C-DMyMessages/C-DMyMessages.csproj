@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <!--
- SPDX-FileCopyrightText: 2009-2024 TRUMPF Laser GmbH, authors: C-Labs
+ SPDX-FileCopyrightText: 2009-2026 TRUMPF Laser GmbH, authors: C-Labs
  SPDX-License-Identifier: MPL-2.0
  -->
 
@@ -11,7 +11,7 @@
         <Company>C-Labs</Company>
         <Product>C-DMyMessages</Product>
         <Description>Send Messages</Description>
-    <Copyright>Copyright © 2015-2024 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <Copyright>Copyright © 2015-2026 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
 	  <PackageOutputPath>$(SolutionDir)Nugets</PackageOutputPath>

@@ -1,5 +1,5 @@
 ﻿<!--
- SPDX-FileCopyrightText: 2009-2024 TRUMPF Laser GmbH, authors: C-Labs
+ SPDX-FileCopyrightText: 2009-2026 TRUMPF Laser GmbH, authors: C-Labs, Hyviva
  SPDX-License-Identifier: MPL-2.0
  -->
 <Project Sdk="Microsoft.NET.Sdk" >
@@ -8,7 +8,7 @@
     <Authors>Chris Muench</Authors>
     <Company>C-Labs</Company>
     <Description>Image management for ($(TargetFramework))</Description>
-    <Copyright>Copyright © 2015-2024 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <Copyright>Copyright © 2015-2026 TRUMPF Laser GmbH, authors: C-Labs, Hyviva</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
     <AssemblyName>CDMyImages</AssemblyName>

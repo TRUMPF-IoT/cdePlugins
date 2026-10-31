@@ -1,5 +1,5 @@
 ﻿<!--
- SPDX-FileCopyrightText: 2009-2024 TRUMPF Laser GmbH, authors: C-Labs
+ SPDX-FileCopyrightText: 2009-2026 TRUMPF Laser GmbH, authors: C-Labs, Hyviva
  SPDX-License-Identifier: MPL-2.0
  -->
 <Project Sdk="Microsoft.NET.Sdk">
@@ -10,7 +10,7 @@
     <Company>C-Labs</Company>
     <Version>6.104.0</Version>
     <Product>CDMyThingProvisioning for $(TargetFramework)$(cdeDebugProductSuffix)</Product>
-    <Copyright>Copyright Â© 2015-2024 TRUMPF Laser GmbH, authors: C-Labs</Copyright>
+    <Copyright>Copyright © 2015-2026 TRUMPF Laser GmbH, authors: C-Labs, Hyviva</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ProjectName>$(AssemblyName).$(TargetFramework)</ProjectName>
 	  <PackageOutputPath>$(SolutionDir)Nugets</PackageOutputPath>
