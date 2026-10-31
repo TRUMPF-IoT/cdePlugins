@@ -83,25 +83,18 @@ jobs:
     - name: Gather artifacts
       run: |
         robocopy .\bin\ .\artifacts\ *.CDEX *.CDEP *.nupkg *.snupkg *.msi /s /np
-        if ($LASTEXITCODE -le 1) { exit 0 } else { exit $LASTEXITCODE }
+        if ($LASTEXITCODE -lt 8) { exit 0 } else { exit $LASTEXITCODE }
 
     - name: Gather nuget artifacts
       run: |
         robocopy .\src\nugets .\artifacts\ *.nupkg *.snupkg /s /np
-        if ($LASTEXITCODE -le 1) { exit 0 } else { exit $LASTEXITCODE }
+        if ($LASTEXITCODE -lt 8) { exit 0 } else { exit $LASTEXITCODE }
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
         name: CDEPlugins
         path: ./artifacts
-
-    - name: REUSE Compliance Check
-      run: |
-        # Windows has no 'file' binary, so reuse needs the charset-normalizer extra to detect file encodings
-        # Pin the version so new reuse releases with stricter parsing don't break the build unexpectedly
-        pip3 install --user "reuse[charset-normalizer]==5.0.2"
-        reuse lint
 
     - name: Push NuGet Packages
       # Only publish if the commit was tagged
@@ -110,3 +103,12 @@ jobs:
       #run: dotnet nuget push './artifacts/**/*.nupkg' -s Source -k ${{secrets.GITHUB_TOKEN}}
       # workaround:
       run: "Get-ChildItem ./artifacts/*.nupkg -File -Recurse | Foreach { $retryCount=0; do { if ($retryCount -gt 0) {start-sleep 30}; dotnet nuget push $_.fullname -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGETORG_APIKEY}}; $retryCount = $retryCount + 1 } while (($retryCount -lt 10) -and ($LastExitCode -ne 0)); if ($retryCount -ge 10) { throw(\"Error pushing to NuGet: \"+$LastExitCode) } }"
+
+  reuse:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: REUSE Compliance Check
+      uses: fsfe/reuse-action@v5
