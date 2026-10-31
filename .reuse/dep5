@@ -138,3 +138,7 @@ License: MPL-2.0
 Files: artifacts/*
 Copyright: 2009-2024 TRUMPF Laser GmbH, authors: C-Labs
 License: MPL-2.0
+
+Files: .github/upgrades/scenarios/dotnet-version-upgrade/**
+Copyright: 2026 TRUMPF Laser GmbH
+License: MPL-2.0
