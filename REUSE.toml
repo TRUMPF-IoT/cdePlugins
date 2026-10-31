@@ -1,0 +1,99 @@
+# SPDX-FileCopyrightText: Copyright (c) 2009-2024 TRUMPF Laser GmbH, authors: C-Labs
+# SPDX-License-Identifier: CC0-1.0
+
+version = 1
+SPDX-PackageName = "CDEPlugins"
+SPDX-PackageSupplier = "TRUMPF Laser GmbH, authors: C-Labs"
+SPDX-PackageDownloadLocation = "https://github.com/TRUMPF-IoT/cdePlugins"
+
+# ---------------------------------------------------------------------------
+# Repository infrastructure (CI, tooling, upgrade scenario notes)
+# ---------------------------------------------------------------------------
+
+[[annotations]]
+path = [".github/**", "artifacts/**"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2009-2024 TRUMPF Laser GmbH, authors: C-Labs"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = ["BuildTools/cdePackager/**", "src/cdePlugins.sln", "src/HTML5/cdeTS/cde/cdeWorker.js"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2009-2024 TRUMPF Laser GmbH, authors: C-Labs"
+SPDX-License-Identifier = "MPL-2.0"
+
+# ---------------------------------------------------------------------------
+# Documentation
+# ---------------------------------------------------------------------------
+
+[[annotations]]
+path = ["README.md", "src/readme.md", "src/**/readme.md"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2009-2024 TRUMPF Laser GmbH, authors: C-Labs"
+SPDX-License-Identifier = "MPL-2.0"
+
+# ---------------------------------------------------------------------------
+# Plugin resources without header support (images, resx, xlf, json, scripts)
+# ---------------------------------------------------------------------------
+
+[[annotations]]
+path = [
+	"src/040 - C-MyComputer/C-DMyComputer (PC)/ClientBin/**",
+	"src/066 - C-MyVThings/C-DMyVThings/ClientBin/**",
+	"src/066 - C-MyVThings/C-DMyVThings/MultilingualResources/**",
+	"src/066 - C-MyVThings/C-DMyVThings/*.resx",
+	"src/066 - C-MyVThings/C-DMyVThings/bundleconfig.json",
+	"src/066 - C-MyVThings/Scripts/**",
+	"src/078 - CDMyOPCUAClient/CDMyOPCUAClient/clientbin/**",
+	"src/123 - CDMyModbus/CDMyModbus/ClientBin/**",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2009-2024 TRUMPF Laser GmbH, authors: C-Labs"
+SPDX-License-Identifier = "MPL-2.0"
+
+# ---------------------------------------------------------------------------
+# C-Labs sources without SPDX headers
+# ---------------------------------------------------------------------------
+
+[[annotations]]
+path = [
+	"src/078 - CDMyOPCUAClient/CDMyOPCUAClient.Tests/**",
+	"src/123 - CDMyModbus/CDMyModbus/ViewModel/ModbusBase.cs",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2009-2024 TRUMPF Laser GmbH, authors: C-Labs"
+SPDX-License-Identifier = "MPL-2.0"
+
+# ---------------------------------------------------------------------------
+# Third-party code
+# ---------------------------------------------------------------------------
+
+[[annotations]]
+path = "src/188 - PrometheusExporter/CDMyPrometheusExporter/clientbin/images/prometheus_logo_grey.png"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Copyright 2013 The Prometheus Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "src/182 - MQTT Sender/GnatMQ/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Copyright (c) 2013, 2014 Paolo Patierno"
+SPDX-License-Identifier = "EPL-1.0"
+
+[[annotations]]
+path = [
+	"src/123 - CDMyModbus/NModbus4Shared/**",
+	"src/123 - CDMyModbus/CDMyModbus/ModbusExt/**",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Copyright (c) 2006 Scott Alexander, 2015 Dmitry Turin"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = [
+	"src/078 - CDMyOPCUAClient/CDMyOPCUAClient/Utils/ClientUtils.cs",
+	"src/078 - CDMyOPCUAClient/CDMyOPCUAClient/Utils/FilterDeclaration.cs",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Copyright (c) 2005-2013 The OPC Foundation, Inc. All rights reserved."
+SPDX-License-Identifier = "MIT"
